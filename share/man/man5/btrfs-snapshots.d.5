@@ -28,14 +28,15 @@ its absense.
 
 .IP \fBSNAPSHOTS\fR="/path/to/snapshots"
 This option defines the location where snapshots are stored for this subvolume.
-It must be different for each subvolume.
+It must be an absolute path and a different value must be used for each
+subvolume.
 
 NOTE: Any snapshots not named using the recognized timestamp format will be
 ignored. This is useful if you take manual snapshots and don't want them to be
 pruned along with the automatically taken ones.
 
 .IP \fBLIMIT_<EVENT>\fR=<NUMBER>
-This option defines a limit on the number (specified with NUMBER) of first
+This option defines a limit on the number (specified by NUMBER) of first
 snapshots taken during EVENT, where EVENT is one of the following: MINUTELY,
 HOURLY, DAILY, WEEKLY, MONTHLY, QUARTERLY, or YEARLY. These options take
 precendence over any DEFAULT_LIMIT_* option of the same event name. If a limit

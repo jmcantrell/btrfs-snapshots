@@ -69,7 +69,8 @@ that btrfs\-snapshots operates on.
 While not a requirement, the intention is that snapshots will be automatically
 created and pruned using the included
 .BR systemd.timer (5)
-units that correspond to the two actions available at the command line:
+units that correspond to the two actions available at the command line.
+Both timers must be enabled explicitly.
 
 .IP \fIbtrfs\-snapshots\-create.timer\fR
 .br
@@ -79,8 +80,6 @@ This timer creates snapshots for each configured subvolume at a regular interval
 .br
 This timer deletes all of the snapshots that fall outside of the configured
 limits at a regular interval (daily, by default).
-
-Both timers must be enabled explicitly.
 
 
 .SH SEE ALSO
