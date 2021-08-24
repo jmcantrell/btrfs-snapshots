@@ -2,23 +2,20 @@
 
 set -eu
 
-name=btrfs-snapshots
+pkg_name=btrfs-snapshots
 src_dir=$PWD
-prefix=${PREFIX:-/usr/local}
 
-cd "$prefix"
+cd "${INSTALL_ROOT:-/usr/local}"
 
-install -Dt "$prefix/usr/bin" "$src_dir/bin/$name"
-sed -i ":/usr/local:s:/usr/local:$prefix:" "$prefix/usr/bin/$name"
+install -Dt ./bin "$src_dir/bin/$pkg_name"
 
-install -Dt "$prefix/usr/lib/$name" "$src_dir/lib/$name"/*
+install -Dt ./lib/"$pkg_name" "$src_dir/lib/$pkg_name"/*
 
-install -Dt "$prefix/usr/share/$name" "$src_dir/share/$name"/*
+install -Dt ./share/"$pkg_name" "$src_dir/share/$pkg_name"/*
 
-install -Dt "$prefix/usr/share/man/man5" "$src_dir/share/man/man5"/*
-install -Dt "$prefix/usr/share/man/man8" "$src_dir/share/man/man8"/*
+install -Dt ./share/man/man5 "$src_dir/share/man/man5"/*
+install -Dt ./share/man/man8 "$src_dir/share/man/man8"/*
 
-install -Dt "$prefix/usr/lib/systemd/system" "$src_dir/lib/systemd/system"/*
-sed -i ":/usr/local:s:/usr/local:$prefix:" "$prefix/usr/lib/systemd/system/$name"-*.service
+install -Dt ./lib/systemd/system "$src_dir/lib/systemd/system"/*
 
-install -Dt "$prefix/usr/share" "$src_dir"/{README,LICENSE}.md
+install -Dt ./share "$src_dir"/{README,LICENSE}.md
