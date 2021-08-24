@@ -18,7 +18,7 @@ PREFIX=/usr sudo make install
 
 ## Testing
 
-Run the included tests:
+To run the included tests:
 
 ```sh
 make check
