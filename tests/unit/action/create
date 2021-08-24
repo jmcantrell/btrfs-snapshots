@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Show that create succeeds under normal circumstances.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+export SUBVOLUME=$TEMP_DIR/subvolume
+export SNAPSHOTS=$TEMP_DIR/snapshots
+export PROFILE_NAME=foo
+
+timestamp=2001-01-01T00:00:00Z
+snapshot=$SNAPSHOTS/$timestamp
+
+export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
+
+mkdir -p "$SUBVOLUME"
+touch "$SUBVOLUME"/marker
+
+printf -v message "%s\n" \
+    "$(format "$TEXT_CREATE" PROFILE_NAME TIMESTAMP="$timestamp")"
+
+assert_success assert_stderr "$message" create
+assert_directory "$snapshot"
+assert_file "$snapshot"/marker

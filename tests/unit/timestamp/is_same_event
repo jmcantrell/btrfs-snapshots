@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+# Show that is_same_event can recognize timestamps occurring within the same event.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+timestamp1=2001-01-01T00:00:00+00:00
+
+for event_name in "${EVENT_NAMES[@]}"; do
+    case $event_name in
+    minutely)
+        increment="1 second"
+        count=60
+        ;;
+    hourly)
+        increment="1 minute"
+        count=60
+        ;;
+    daily)
+        increment="1 hour"
+        count=24
+        ;;
+    monthly)
+        increment="1 day"
+        count=31
+        ;;
+    yearly)
+        increment="1 month"
+        count=12
+        ;;
+    *)
+        continue
+        ;;
+    esac
+
+    # Ensure every $increment of $event_name is in the same event window.
+    while read -r timestamp2; do
+        assert_success is_same_event "$event_name" "$timestamp1" "$timestamp2"
+    done < <(timestamp_sequence "$timestamp1" "$increment" "$count")
+
+    # Ensure a tiny step outside of the event window is considered a different event.
+    timestamp2=$(get_timestamp --date="$timestamp2 + 1 second")
+    assert_failure is_same_event "$event_name" "$timestamp1" "$timestamp2"
+done
+
+# Ensure every month of a quarter is in the same event window.
+while read -r quarter_start; do
+    while read -r timestamp2; do
+        assert_success is_same_event quarterly "$quarter_start" "$timestamp2"
+    done < <(timestamp_sequence "$quarter_start" "1 month" 3)
+
+    timestamp2=$(get_timestamp --date="$timestamp2 + 1 second")
+    assert_failure is_same_event quarterly "$timestamp1" "$timestamp2"
+done < <(timestamp_sequence "$timestamp1" "3 months" 4)
+
+# Ensure different years with the same quarter number do not appear as the same event.
+assert_failure is_same_event quarterly "2000-01-01T00:00:00+00:00" "2001-01-01T00:00:00+00:00"
+
+# Start on Monday of the first week.
+timestamp1=2000-01-03T00:00:00+00:00
+
+# Ensure every day of a week is in the same event window.
+while read -r week_start; do
+    while read -r timestamp2; do
+        assert_success is_same_event weekly "$week_start" "$timestamp2"
+    done < <(timestamp_sequence "$week_start" "1 day" 7)
+
+    timestamp2=$(get_timestamp --date="$timestamp2 + 1 second")
+    assert_failure is_same_event weekly "$timestamp1" "$timestamp2"
+done < <(timestamp_sequence "$timestamp1" "1 week" 52)
+
+# Ensure adjacent years with the same week number appear as the same event.
+assert_success is_same_event weekly "1999-12-31T00:00:00+00:00" "2000-01-01T23:00:00+00:00"
+
+# Ensure non-adjacent years with the same week number do not appear as the same event.
+assert_failure is_same_event weekly "2000-01-03T00:00:00+00:00" "2002-01-01T00:00:00+00:00"

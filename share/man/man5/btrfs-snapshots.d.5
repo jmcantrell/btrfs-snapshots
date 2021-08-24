@@ -1,0 +1,84 @@
+.TH btrfs-snapshots.d 5
+
+.SH NAME
+btrfs-snapshots.d - btrfs-snapshots profile configuration directory
+
+.SH SYNOPSIS
+/etc/btrfs-snapshots.d/*.conf
+
+.SH DESCRIPTION
+Every subvolume that needs to be have their snapshots managed should have a
+corresponding configuration file in this directory. It doesn't matter what the
+file is named, but it helps to name it after the subvolume it's associated with.
+
+An example file is located at
+.br
+\fI/usr/share/btrfs-snapshots/profile.conf\fR
+
+.SH OPTIONS
+
+.IP \fBSUBVOLUME\fR="/path/to/subvolume"
+This option is the only one that is strictly required in every file, and does
+not have a corresponding DEFAULT_* option. It should be an absolute path to the
+mount point of the subvolume you want to take snapshots of.
+
+If, during snapshot creation, the subvolume is not mounted, no error occurs, and
+execution continues with any remaining subvolumes. A message is logged noting
+its absense.
+
+.IP \fBSNAPSHOTS\fR="/path/to/snapshots"
+This option defines the location where snapshots are stored for this subvolume.
+It must be different for each subvolume.
+
+NOTE: Any snapshots not named using the recognized timestamp format will be
+ignored. This is useful if you take manual snapshots and don't want them to be
+pruned along with the automatically taken ones.
+
+.IP \fBLIMIT_<EVENT>\fR=<NUMBER>
+This option defines a limit on the number (specified with NUMBER) of first
+snapshots taken during EVENT, where EVENT is one of the following: MINUTELY,
+HOURLY, DAILY, WEEKLY, MONTHLY, QUARTERLY, or YEARLY. These options take
+precendence over any DEFAULT_LIMIT_* option of the same event name. If a limit
+for an event is not defined and it has no default set in the main configuration
+file, it defaults to zero (0).
+
+For example, if `@home.conf` contains the line `LIMIT_HOURLY=3` and the
+following snapshots exist:
+
+.RS 16
+.nf
+/.snapshots/@home
+    ├── 2021-12-31T09:00:00Z
+    ├── 2021-12-31T09:30:00Z
+    ├── 2021-12-31T10:00:00Z
+    ├── 2021-12-31T10:30:00Z
+    ├── 2021-12-31T11:00:00Z
+    ├── 2021-12-31T11:30:00Z
+    └── 2021-12-31T12:00:00Z
+    └── 2021-12-31T12:30:00Z
+.fi
+.RE
+
+.RS
+Running the prune action will delete snapshots, leaving the tree looking like this:
+
+.RS
+.nf
+/.snapshots/@home
+    ├── 2021-12-31T10:00:00Z
+    ├── 2021-12-31T11:00:00Z
+    └── 2021-12-31T12:00:00Z
+.fi
+.RE
+
+Because the hourly limit was set to 3, only three snapshot could be kept. The
+algorithm found the newest snapshots up to the limit value, but only keeping
+the oldest snapshot for each distinct hour. All of the snapshots occurring at
+half past the hour had snapshots occuring in the same event at the beginning of
+the hour that had seniority and were preferred when determining which snapshots
+to delete. Both snapshots occurring earlier than 10am were deleted because the
+limit had already been reached.
+
+.SH SEE ALSO
+.BR btrfs\-snapshots (8),
+.BR btrfs\-snapshots.conf (5)

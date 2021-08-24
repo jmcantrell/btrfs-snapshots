@@ -1,0 +1,53 @@
+.TH btrfs\-snapshots.conf 5
+
+.SH NAME
+btrfs\-snapshots.conf - btrfs-snapshots main configuration file
+
+.SH SYNOPSIS
+/etc/btrfs-snapshots.conf
+
+.SH DESCRIPTION
+Configuration options for btrfs-snapshots are stored in this file. Currently,
+the only options available are defaults that are used in the absence of options
+defined in each subvolume's configuration profile.
+
+An example file is located at \fI/usr/share/btrfs-snapshots/main.conf\fR.
+
+.SH OPTIONS
+
+.IP \fBDEFAULT_SNAPSHOTS\fR="/path/to/snapshots/%NAME%"
+This option defines the default snapshot location for subvolumes that do not
+have the corresponding option in their profile defined. This is useful in cases
+where you have a central location for snapshots, but have them subdivided by
+name. If set, it's required that %NAME% appear somewhere in the right-hand side.
+This will be replaced at run time with the profile name.
+
+For example, let's say it's defined as `/.snapshots/%NAME%`. There are three
+profiles in \fI/etc/btrfs-snapshots.d\fR named `@.conf`, `@home.conf`, and
+`@var.conf`. The command to create snapshots is run at 12 noon (UTC) on December
+31st 2021.  There will be three snapshots created and stored like so:
+
+.RS 16
+.nf
+/.snapshots
+├── @
+│   └── 2021-12-31T12:00:00Z
+├── @home
+│   └── 2021-12-31T12:00:00Z
+└── @var
+    └── 2021-12-31T12:00:00Z
+.fi
+.RE
+
+.IP \fBDEFAULT_LIMIT_<EVENT>\fR=<NUMBER>
+This option defines a default limit on the number (specified with NUMBER) of
+first snapshots taken during EVENT, where EVENT is one of the following:
+MINUTELY, HOURLY, DAILY, WEEKLY, MONTHLY, QUARTERLY, or YEARLY.
+
+There can be zero or more default limits set. For any default limit left
+unspecified, the implicit value for NUMBER is zero (0). See
+\fBbtrfs\-snapshots.d\fR(5) for details on how limits work.
+
+.SH SEE ALSO
+.BR btrfs\-snapshots (8),
+.BR btrfs\-snapshots.d (5)

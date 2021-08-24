@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Show that set_limit correctly stores the limit value.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+default=0
+assert_equal "$(get_limit whatever)" "$default"
+
+limit=5
+set_limit whatever "$limit"
+assert_equal "$(get_limit whatever)" "$limit"
+
+# When given no value, reset to the default.
+set_limit whatever
+assert_equal "$(get_limit whatever)" "$default"
+
+export DEFAULT_LIMIT_WHATEVER=1
+
+# If there is a default set, use that instead.
+set_limit whatever
+assert_equal "$(get_limit whatever)" "$DEFAULT_LIMIT_WHATEVER"

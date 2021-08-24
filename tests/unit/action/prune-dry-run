@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Show that prune respects the dry-run setting.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+subvolume=$TEMP_DIR/subvolume
+snapshots=$TEMP_DIR/snapshots
+profile_name=foo
+timestamp=2001-01-01T00:00:00Z
+snapshot=$snapshots/$timestamp
+
+mkdir -p "$snapshot"
+
+printf -v message "%s\n" \
+    "$(format "$TEXT_PRUNE" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp")"
+
+export SUBVOLUME=$subvolume
+export SNAPSHOTS=$snapshots
+export PROFILE_NAME=$profile_name
+export DRY_RUN=1
+
+assert_success assert_stderr "$message" prune
+assert_directory "$snapshot"

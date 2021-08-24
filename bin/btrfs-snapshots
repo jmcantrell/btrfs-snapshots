@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+set -eu
+
+BIN_NAME=${0##*/}
+LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$BIN_NAME}
+CONFIG_FILE=${BTRFS_SNAPSHOTS_CONFIG_FILE:-/usr/local/etc/$BIN_NAME.conf}
+
+. "$LIB_DIR"/init.sh
+
+# Load main configuration (just default values for now).
+
+if [[ -r $CONFIG_FILE ]] && ! . "$CONFIG_FILE"; then
+    die "$TEXT_CONFIG_FAILED"
+fi
+
+# Parse command line options.
+
+profile_names=()
+unset OPTIND OPTARG
+while getopts ":hnp:" OPTION; do
+    case $OPTION in
+    n) export DRY_RUN=1 ;;
+    p) profile_names+=("$OPTARG") ;;
+    h) finish "$TEXT_USAGE" BIN_NAME ;;
+    *) die "$TEXT_INVALID" NAME=option VALUE="$OPTARG" ;;
+    esac
+done && shift $((OPTIND - 1))
+unset OPTION OPTIND OPTARG
+
+if [[ ! -v 1 ]]; then
+    die "$TEXT_MISSING" NAME=action
+fi
+
+action=$1
+shift
+
+case $action in
+create | prune) ;;
+*) die "$TEXT_INVALID" NAME=action VALUE="$action" ;;
+esac
+
+# Load profile(s) and perform action.
+
+shopt -s nullglob
+
+profile_dir=${BTRFS_SNAPSHOTS_PROFILE_DIR:-/usr/local/etc/$BIN_NAME.d}
+
+if ((${#profile_names[@]} > 0)); then
+    profile_files=()
+    for profile_name in "${profile_names[@]}"; do
+        profile_files+=("$profile_dir/$profile_name.conf")
+    done
+else
+    profile_files=("$profile_dir"/*.conf)
+fi
+
+for profile_file in "${profile_files[@]}"; do
+    if ! load_profile "$profile_file"; then
+        die "$TEXT_PROFILE_FAILED" PROFILE="$profile_file"
+    fi
+
+    if ! "$action"; then
+        die "$TEXT_ACTION_FAILED" ACTION="$action"
+    fi
+done

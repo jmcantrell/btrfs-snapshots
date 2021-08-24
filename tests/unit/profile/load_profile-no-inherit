@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Show that a profile cannot inherit settings from a previously loaded one.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+subvolume=$TEMP_DIR/subvolume
+snapshots=$TEMP_DIR/snapshots
+profile_file=$TEMP_DIR/profile
+
+for event_name in "${EVENT_NAMES[@]}"; do
+    set_limit "$event_name" 1
+done
+
+# Ensure non-inheritance of SUBVOLUME.
+create_profile_unsafe >"$profile_file"
+assert_failure load_profile "$profile_file" &>/dev/null
+
+# Ensure non-inheritance of SNAPSHOTS.
+create_profile_unsafe "$TEMP_DIR" >"$profile_file"
+assert_failure load_profile "$profile_file" &>/dev/null
+
+create_profile "$TEMP_DIR" "$TEMP_DIR" >"$profile_file"
+
+export SUBVOLUME=$subvolume
+export SNAPSHOTS=$snapshots
+
+load_profile "$profile_file"
+
+# Ensure non-inheritance of limit values.
+for event_name in "${EVENT_NAMES[@]}"; do
+    assert_equal "$(get_limit "$event_name")" 0
+done

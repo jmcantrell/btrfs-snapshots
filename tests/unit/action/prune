@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# Show that prune will preserve the correct snapshots.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+subvolume=$TEMP_DIR/subvolume
+snapshots=$TEMP_DIR/snapshots
+timestamp1=2001-01-01T00:00:00Z
+profile_name=foo
+limit=3
+
+for event_name in "${EVENT_NAMES[@]}"; do
+    reset_temp
+
+    set_limit "$event_name" "$limit"
+
+    keepers=()
+    fillers=()
+    message_lines=()
+
+    while read -r timestamp2; do
+        # This snapshot should not get pruned.
+        keeper=$snapshots/$timestamp2
+        keepers+=("$keeper")
+        while read -r timestamp3; do
+            # Generate a bunch of filler snapshots that will be deleted.
+            snapshot=$snapshots/$timestamp3
+
+            mkdir -p "$snapshot"
+
+            # Only predict the message if it's not the keeper.
+            if [[ $snapshot != "$keeper" ]]; then
+                fillers+=("$snapshot")
+                message_lines+=("$(format "$TEXT_PRUNE" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp3")")
+            fi
+        done < <(timestamp_sequence "$timestamp2" "1 second" "$limit" | tac)
+    done < <(timestamp_sequence_event "$timestamp1" "$event_name" "$limit" | tac)
+
+    printf -v message "%s\n" "${message_lines[@]}"
+
+    export SUBVOLUME=$subvolume
+    export SNAPSHOTS=$snapshots
+    export PROFILE_NAME=$profile_name
+
+    assert_success assert_stderr "$message" prune
+
+    assert_equal "$(get_snapshots "$snapshots" | wc -l)" "$limit"
+
+    for keeper in "${keepers[@]}"; do
+        assert_directory "$keeper"
+    done
+
+    for filler in "${fillers[@]}"; do
+        assert_no_directory "$filler"
+    done
+done

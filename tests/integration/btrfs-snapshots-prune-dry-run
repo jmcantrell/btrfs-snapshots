@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Show that the dry-run option is respected when pruning snapshots.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_dir=$TEMP_DIR/profiles
+mkdir -p "$profile_dir"
+
+profile_name=foo
+profile_file=$profile_dir/$profile_name.conf
+
+timestamp=2001-01-01T00:00:00Z
+
+subvolume=$TEMP_DIR/subvolume
+snapshots=$TEMP_DIR/snapshots
+
+create_profile "$subvolume" "$snapshots" >"$profile_file"
+
+snapshot=$snapshots/$timestamp
+mkdir -p "$snapshot"
+
+export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+
+printf -v message "%s\n" \
+    "$(format "$TEXT_PRUNE" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp")"
+
+assert_success assert_stderr "$message" btrfs-snapshots -n prune
+assert_directory "$snapshot"

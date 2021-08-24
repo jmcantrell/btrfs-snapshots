@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Show that help can be requested at the command line.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+printf -v msg_usage "%s\n" "$(format "$TEXT_USAGE")"
+
+assert_success assert_stderr "$msg_usage" btrfs-snapshots -h

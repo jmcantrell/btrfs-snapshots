@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Show that is_mounted correctly handles some predictable linux paths.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+unset BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED
+
+assert_success is_mounted /
+assert_success is_mounted /tmp
+assert_failure is_mounted /proc/tty
+assert_failure is_mounted /proc/cpuinfo

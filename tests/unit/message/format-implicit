@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Show that format can use variables present in the environment.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+message="%a% %b% %c%"
+
+a=1
+b=2
+c=3
+
+# It should replace variables present in the environment.
+assert_equal "$(format "$message" a b c)" "$a $b $c"
+
+# It should only replace the requested placeholders.
+assert_equal "$(format "$message" b)" "%a% $b %c%"
+
+# Parameters can be in any order.
+assert_equal "$(format "$message" b c a)" "$a $b $c"
+
+# Explicit parameters should be preferred.
+assert_equal "$(format "$message" a=x b=y c=z)" "x y z"
+
+# Array parameters are expanded.
+array=(1 2 3)
+assert_equal "$(format "foo %array% bar" array)" "foo ${array[*]} bar"

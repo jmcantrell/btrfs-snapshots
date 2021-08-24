@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Show that get_limit looks at the correct variable.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+assert_equal "$(get_limit whatever)" 0
+
+LIMIT_WHATEVER=5
+
+assert_equal "$(get_limit whatever)" "$LIMIT_WHATEVER"

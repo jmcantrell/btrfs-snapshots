@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+btrfs_subvolume() {
+    local cmd=$1
+    shift
+
+    case $cmd in
+    snapshot) btrfs_subvolume_snapshot "$@" ;;
+    delete) btrfs_subvolume_delete "$@" ;;
+    *) die "unexpected btrfs subvolume command: $cmd" ;;
+    esac
+}
+
+btrfs_subvolume_snapshot() {
+    local options=$1
+    local subvolume=$2
+    local snapshot=$3
+
+    if [[ $options != -r ]]; then
+        die "command should create a readonly snapshot"
+        return 1
+    fi
+
+    if [[ ! -d $subvolume ]]; then
+        return 1
+    fi
+
+    if [[ -d $snapshot ]]; then
+        return 1
+    fi
+
+    cp -rT "$subvolume" "$snapshot" >&2
+}
+
+btrfs_subvolume_delete() {
+    local snapshot=$1
+
+    if [[ ! -d $snapshot ]]; then
+        return 1
+    fi
+
+    rm -rf "$snapshot" >&2
+}
+
+cmd=$1
+shift
+
+case $cmd in
+subvolume) btrfs_subvolume "$@" ;;
+*) die "unexpected btrfs command: $cmd" ;;
+esac

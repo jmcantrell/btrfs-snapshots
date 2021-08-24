@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# Show that default options can be specified in the main configuration file.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_name=foo
+profile_dir=$TEMP_DIR/profiles
+profile_file=$profile_dir/$profile_name.conf
+config_file=$TEMP_DIR/main.conf
+subvolume=$TEMP_DIR/subvolume
+timestamp1=2001-01-01T00:00:00Z
+
+# There will be no snapshot directory defined in the profile, so it should
+# assume this default that will be in the main configuration file.
+snapshots=$TEMP_DIR/snapshots/$profile_name
+
+for event_name in "${EVENT_NAMES[@]}"; do
+    reset_temp
+
+    mkdir -p "$subvolume" "$profile_dir"
+
+    # There are no limits defined in the profile, so it should assume the defaults
+    # that will be set in the main configuration file.
+    echo "SUBVOLUME=$subvolume" >"$profile_file"
+
+    default_limit=$((RANDOM % 5 + 1))
+    default_limit_variable=$(get_default_limit_variable "$event_name")
+
+    echo "DEFAULT_SNAPSHOTS=$TEMP_DIR/snapshots/%NAME%" >"$config_file"
+    echo "$default_limit_variable=$default_limit" >>"$config_file"
+
+    # Create just enough snapshots to test the limit.
+    # If the default limits are not seen, then will all be pruned, causing the following test to fail.
+    while read -r timestamp2; do
+        mkdir -p "$snapshots/$timestamp2"
+    done < <(timestamp_sequence_event "$timestamp1" "$event_name" "$default_limit")
+
+    expected_count=$(get_snapshots "$snapshots" | wc -l)
+
+    export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+    export BTRFS_SNAPSHOTS_CONFIG_FILE=$config_file
+
+    assert_success assert_no_output btrfs-snapshots -p "$profile_name" prune
+    assert_equal "$(get_snapshots "$snapshots" | wc -l)" "$expected_count"
+done

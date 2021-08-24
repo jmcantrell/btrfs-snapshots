@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Show that prune does nothing when there are no snapshots.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+export SNAPSHOTS=$TEMP_DIR/snapshots
+
+assert_success assert_no_output prune

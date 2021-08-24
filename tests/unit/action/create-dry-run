@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Show that create respects the dry-run setting.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+subvolume=$TEMP_DIR/subvolume
+snapshots=$TEMP_DIR/snapshots
+timestamp=2001-01-01T00:00:00Z
+snapshot=$snapshots/$timestamp
+
+export SUBVOLUME=$subvolume
+export SNAPSHOTS=$snapshots
+export PROFILE_NAME=foo
+export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
+export DRY_RUN=1
+
+mkdir -p "$subvolume"
+
+printf -v message "%s\n" \
+    "$(format "$TEXT_CREATE" PROFILE_NAME TIMESTAMP="$timestamp")"
+
+assert_success assert_stderr "$message" create
+assert_no_directory "$snapshot"

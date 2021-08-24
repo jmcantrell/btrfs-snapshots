@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Show that create reports a missing subvolume and does nothing.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+subvolume=$TEMP_DIR/subvolume
+snapshots=$TEMP_DIR/snapshots
+
+export SUBVOLUME=$subvolume
+export SNAPSHOTS=$snapshots
+
+printf -v message "%s\n" \
+    "$(format "$TEXT_PROFILE_MISSING" SUBVOLUME)"
+
+assert_success assert_stderr "$message" create
+assert_equal "$(get_snapshots "$snapshots" | wc -l)" 0

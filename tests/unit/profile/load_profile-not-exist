@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Show that load_profile reports a non-existent profile file.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+printf -v message "%s\n" \
+    "ERROR: $(format "$TEXT_PROFILE_NOT_EXIST" PROFILE=foo)"
+
+assert_failure assert_stderr "$message" load_profile /path/to/foo.conf

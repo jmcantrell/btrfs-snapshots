@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Show that get_timestamp only returns valid timestamps.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+# It should return a date in the correct format.
+assert_success is_timestamp "$(get_timestamp)"
+
+# It should pass its argument on to `date`.
+assert_success is_timestamp "$(get_timestamp --date="today - 1 year")"

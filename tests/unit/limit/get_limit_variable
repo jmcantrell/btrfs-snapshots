@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Show that get_limit_variable constructs the correct variable name.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+assert_equal "$(get_limit_variable whatever)" "LIMIT_WHATEVER"

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Show that a profile can be loaded under normal circumstances.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+subvolume=$TEMP_DIR/$RANDOM
+snapshots=$TEMP_DIR/$RANDOM
+profile_file=$TEMP_DIR/profile
+limits=()
+
+for event_name in "${EVENT_NAMES[@]}"; do
+    limits+=("$event_name=$((1 + RANDOM))")
+done
+
+create_profile "$subvolume" "$snapshots" "${limits[@]}" >"$profile_file"
+
+load_profile "$profile_file"
+
+# shellcheck disable=SC2153
+assert_equal "$SUBVOLUME" "$subvolume"
+# shellcheck disable=SC2153
+assert_equal "$SNAPSHOTS" "$snapshots"
+
+for i in "${!EVENT_NAMES[@]}"; do
+    limit=${limits[i]}
+    assert_equal "$(get_limit "${EVENT_NAMES[i]}")" "${limit##*=}"
+done

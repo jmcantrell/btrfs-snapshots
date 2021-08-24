@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Show that multiple profiles can be selected when creating snapshots.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_dir=$TEMP_DIR/profiles
+timestamp=2001-01-01T00:00:00Z
+profile_names=(a b c)
+subvolume_paths=()
+snapshot_paths=()
+
+mkdir -p "$profile_dir"
+
+for name in "${profile_names[@]}"; do
+    subvolume=$TEMP_DIR/subvolumes/$name
+    snapshots=$TEMP_DIR/snapshots/$name
+    snapshot=$snapshots/$timestamp
+
+    mkdir -p "$subvolume"
+    echo -n "$name" >"$subvolume"/marker
+    create_profile "$subvolume" "$snapshots" >"$profile_dir/$name.conf"
+
+    subvolume_paths+=("$subvolume")
+    snapshot_paths+=("$snapshot")
+done
+
+options=()
+message_lines=()
+selected=(1 2)
+
+for i in "${selected[@]}"; do
+    options+=(-p "${profile_names[i]}")
+    message_lines+=("$(format "$TEXT_CREATE" PROFILE_NAME="${profile_names[i]}" TIMESTAMP="$timestamp")")
+done
+
+printf -v message "%s\n" "${message_lines[@]}"
+
+export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
+
+assert_success assert_stderr "$message" btrfs-snapshots "${options[@]}" create
+
+for i in "${selected[@]}"; do
+    assert_file "${snapshot_paths[i]}"/marker
+    assert_file_content "${snapshot_paths[i]}"/marker "${profile_names[i]}"
+done

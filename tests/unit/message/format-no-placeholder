@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Show that format does not change the string if no placeholder exist.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+message="a b c"
+
+assert_equal "$(format "$message")" "$message"
+assert_equal "$(format "$message" a b c)" "$message"

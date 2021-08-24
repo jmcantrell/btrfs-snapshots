@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Show that format can accept explicitly defined placeholder values.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+message="%a% %b% %c%"
+
+# If there are no replacements requested, it should not change.
+assert_equal "$(format "$message")" "$message"
+
+# If there are non-existent placeholders, they will not be changed.
+assert_equal "$(format "$message" x=1 y=2 z=3)" "$message"
+
+# If there the placeholders exist, replace them with the requested value.
+assert_equal "$(format "$message" a=1 b=2 c=3)" "1 2 3"
+
+# It should only replace the placeholders that were requested.
+assert_equal "$(format "$message" b=2)" "%a% 2 %c%"

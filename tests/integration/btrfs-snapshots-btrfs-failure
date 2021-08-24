@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# Show that btrfs errors and exit status are reported.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_name=foo
+profile_dir=$TEMP_DIR/profiles
+subvolume=$TEMP_DIR/subvolume
+snapshots=$TEMP_DIR/snapshots
+timestamp=2001-01-01T00:00:00Z
+
+mkdir -p "$profile_dir" "$subvolume" "$snapshots/$timestamp"
+
+create_profile "$subvolume" "$snapshots" >"$profile_dir/$profile_name.conf"
+
+btrfs() {
+    error "fake message from btrfs"
+    return 5
+}
+
+export -f btrfs
+
+for action in create prune; do
+    message_name=TEXT_${action@U}
+    printf -v message "%s\n" \
+        "$(format "${!message_name}" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp")" \
+        "ERROR: fake message from btrfs" \
+        "$(format "ERROR: $TEXT_BTRFS_FAILED" STATUS=5)" \
+        "$(format "ERROR: $TEXT_ACTION_FAILED" ACTION="$action")"
+
+    export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+    export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
+
+    assert_failure assert_stderr "$message" btrfs-snapshots -p foo "$action"
+done

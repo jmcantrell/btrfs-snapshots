@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Show that multiple profiles can be selected when pruning snapshots.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_dir=$TEMP_DIR/profiles
+timestamp=2001-01-01T00:00:00Z
+profile_names=(a b c)
+snapshot_paths=()
+
+mkdir -p "$profile_dir"
+
+for profile_name in "${profile_names[@]}"; do
+    subvolume=$TEMP_DIR/subvolumes/$profile_name
+    snapshots=$TEMP_DIR/snapshots/$profile_name
+    snapshot=$snapshots/$timestamp
+
+    mkdir -p "$snapshot"
+
+    create_profile "$subvolume" "$snapshots" >"$profile_dir/$profile_name.conf"
+
+    snapshot_paths+=("$snapshot")
+done
+
+options=()
+message_lines=()
+selection=(0 2)
+
+for i in "${selection[@]}"; do
+    options+=(-p "${profile_names[i]}")
+    message_lines+=("$(format "$TEXT_PRUNE" PROFILE_NAME="${profile_names[i]}" TIMESTAMP="$timestamp")")
+done
+
+printf -v message "%s\n" "${message_lines[@]}"
+
+export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
+
+assert_success assert_stderr "$message" btrfs-snapshots "${options[@]}" prune
+
+for i in "${selection[@]}"; do
+    assert_no_directory "${snapshot_paths[i]}"
+done
+
+# Make sure the non-selected profile kept its snapshot.
+assert_directory "${snapshot_paths[1]}"

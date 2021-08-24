@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# Show that get_snapshots will only return existing snapshots with a recognized timestamp.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+assert_snapshots() {
+    local directory=$1
+
+    readarray -t actual < <(get_snapshots "$directory")
+
+    assert_equal "${#actual[@]}" "${#expected[@]}"
+
+    local i
+    for ((i = 0; i < ${#actual[@]}; i++)); do
+        assert_equal "${actual[i]}" "${expected[i]}"
+    done
+}
+
+timestamp=2001-01-01T00:00:00Z
+expected=()
+
+# Does not complain about non-exsistent directories.
+assert_snapshots /path/to/nowhere
+
+# Does not return anything for an empty directory.
+assert_snapshots "$TEMP_DIR"
+
+# Does not recognize regular files.
+reset_temp
+touch "$TEMP_DIR"/test_file
+assert_snapshots "$TEMP_DIR"
+
+# Does not recognize non-timestamped directories.
+reset_temp
+mkdir -p "$TEMP_DIR"/test_dir
+assert_snapshots "$TEMP_DIR"
+
+# Does not recognized timestamped regular files.
+reset_temp
+touch "$TEMP_DIR/$timestamp"
+assert_snapshots "$TEMP_DIR"
+
+# Returns all found snapshots.
+reset_temp
+while read -r timestamp_step; do
+    snapshot=$TEMP_DIR/$timestamp_step
+    mkdir -p "$snapshot"
+    expected+=("$snapshot")
+done < <(timestamp_sequence "$timestamp" hour 24)
+assert_snapshots "$TEMP_DIR"
+
+# Does not look more than one level deep.
+mkdir -p "$TEMP_DIR/$timestamp/$timestamp"
+assert_snapshots "$TEMP_DIR"
