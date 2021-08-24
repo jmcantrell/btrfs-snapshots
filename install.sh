@@ -20,3 +20,5 @@ install -Dt "$prefix/share/man/man8" "$src_dir/share/man/man8"/*
 
 install -Dt "$prefix/lib/systemd/system" "$src_dir/lib/systemd/system"/*
 sed -i ":/usr/local:s:/usr/local:$prefix:" "$prefix/lib/systemd/system/$name"-*.service
+
+install -Dt "$prefix/share" "$src_dir"/{README,LICENSE}.md
