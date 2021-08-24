@@ -4,12 +4,12 @@
 btrfs\-snapshots.conf - btrfs-snapshots main configuration file
 
 .SH SYNOPSIS
-/etc/btrfs-snapshots.conf
+/usr/local/etc/btrfs-snapshots.conf
 
 .SH DESCRIPTION
 Configuration options common to all profiles are stored in this file.
 
-An example file is located at \fI/usr/share/btrfs-snapshots/main.conf\fR.
+An example file is located at \fI/usr/local/share/btrfs-snapshots/main.conf\fR.
 
 .SH OPTIONS
 
@@ -23,7 +23,7 @@ If set, it must be an absolute path and %NAME% must appear somewhere in the
 right-hand side.  This will be replaced at run time with the profile name.
 
 For example, let's say it's defined as `/.snapshots/%NAME%`. There are three
-profiles in \fI/etc/btrfs-snapshots.d\fR named `@.conf`, `@home.conf`, and
+profiles in \fI/usr/local/etc/btrfs-snapshots.d\fR named `@.conf`, `@home.conf`, and
 `@var.conf`. The command to create snapshots is run at 12 noon (UTC) on December
 31st 2021.  There will be three snapshots created and stored like so:
 
