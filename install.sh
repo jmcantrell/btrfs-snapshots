@@ -4,8 +4,10 @@ set -eu
 
 pkg_name=btrfs-snapshots
 src_dir=$PWD
+dst_dir=${INSTALL_ROOT:-/usr/local}
 
-cd "${INSTALL_ROOT:-/usr/local}"
+mkdir -p "$dst_dir"
+cd "$dst_dir"
 
 install -Dt ./bin "$src_dir/bin/$pkg_name"
 
