@@ -61,6 +61,11 @@ Example configuration files are located at
 `/usr/share/btrfs-snapshots`. That location and others detailed below
 might be different depending on how it was installed.
 
+When defining limits, the setting names are either `LIMIT_<EVENT>`
+(for `/etc/btrfs-snapshots.d/*.conf`) or `DEFAULT_LIMIT_<EVENT>` (for
+`/etc/btrfs-snapshots.conf`), where `EVENT` can be one of: `MINUTELY`,
+`HOURLY`, `DAILY`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, or `YEARLY`.
+
 ### Subvolume Profiles
 
 To make btrfs-snapshots aware of a subvolume, add a configuration file
