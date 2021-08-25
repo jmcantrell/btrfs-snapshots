@@ -15,4 +15,5 @@ install -Dt ./share/"$pkg_name" "$src_dir/share/$pkg_name"/*
 install -Dt ./share/man/man5 "$src_dir/share/man/man5"/*
 install -Dt ./share/man/man8 "$src_dir/share/man/man8"/*
 install -Dt ./lib/systemd/system "$src_dir/lib/systemd/system"/*
+install -Dt ./share/zsh/functions "$src_dir/share/zsh/functions"/*
 install -Dt ./share "$src_dir"/{README,LICENSE}.md

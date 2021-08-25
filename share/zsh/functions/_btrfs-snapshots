@@ -1,0 +1,19 @@
+#compdef btrfs-snapshots
+
+local state
+
+_arguments -s -S \
+    "-h[show the help message]" \
+    "-n[only report what would happen]" \
+    "-p[select a profile]:profile:->profile" \
+    "::action:->action" \
+    && return 0
+
+case $state in
+    action)
+        _values 'actions' create prune
+        ;;
+    profile)
+        _values 'profiles' /usr/local/etc/btrfs-snapshots.d/*.conf(N:r:t)
+        ;;
+esac
