@@ -1,19 +1,14 @@
 #compdef btrfs-snapshots
 
-local state
+local state state_descr context line opt_args
 
-_arguments -s -S \
-    "-h[show the help message]" \
-    "-n[only report what would happen]" \
-    "-p[select a profile]:profile:->profile" \
-    "::action:->action" \
+_arguments -S \
+    "(-n -p 1)-h[show the help message]" \
+    "(-h)-n[only report what would happen]" \
+    "(-h)*-p[select a profile]:profile:->profile" \
+    "(-h -n -p)::action:(create prune)" \
     && return 0
 
-case $state in
-    action)
-        _values 'actions' create prune
-        ;;
-    profile)
-        _values 'profiles' /usr/local/etc/btrfs-snapshots.d/*.conf(N:r:t)
-        ;;
-esac
+if [[ $state == profile ]]; then
+    _values 'profiles' /usr/local/etc/btrfs-snapshots.d/*.conf(N:r:t)
+fi
