@@ -13,4 +13,4 @@ export BTRFS_SNAPSHOTS_CONFIG_FILE=$PWD/etc/main.conf
 export BTRFS_SNAPSHOTS_PROFILE_DIR=$PWD/etc/profiles.d
 export BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED=1
 
-find ./tests/{unit,integration} -type f -executable "$@" | parallel -j0
+find ./tests/{unit,integration} -type f -executable "$@" -print0 | parallel -j0 -0
