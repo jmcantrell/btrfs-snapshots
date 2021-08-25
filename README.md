@@ -126,7 +126,7 @@ btrfs-snapshots -h
 To perform an action on the configured subvolumes:
 
 ```sh
-btrfs-snapshots [-n] [-p NAME...] ACTION
+btrfs-snapshots [-n] [-p NAME]... ACTION
 ```
 
 If the `-n` option is used, btrfs-snapshots will report what would
