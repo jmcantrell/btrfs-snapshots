@@ -58,7 +58,7 @@ If there's no output then every test succeeded.
 ## Configuration
 
 Example configuration files are located at
-`/usr/share/btrfs-snapshots`. That location and other detailed below
+`/usr/share/btrfs-snapshots`. That location and others detailed below
 might be different depending on how it was installed.
 
 ### Subvolume Profiles
