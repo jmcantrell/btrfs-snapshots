@@ -133,6 +133,10 @@ If the `-n` option is used, btrfs-snapshots will report what would
 happen for the command, but not actually do anything. In other words,
 a dry-run.
 
+The `-p` option can be specified multiple times to select more than
+one profile. If none are specified, `ACTION` will be performed for
+every profile.
+
 See `man 8 btrfs-snapshots` for more details.
 
 ### Action: `create`
