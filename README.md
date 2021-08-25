@@ -58,13 +58,14 @@ If there's no output then every test succeeded.
 ## Configuration
 
 Example configuration files are located at
-`/usr/share/btrfs-snapshots`.
+`/usr/share/btrfs-snapshots`. That location and other detailed below
+might be different depending on how it was installed.
 
 ### Subvolume Profiles
 
 To make btrfs-snapshots aware of a subvolume, add a configuration file
-with the extension `.conf` to `/etc/btrfs-snapshots.d`. That location
-might be different depending on how it was installed. This directory
+with the extension `.conf` to `/etc/btrfs-snapshots.d`.
+This directory
 does not exist by default, so you will have to create it.
 
 For example, you might have the following in `/etc/btrfs-snapshots.d/@home.conf`:
