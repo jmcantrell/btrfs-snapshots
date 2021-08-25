@@ -133,7 +133,8 @@ See `man 8 btrfs-snapshots` for more details.
 ### Action: `create`
 
 Any time this action is performed, a new snapshot is taken for every
-selected profile.
+selected profile. If the subvolume for a profile is not mounted, it
+will be skipped.
 
 The intention is that this will be run periodically by a scheduling
 daemon like systemd timers or cron. If the included systemd timer is
