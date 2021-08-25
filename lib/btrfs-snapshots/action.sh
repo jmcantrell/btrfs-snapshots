@@ -1,6 +1,6 @@
 create() {
     if ! is_mounted "$SUBVOLUME"; then
-        info "$TEXT_PROFILE_MISSING" SUBVOLUME
+        info "$TEXT_PROFILE_MISSING" PROFILE_NAME
         return 0
     fi
 

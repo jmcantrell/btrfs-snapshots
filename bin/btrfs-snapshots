@@ -60,7 +60,7 @@ readarray -t profile_files < <(printf "%s\n" "${profile_files[@]}" | sort -u)
 
 for profile_file in "${profile_files[@]}"; do
     if ! load_profile "$profile_file"; then
-        die "$TEXT_PROFILE_FAILED" PROFILE="$profile_file"
+        die "$TEXT_PROFILE_FAILED" PROFILE_FILE="$profile_file"
     fi
 
     if ! "$action"; then

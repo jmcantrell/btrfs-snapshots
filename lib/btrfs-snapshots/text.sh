@@ -25,7 +25,7 @@ export TEXT_PROFILE_NOT_EXIST="profile does not exist: %PROFILE_NAME%"
 export TEXT_PROFILE_NOT_SET="invalid profile: %PROFILE_NAME%; %VARIABLE% is not set"
 export TEXT_PROFILE_ABS_PATH="invalid profile: %PROFILE_NAME%; %VARIABLE% must be an absolute path"
 export TEXT_PROFILE_MISSING="skipping profile: %PROFILE_NAME%; subvolume is missing"
-export TEXT_PROFILE_FAILED="unable to load profile: %PROFILE_NAME%"
+export TEXT_PROFILE_FAILED="unable to load profile: %PROFILE_FILE%"
 
 export TEXT_CREATE="creating snapshot: profile=%PROFILE_NAME% timestamp=%TIMESTAMP%"
 export TEXT_PRUNE="deleting snapshot: profile=%PROFILE_NAME% timestamp=%TIMESTAMP%"

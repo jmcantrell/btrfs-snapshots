@@ -7,8 +7,8 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-name=profile
-profile_file=$TEMP_DIR/$name
+profile_name=foo
+profile_file=$TEMP_DIR/$profile_name
 variables=(SUBVOLUME SNAPSHOTS)
 values=()
 
@@ -23,7 +23,7 @@ for ((i = 0; i < ${#variables[@]}; i++)); do
     create_profile_unsafe "${values[@]}" >"$profile_file"
 
     printf -v msg_not_set "%s\n" \
-        "ERROR: $(format "$TEXT_PROFILE_NOT_SET" VARIABLE="$variable" PROFILE="$name")"
+        "ERROR: $(format "$TEXT_PROFILE_NOT_SET" VARIABLE="$variable" PROFILE_NAME="$profile_name")"
 
     assert_failure assert_stderr "$msg_not_set" load_profile "$profile_file"
 
@@ -36,7 +36,7 @@ for ((i = 0; i < ${#variables[@]}; i++)); do
     create_profile_unsafe "${values[@]}" >"$profile_file"
 
     printf -v msg_abs_path "%s\n" \
-        "ERROR: $(format "$TEXT_PROFILE_ABS_PATH" VARIABLE="$variable" PROFILE="$name")"
+        "ERROR: $(format "$TEXT_PROFILE_ABS_PATH" VARIABLE="$variable" PROFILE_NAME="$profile_name")"
 
     assert_failure assert_stderr "$msg_abs_path" load_profile "$profile_file"
 
