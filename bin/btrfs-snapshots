@@ -55,6 +55,9 @@ else
     profile_files=("$profile_dir"/*.conf)
 fi
 
+# Ensure duplicate profiles are removed.
+readarray -t profile_files < <(printf "%s\n" "${profile_files[@]}" | sort -u)
+
 for profile_file in "${profile_files[@]}"; do
     if ! load_profile "$profile_file"; then
         die "$TEXT_PROFILE_FAILED" PROFILE="$profile_file"
