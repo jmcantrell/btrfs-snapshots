@@ -15,7 +15,6 @@ administrators that prefer a minimum of baked-in opinions.
 - Included systemd timers, but equally usable with cron
 - Able to operate on one or more subvolumes at a time
 - Configurable snapshot locations for subvolumes
-- Shell completion for bash and zsh
 - Minimal dependencies: bash and coreutils
 - Does not alter the system in any way
 - Shell completion for bash and zsh
