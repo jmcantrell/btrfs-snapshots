@@ -7,3 +7,4 @@ IOSchedulingClass=idle
 KillSignal=SIGINT
 ExecStart=/usr/local/bin/btrfs-snapshots prune
 StandardOutput=null
+StandardError=journal
