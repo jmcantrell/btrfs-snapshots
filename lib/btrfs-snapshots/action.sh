@@ -17,7 +17,7 @@ create() {
 
     if [[ ! -v DRY_RUN ]]; then
         mkdir -p "$SNAPSHOTS"
-        btrfs subvolume snapshot -r "$SUBVOLUME" "$snapshot" || {
+        btrfs subvolume snapshot -r "$SUBVOLUME" "$snapshot" >&2 || {
             error "$TEXT_BTRFS_FAILED" STATUS="$?"
             return 1
         }
@@ -79,7 +79,7 @@ prune() {
         info "$TEXT_PRUNE" PROFILE_NAME TIMESTAMP="$timestamp"
 
         if [[ ! -v DRY_RUN ]]; then
-            btrfs subvolume delete "$snapshot" || {
+            btrfs subvolume delete "$snapshot" >&2 || {
                 error "$TEXT_BTRFS_FAILED" STATUS="$?"
                 return 1
             }
