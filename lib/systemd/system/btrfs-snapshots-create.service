@@ -6,3 +6,4 @@ Nice=19
 IOSchedulingClass=idle
 KillSignal=SIGINT
 ExecStart=/usr/local/bin/btrfs-snapshots create
+StandardOutput=null

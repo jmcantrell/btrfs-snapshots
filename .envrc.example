@@ -1,0 +1,15 @@
+PATH_add bin
+PATH_add tests/bin
+
+# To see which tests are being run.
+export TESTS_VERBOSE=1
+
+# Convenience for running tests directly.
+export LIB_DIR=$PWD/lib/btrfs-snapshots
+export TESTS_LIB_DIR=$PWD/tests/lib
+
+# Tell the main command to look for files in the current directory.
+export BTRFS_SNAPSHOTS_LIB_DIR=$LIB_DIR
+export BTRFS_SNAPSHOTS_CONFIG_FILE=$PWD/temp/etc/main.conf
+export BTRFS_SNAPSHOTS_PROFILE_DIR=$PWD/temp/etc/profiles.d
+export BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED=1

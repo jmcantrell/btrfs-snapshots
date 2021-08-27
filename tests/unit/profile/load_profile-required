@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that load_profile can only succeed when certain variables are set.
+# Show that loading a profile can only succeed when certain variables are set.
 
 set -eu
 
@@ -17,28 +17,30 @@ values=()
 # - variable is empty
 # - variable is set to a relative path
 
+export PROFILE_FILE=$profile_file
+
 for ((i = 0; i < ${#variables[@]}; i++)); do
     variable=${variables[i]}
 
     create_profile_unsafe "${values[@]}" >"$profile_file"
 
-    printf -v msg_not_set "%s\n" \
-        "ERROR: $(format "$TEXT_PROFILE_NOT_SET" VARIABLE="$variable" PROFILE_NAME="$profile_name")"
+    printf -v message_not_set "%s\n" \
+        "ERROR: $(format "$TEXT_PROFILE_VARIABLE_NOT_SET" VARIABLE="$variable" PROFILE_NAME="$profile_name")"
 
-    assert_failure assert_stderr "$msg_not_set" load_profile "$profile_file"
+    assert_failure assert_stderr "$message_not_set" load_profile
 
     values+=("")
     create_profile_unsafe "${values[@]}" >"$profile_file"
 
-    assert_failure assert_stderr "$msg_not_set" load_profile "$profile_file"
+    assert_failure assert_stderr "$message_not_set" load_profile
 
     values[-1]=./relative/path
     create_profile_unsafe "${values[@]}" >"$profile_file"
 
-    printf -v msg_abs_path "%s\n" \
+    printf -v message_abs_path "%s\n" \
         "ERROR: $(format "$TEXT_PROFILE_ABS_PATH" VARIABLE="$variable" PROFILE_NAME="$profile_name")"
 
-    assert_failure assert_stderr "$msg_abs_path" load_profile "$profile_file"
+    assert_failure assert_stderr "$message_abs_path" load_profile
 
     values[-1]=$TEMP_DIR
 done

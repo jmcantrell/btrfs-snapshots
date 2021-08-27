@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that load_profile reports a non-existent profile file.
+# Show that non-existent profile files cause an error.
 
 set -eu
 
@@ -10,4 +10,6 @@ set -eu
 printf -v message "%s\n" \
     "ERROR: $(format "$TEXT_PROFILE_NOT_EXIST" PROFILE_NAME=foo)"
 
-assert_failure assert_stderr "$message" load_profile /path/to/foo.conf
+export PROFILE_FILE=/path/to/foo.conf
+
+assert_failure assert_stderr "$message" load_profile

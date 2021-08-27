@@ -9,20 +9,23 @@ set -eu
 
 profile_file=$TEMP_DIR/profile.conf
 
+export PROFILE_FILE=$profile_file
+
 # Enusre a default snapshot directory will be used.
 
 export DEFAULT_SNAPSHOTS=$TEMP_DIR/snapshots/%NAME%
 
 create_profile_unsafe "$TEMP_DIR" >"$profile_file"
 
-assert_success load_profile "$profile_file"
+assert_success load_profile
 assert_set SNAPSHOTS
 assert_equal "$SNAPSHOTS" "$TEMP_DIR/snapshots/profile"
 
 # Ensure limit variables default to zero.
 
 create_profile "$TEMP_DIR" "$TEMP_DIR" >"$profile_file"
-assert_success load_profile "$profile_file"
+
+assert_success load_profile
 
 for event_name in "${EVENT_NAMES[@]}"; do
     limit_variable=$(get_limit_variable "$event_name")
@@ -37,7 +40,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     export "$default_limit_variable=1"
 done
 
-assert_success load_profile "$profile_file"
+assert_success load_profile
 
 for event_name in "${EVENT_NAMES[@]}"; do
     limit_variable=$(get_limit_variable "$event_name")

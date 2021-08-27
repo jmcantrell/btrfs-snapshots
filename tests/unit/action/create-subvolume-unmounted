@@ -15,7 +15,7 @@ export SNAPSHOTS=$snapshots
 export PROFILE_NAME=foo
 
 printf -v message "%s\n" \
-    "$(format "$TEXT_PROFILE_MISSING" PROFILE_NAME)"
+    "$(format "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME)"
 
 assert_success assert_stderr "$message" create
 assert_equal "$(get_snapshots "$snapshots" | wc -l)" 0

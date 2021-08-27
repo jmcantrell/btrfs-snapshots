@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Show that snapshots can be listed.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+snapshots=$TEMP_DIR
+
+export SNAPSHOTS=$snapshots
+
+assert_success assert_no_output list

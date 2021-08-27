@@ -1,6 +1,10 @@
+list() {
+    get_snapshots "$SNAPSHOTS"
+}
+
 create() {
     if ! is_mounted "$SUBVOLUME"; then
-        info "$TEXT_PROFILE_MISSING" PROFILE_NAME
+        info "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME
         return 0
     fi
 
@@ -11,16 +15,15 @@ create() {
 
     info "$TEXT_CREATE" PROFILE_NAME TIMESTAMP
 
-    if [[ -v DRY_RUN ]]; then
-        return 0
+    if [[ ! -v DRY_RUN ]]; then
+        mkdir -p "$SNAPSHOTS"
+        btrfs subvolume snapshot -r "$SUBVOLUME" "$snapshot" || {
+            error "$TEXT_BTRFS_FAILED" STATUS="$?"
+            return 1
+        }
     fi
 
-    mkdir -p "$SNAPSHOTS"
-
-    btrfs subvolume snapshot -r "$SUBVOLUME" "$snapshot" || {
-        error "$TEXT_BTRFS_FAILED" STATUS="$?"
-        return 1
-    }
+    printf "%s\n" "$snapshot"
 }
 
 prune() {
@@ -75,13 +78,13 @@ prune() {
 
         info "$TEXT_PRUNE" PROFILE_NAME TIMESTAMP="$timestamp"
 
-        if [[ -v DRY_RUN ]]; then
-            continue
+        if [[ ! -v DRY_RUN ]]; then
+            btrfs subvolume delete "$snapshot" || {
+                error "$TEXT_BTRFS_FAILED" STATUS="$?"
+                return 1
+            }
         fi
 
-        btrfs subvolume delete "$snapshot" || {
-            error "$TEXT_BTRFS_FAILED" STATUS="$?"
-            return 1
-        }
+        printf "%s\n" "$snapshot"
     done
 }

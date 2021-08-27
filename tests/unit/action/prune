@@ -20,7 +20,8 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     keepers=()
     fillers=()
-    message_lines=()
+    stdout_lines=()
+    stderr_lines=()
 
     while read -r timestamp2; do
         # This snapshot should not get pruned.
@@ -35,18 +36,20 @@ for event_name in "${EVENT_NAMES[@]}"; do
             # Only predict the message if it's not the keeper.
             if [[ $snapshot != "$keeper" ]]; then
                 fillers+=("$snapshot")
-                message_lines+=("$(format "$TEXT_PRUNE" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp3")")
+                stdout_lines+=("$snapshot")
+                stderr_lines+=("$(format "$TEXT_PRUNE" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp3")")
             fi
         done < <(timestamp_sequence "$timestamp2" "1 second" "$limit" | tac)
     done < <(timestamp_sequence_event "$timestamp1" "$event_name" "$limit" | tac)
 
-    printf -v message "%s\n" "${message_lines[@]}"
+    printf -v stdout "%s\n" "${stdout_lines[@]}"
+    printf -v stderr "%s\n" "${stderr_lines[@]}"
 
     export SUBVOLUME=$subvolume
     export SNAPSHOTS=$snapshots
     export PROFILE_NAME=$profile_name
 
-    assert_success assert_stderr "$message" prune
+    assert_success assert_output "$stdout" "$stderr" prune
 
     assert_equal "$(get_snapshots "$snapshots" | wc -l)" "$limit"
 

@@ -19,7 +19,7 @@ create_profile "$subvolume" "$snapshots" >"$profile_dir/$profile_name.conf"
 export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
 
 # Notice that there is only one message expected.
-printf -v message "%s\n" "$(format "$TEXT_PROFILE_MISSING" PROFILE_NAME="$profile_name")"
+printf -v message "%s\n" "$(format "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME="$profile_name")"
 
 # Notice that the same profile is requested twice.
 assert_success assert_stderr "$message" btrfs-snapshots -p "$profile_name" -p "$profile_name" create

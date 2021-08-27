@@ -1,7 +1,7 @@
 .TH btrfs\-snapshots 8
 
 .SH NAME
-btrfs\-snapshots \- Manage collections of btrfs snapshots
+btrfs\-snapshots \- Manage timestamped collections of btrfs snapshots
 
 .SH SYNOPSIS
 .B btrfs\-snapshots
@@ -19,7 +19,8 @@ debatably painless:
 .RS
 .nr step 1 1
 .IP \n[step] 3
-A snapshot's base name is the UTC timestamp when it was taken
+A snapshot's base name is the ISO-8601 formatted UTC timestamp when it was taken
+(i.e. %Y-%m-%dT%H:%M:%SZ)
 .IP \n+[step]
 The snapshots for each subvolume must be in their own directory
 .RE
@@ -32,14 +33,20 @@ sections, and their related manuals.
 
 .IP \fBcreate\fR
 .br
-Create a new snapshot for each selected profile in the configured directory with
-a base name that is the UTC timestamp when it is created (e.g.
-2021\-12\-31T12:34:56Z). Any subvolumes not mounted will be skipped.
+Create a new snapshot in the configured directory for the selected profiles.
+Any subvolumes that are not mounted will be skipped. A message will be written
+to stderr and the snapshot path to stdout.
+
+.IP \fBlist\fR
+.br
+Print the absolute path of every recognized snapshot for the selected profiles
+to stdout.
 
 .IP \fBprune\fR
 .br
-Delete all snapshots for each selected profile that fall outside of the
-configured limits.
+Delete all snapshots for the selected profiles that fall outside of the
+configured limits. A message for each deleted snapshot will be written to stderr
+and the snapshot path to stdout.
 
 .SH OPTIONS
 
@@ -60,9 +67,15 @@ Can be specified multiple times to select multiple profiles.
 See \fBbtrfs\-snapshots.conf\fR(5) for more details on configuring the defaults
 that btrfs\-snapshots uses.
 
-.SH PROFILES
 See \fBbtrfs\-snapshots.d\fR(5) for more details on configuring the subvolumes
 that btrfs\-snapshots operates on.
+
+There are example configuration files located in the share directory:
+.br
+.IP
+\fI/usr/local/share/btrfs-snapshots/main.conf\fR
+.IP
+\fI/usr/local/share/btrfs-snapshots/profile.conf\fR
 
 .SH TIMERS
 .PP
@@ -81,14 +94,16 @@ This timer creates snapshots for each configured subvolume at a regular interval
 This timer deletes all of the snapshots that fall outside of the configured
 limits at a regular interval (daily, by default).
 
+.PP
+You could, of course, configure those for a different schedule, or use another
+scheduler, like cron.
+
 
 .SH SEE ALSO
 .BR btrfs\-snapshots.conf (5),
 .BR btrfs\-snapshots.d (5)
 
 .SH REPORTING BUGS
-For bug reports, use the issue tracker at
+For bug reports, use the issue tracker at:
 .br
-.nf
 https://gitlab.com/jmcantrell/btrfs\-snapshots/\-/issues
-.fi

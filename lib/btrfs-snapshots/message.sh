@@ -14,13 +14,13 @@ format() {
         fi
     done
 
-    echo -n "$message"
+    printf "%s" "$message"
 }
 
 info() {
     local message
     message=$(format "$@")
-    echo "$message" >&2
+    printf "%s\n" "$message" >&2
 }
 
 error() {

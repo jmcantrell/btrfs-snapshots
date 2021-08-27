@@ -26,17 +26,20 @@ for name in "${profile_names[@]}"; do
     create_profile "$subvolume" "$snapshots" >"$profile_dir/$name.conf"
 done
 
-message_lines=()
+stdout_lines=()
+stderr_lines=()
 for i in "${!profile_names[@]}"; do
-    message_lines+=("$(format "$TEXT_CREATE" PROFILE_NAME="${profile_names[i]}" TIMESTAMP="$timestamp")")
+    stdout_lines+=("${snapshot_paths[i]}")
+    stderr_lines+=("$(format "$TEXT_CREATE" PROFILE_NAME="${profile_names[i]}" TIMESTAMP="$timestamp")")
 done
 
-printf -v message "%s\n" "${message_lines[@]}"
+printf -v stdout "%s\n" "${stdout_lines[@]}"
+printf -v stderr "%s\n" "${stderr_lines[@]}"
 
 export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
 export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
 
-assert_success assert_stderr "$message" btrfs-snapshots create
+assert_success assert_output "$stdout" "$stderr" btrfs-snapshots create
 
 for i in "${!profile_names[@]}"; do
     marker=${snapshot_paths[i]}/marker

@@ -15,7 +15,9 @@ snapshot=$snapshots/$timestamp
 
 mkdir -p "$snapshot"
 
-printf -v message "%s\n" \
+printf -v stdout "%s\n" "$snapshot"
+
+printf -v stderr "%s\n" \
     "$(format "$TEXT_PRUNE" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp")"
 
 export SUBVOLUME=$subvolume
@@ -23,5 +25,5 @@ export SNAPSHOTS=$snapshots
 export PROFILE_NAME=$profile_name
 export DRY_RUN=1
 
-assert_success assert_stderr "$message" prune
+assert_success assert_output "$stdout" "$stderr" prune
 assert_directory "$snapshot"

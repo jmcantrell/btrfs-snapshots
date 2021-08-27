@@ -11,24 +11,26 @@ subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
 profile_file=$TEMP_DIR/profile
 
+export PROFILE_FILE=$profile_file
+
 for event_name in "${EVENT_NAMES[@]}"; do
     set_limit "$event_name" 1
 done
 
 # Ensure non-inheritance of SUBVOLUME.
 create_profile_unsafe >"$profile_file"
-assert_failure load_profile "$profile_file" &>/dev/null
+assert_failure load_profile &>/dev/null
 
 # Ensure non-inheritance of SNAPSHOTS.
 create_profile_unsafe "$TEMP_DIR" >"$profile_file"
-assert_failure load_profile "$profile_file" &>/dev/null
+assert_failure load_profile &>/dev/null
 
 create_profile "$TEMP_DIR" "$TEMP_DIR" >"$profile_file"
 
 export SUBVOLUME=$subvolume
 export SNAPSHOTS=$snapshots
 
-load_profile "$profile_file"
+load_profile
 
 # Ensure non-inheritance of limit values.
 for event_name in "${EVENT_NAMES[@]}"; do

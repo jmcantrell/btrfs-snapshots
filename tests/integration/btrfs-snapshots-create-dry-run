@@ -27,8 +27,10 @@ snapshot=$snapshots/$timestamp
 export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
 export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
 
-printf -v message "%s\n" \
+printf -v stdout "%s\n" "$snapshot"
+
+printf -v stderr "%s\n" \
     "$(format "$TEXT_CREATE" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp")"
 
-assert_success assert_stderr "$message" btrfs-snapshots -n create
+assert_success assert_output "$stdout" "$stderr" btrfs-snapshots -n create
 assert_no_directory "$snapshot"

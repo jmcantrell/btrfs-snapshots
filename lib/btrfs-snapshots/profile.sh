@@ -1,6 +1,4 @@
 load_profile() {
-    PROFILE_FILE=$1
-
     PROFILE_NAME=${PROFILE_FILE##*/}
     PROFILE_NAME=${PROFILE_NAME%.conf}
 
@@ -25,7 +23,7 @@ load_profile() {
     local variable
     for variable in SUBVOLUME SNAPSHOTS; do
         if [[ ! -v $variable || -z ${!variable} ]]; then
-            error "$TEXT_PROFILE_NOT_SET" VARIABLE="$variable" PROFILE_NAME
+            error "$TEXT_PROFILE_VARIABLE_NOT_SET" VARIABLE="$variable" PROFILE_NAME
             return 1
         fi
 

@@ -1,50 +1,39 @@
 #!/usr/bin/env bash
 
 set -eu
+shopt -s nullglob
 
-BIN_NAME=${0##*/}
-LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$BIN_NAME}
-CONFIG_FILE=${BTRFS_SNAPSHOTS_CONFIG_FILE:-/usr/local/etc/$BIN_NAME.conf}
+bin_name=${0##*/}
+export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$bin_name}
+export CONFIG_FILE=${BTRFS_SNAPSHOTS_CONFIG_FILE:-/usr/local/etc/$bin_name.conf}
 
 . "$LIB_DIR"/init.sh
-
-# Load main configuration (just default values for now).
 
 if [[ -r $CONFIG_FILE ]] && ! . "$CONFIG_FILE"; then
     die "$TEXT_CONFIG_FAILED"
 fi
 
-# Parse command line options.
+declare -a profile_names=()
 
-profile_names=()
-unset OPTIND OPTARG
-while getopts ":hnp:" OPTION; do
-    case $OPTION in
+while getopts ":hnp:" option; do
+    case $option in
     n) export DRY_RUN=1 ;;
     p) profile_names+=("$OPTARG") ;;
-    h) finish "$TEXT_USAGE" BIN_NAME ;;
+    h) finish "$TEXT_USAGE" ;;
     *) die "$TEXT_INVALID" NAME=option VALUE="$OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
-unset OPTION OPTIND OPTARG
 
-if [[ ! -v 1 ]]; then
-    die "$TEXT_MISSING" NAME=action
-fi
-
-action=$1
-shift
+action=${1:-list}
 
 case $action in
-create | prune) ;;
+create | prune | list) ;;
 *) die "$TEXT_INVALID" NAME=action VALUE="$action" ;;
 esac
 
-# Load profile(s) and perform action.
+profile_dir=${BTRFS_SNAPSHOTS_PROFILE_DIR:-/usr/local/etc/$bin_name.d}
 
-shopt -s nullglob
-
-profile_dir=${BTRFS_SNAPSHOTS_PROFILE_DIR:-/usr/local/etc/$BIN_NAME.d}
+declare -a profile_files
 
 if ((${#profile_names[@]} > 0)); then
     profile_files=()
@@ -55,12 +44,19 @@ else
     profile_files=("$profile_dir"/*.conf)
 fi
 
-# Ensure duplicate profiles are removed.
-readarray -t profile_files < <(printf "%s\n" "${profile_files[@]}" | sort -u)
+declare -A profiles_seen=()
 
-for profile_file in "${profile_files[@]}"; do
-    if ! load_profile "$profile_file"; then
-        die "$TEXT_PROFILE_FAILED" PROFILE_FILE="$profile_file"
+for PROFILE_FILE in "${profile_files[@]}"; do
+    export PROFILE_FILE
+
+    if [[ -v profiles_seen[$PROFILE_FILE] ]]; then
+        continue
+    fi
+
+    profiles_seen[$PROFILE_FILE]=1
+
+    if ! load_profile; then
+        die "$TEXT_PROFILE_FAILED" PROFILE_FILE
     fi
 
     if ! "$action"; then

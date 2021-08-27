@@ -20,8 +20,10 @@ export DRY_RUN=1
 
 mkdir -p "$subvolume"
 
-printf -v message "%s\n" \
+printf -v stdout "%s\n" "$snapshot"
+
+printf -v stderr "%s\n" \
     "$(format "$TEXT_CREATE" PROFILE_NAME TIMESTAMP="$timestamp")"
 
-assert_success assert_stderr "$message" create
+assert_success assert_output "$stdout" "$stderr" create
 assert_no_directory "$snapshot"

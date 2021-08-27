@@ -18,7 +18,9 @@ done
 
 create_profile "$subvolume" "$snapshots" "${limits[@]}" >"$profile_file"
 
-load_profile "$profile_file"
+export PROFILE_FILE=$profile_file
+
+load_profile
 
 # shellcheck disable=SC2153
 assert_equal "$SUBVOLUME" "$subvolume"

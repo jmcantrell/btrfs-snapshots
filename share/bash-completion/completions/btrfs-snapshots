@@ -4,32 +4,32 @@ _btrfs-snapshots() {
 
     local profile_names
     readarray -t profile_names < <(
-        find /etc/btrfs-snapshots.d -type f -name "*.conf" -exec basename "{}" .conf \;
+        find "${BTRFS_SNAPSHOTS_PROFILE_DIR:-/usr/local/etc/btrfs-snapshots.d}" \
+            -type f -name "*.conf" -exec basename "{}" .conf \;
     )
+
+    # Remove any profile names that have already been used.
+    local i
+    for i in "${!profile_names[@]}"; do
+        local profile_name=${profile_names[i]}
+        local j
+        for j in "${!words[@]}"; do
+            local word=${words[j]}
+            if [[ -n $word && $word == -p && ${words[$((j + 1))]} == "$profile_name" ]]; then
+                unset profile_names["$i"]
+            fi
+        done
+    done
 
     case $prev in
     -p)
-        # Remove any profile names that have already been used.
-        local i
-        for i in "${!profile_names[@]}"; do
-            local profile_name=${profile_names[i]}
-            local j
-            for j in "${!words[@]}"; do
-                local word=${words[j]}
-                if [[ -n $word && "$word" == -p && "${words[$((j + 1))]}" == "$profile_name" ]]; then
-                    unset "profile_names[i]"
-                fi
-            done
-        done
-
         readarray -t COMPREPLY < <(compgen -W "${profile_names[*]}" -- "$cur")
-
         return
         ;;
     esac
 
-    local -A actions=" create prune "
-    local -A options=" -h -n "
+    local actions=" create prune "
+    local options=" -h -n "
 
     readarray -t COMPREPLY < <(compgen -W "-p $options $actions" -- "$cur")
 
@@ -41,7 +41,7 @@ _btrfs-snapshots() {
             if [[ "$actions" == *\ ${words[i]}\ * ]]; then
                 for j in "${!COMPREPLY[@]}"; do
                     if [[ "${COMPREPLY[j]}" == -* ]]; then
-                        unset "COMPREPLY[j]"
+                        unset COMPREPLY["$j"]
                     fi
                 done
                 break
@@ -57,7 +57,7 @@ _btrfs-snapshots() {
             for j in "${!profile_names[@]}"; do
                 for word in "${words[@]}"; do
                     if [[ "${profile_names[j]}" == "$word" ]]; then
-                        unset "profile_names[j]"
+                        unset profile_names["$j"]
                         break
                     fi
                 done
@@ -65,7 +65,7 @@ _btrfs-snapshots() {
 
             # All profile names have been used, so remove -p.
             if ((${#profile_names[@]} == 0)); then
-                unset "COMPREPLY[i]"
+                unset COMPREPLY["$i"]
             fi
 
             continue
@@ -76,7 +76,7 @@ _btrfs-snapshots() {
             for j in "${!words[@]}"; do
                 if ((j != cword)); then
                     if [[ "$actions" == *\ ${words[j]}\ * ]]; then
-                        unset "COMPREPLY[i]"
+                        unset COMPREPLY["$i"]
                         break
                     fi
                 fi
@@ -89,7 +89,7 @@ _btrfs-snapshots() {
             for j in "${!words[@]}"; do
                 if ((j != cword)); then
                     if [[ "${words[j]}" == "$comp" ]]; then
-                        unset "COMPREPLY[i]"
+                        unset COMPREPLY["$i"]
                         break
                     fi
                 fi
