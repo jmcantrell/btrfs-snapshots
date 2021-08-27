@@ -8,12 +8,12 @@ create() {
         return 0
     fi
 
+    info "$TEXT_ACTION" ACTION=create PROFILE_NAME
+
     TIMESTAMP=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(get_timestamp)}
 
     local snapshot
     snapshot=$SNAPSHOTS/$TIMESTAMP
-
-    info "$TEXT_ACTION" ACTION=create PROFILE_NAME
 
     if [[ ! -v DRY_RUN ]]; then
         mkdir -p "$SNAPSHOTS"
@@ -27,6 +27,8 @@ create() {
 }
 
 prune() {
+    info "$TEXT_ACTION" ACTION=prune PROFILE_NAME
+
     local event_name counts=() limits=()
     for event_name in "${EVENT_NAMES[@]}"; do
         counts+=(0)
@@ -75,8 +77,6 @@ prune() {
         if ((keep)); then
             continue
         fi
-
-        info "$TEXT_ACTION" ACTION=prune PROFILE_NAME
 
         if [[ ! -v DRY_RUN ]]; then
             btrfs subvolume delete "$snapshot" >&2 || {

@@ -8,5 +8,8 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 export SNAPSHOTS=$TEMP_DIR/snapshots
+export PROFILE_NAME=foo
 
-assert_success assert_no_output prune
+printf -v stderr "%s\n" "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME)"
+
+assert_success assert_stderr "$stderr" prune

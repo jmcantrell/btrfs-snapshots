@@ -21,7 +21,6 @@ for event_name in "${EVENT_NAMES[@]}"; do
     keepers=()
     fillers=()
     stdout_lines=()
-    stderr_lines=()
 
     while read -r timestamp2; do
         # This snapshot should not get pruned.
@@ -37,13 +36,12 @@ for event_name in "${EVENT_NAMES[@]}"; do
             if [[ $snapshot != "$keeper" ]]; then
                 fillers+=("$snapshot")
                 stdout_lines+=("$snapshot")
-                stderr_lines+=("$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")")
             fi
         done < <(timestamp_sequence "$timestamp2" "1 second" "$limit" | tac)
     done < <(timestamp_sequence_event "$timestamp1" "$event_name" "$limit" | tac)
 
     printf -v stdout "%s\n" "${stdout_lines[@]}"
-    printf -v stderr "%s\n" "${stderr_lines[@]}"
+    printf -v stderr "%s\n" "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
 
     export SUBVOLUME=$subvolume
     export SNAPSHOTS=$snapshots
