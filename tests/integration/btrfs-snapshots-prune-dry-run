@@ -28,7 +28,7 @@ export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
 printf -v stdout "%s\n" "$snapshot"
 
 printf -v stderr "%s\n" \
-    "$(format "$TEXT_PRUNE" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp")"
+    "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
 
 assert_success assert_output "$stdout" "$stderr" btrfs-snapshots -n prune
 assert_directory "$snapshot"

@@ -1,5 +1,5 @@
 [Unit]
-Description=Prune configured btrfs-snapshots
+Description=btrfs-snapshots prune action
 
 [Service]
 Nice=19

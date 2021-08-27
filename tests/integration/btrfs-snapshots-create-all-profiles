@@ -30,7 +30,7 @@ stdout_lines=()
 stderr_lines=()
 for i in "${!profile_names[@]}"; do
     stdout_lines+=("${snapshot_paths[i]}")
-    stderr_lines+=("$(format "$TEXT_CREATE" PROFILE_NAME="${profile_names[i]}" TIMESTAMP="$timestamp")")
+    stderr_lines+=("$(format "$TEXT_ACTION" ACTION=create PROFILE_NAME="${profile_names[i]}")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"

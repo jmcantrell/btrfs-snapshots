@@ -13,7 +13,7 @@ create() {
     local snapshot
     snapshot=$SNAPSHOTS/$TIMESTAMP
 
-    info "$TEXT_CREATE" PROFILE_NAME TIMESTAMP
+    info "$TEXT_ACTION" ACTION=create PROFILE_NAME
 
     if [[ ! -v DRY_RUN ]]; then
         mkdir -p "$SNAPSHOTS"
@@ -76,7 +76,7 @@ prune() {
             continue
         fi
 
-        info "$TEXT_PRUNE" PROFILE_NAME TIMESTAMP="$timestamp"
+        info "$TEXT_ACTION" ACTION=prune PROFILE_NAME
 
         if [[ ! -v DRY_RUN ]]; then
             btrfs subvolume delete "$snapshot" >&2 || {

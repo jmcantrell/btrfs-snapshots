@@ -22,7 +22,7 @@ touch "$SUBVOLUME"/marker
 printf -v stdout "%s\n" "$snapshot"
 
 printf -v stderr "%s\n" \
-    "$(format "$TEXT_CREATE" PROFILE_NAME TIMESTAMP="$timestamp")"
+    "$(format "$TEXT_ACTION" ACTION=create PROFILE_NAME)"
 
 assert_success assert_output "$stdout" "$stderr" create
 assert_directory "$snapshot"

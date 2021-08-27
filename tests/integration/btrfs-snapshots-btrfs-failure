@@ -25,9 +25,8 @@ btrfs() {
 export -f btrfs
 
 for action in create prune; do
-    message_name=TEXT_${action@U}
     printf -v message "%s\n" \
-        "$(format "${!message_name}" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp")" \
+        "$(format "$TEXT_ACTION" ACTION="$action" PROFILE_NAME="$profile_name")" \
         "ERROR: fake message from btrfs" \
         "$(format "ERROR: $TEXT_BTRFS_FAILED" STATUS=5)" \
         "$(format "ERROR: $TEXT_ACTION_FAILED" ACTION="$action")"

@@ -18,7 +18,7 @@ mkdir -p "$snapshot"
 printf -v stdout "%s\n" "$snapshot"
 
 printf -v stderr "%s\n" \
-    "$(format "$TEXT_PRUNE" PROFILE_NAME="$profile_name" TIMESTAMP="$timestamp")"
+    "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
 
 export SUBVOLUME=$subvolume
 export SNAPSHOTS=$snapshots
