@@ -17,5 +17,7 @@ export PROFILE_NAME=foo
 printf -v message "%s\n" \
     "$(format "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME)"
 
-assert_success assert_stderr "$message" create
+assert_success assert_stderr "$message" \
+    create
+
 assert_equal "$(get_snapshots "$snapshots" | wc -l)" 0

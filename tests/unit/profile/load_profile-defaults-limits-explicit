@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Show that default limit values can be set.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+export PROFILE_FILE=$TEMP_DIR/profile.conf
+
+cat >"$PROFILE_FILE" <<-EOF
+SUBVOLUME=$TEMP_DIR
+SNAPSHOTS=$TEMP_DIR
+EOF
+
+export DEFAULTS_FILE=$TEMP_DIR/defaults.conf
+
+# Create random defaults for every limit.
+limits=()
+for event_name in "${EVENT_NAMES[@]}"; do
+    limit=$((1 + RANDOM))
+    limits+=("$limit")
+    echo "$(get_limit_variable "$event_name")=$limit" >>"$DEFAULTS_FILE"
+done
+
+assert_success assert_no_output \
+    load_profile
+
+# Ensure the profile will be using the previously set defaults.
+for i in "${!EVENT_NAMES[@]}"; do
+    assert_equal "$(get_limit "${EVENT_NAMES[i]}")" "${limits[i]}"
+done

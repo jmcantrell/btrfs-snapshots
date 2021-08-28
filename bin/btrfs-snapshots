@@ -5,13 +5,9 @@ shopt -s nullglob
 
 bin_name=${0##*/}
 export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$bin_name}
-export CONFIG_FILE=${BTRFS_SNAPSHOTS_CONFIG_FILE:-/usr/local/etc/$bin_name.conf}
+export DEFAULTS_FILE=${BTRFS_SNAPSHOTS_DEFAULTS_FILE:-/usr/local/etc/$bin_name/defaults.conf}
 
 . "$LIB_DIR"/init.sh
-
-if [[ -r $CONFIG_FILE ]] && ! . "$CONFIG_FILE"; then
-    die "$TEXT_CONFIG_FAILED"
-fi
 
 declare -a profile_names=()
 
@@ -31,17 +27,17 @@ create | prune | list) ;;
 *) die "$TEXT_INVALID" NAME=action VALUE="$action" ;;
 esac
 
-profile_dir=${BTRFS_SNAPSHOTS_PROFILE_DIR:-/usr/local/etc/$bin_name.d}
+profiles_dir=${BTRFS_SNAPSHOTS_PROFILES_DIR:-/usr/local/etc/$bin_name/profiles.d}
 
 declare -a profile_files
 
 if ((${#profile_names[@]} > 0)); then
     profile_files=()
     for profile_name in "${profile_names[@]}"; do
-        profile_files+=("$profile_dir/$profile_name.conf")
+        profile_files+=("$profiles_dir/$profile_name.conf")
     done
 else
-    profile_files=("$profile_dir"/*.conf)
+    profile_files=("$profiles_dir"/*.conf)
 fi
 
 declare -A profiles_seen=()

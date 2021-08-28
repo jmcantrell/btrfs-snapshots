@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 
-# Show that no profile selection is the same as selecting all of them when creating snapshots.
+# Show that no profile selection is the same as selecting all of them when
+# creating snapshots.
 
 set -eu
 
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profile_dir=$TEMP_DIR/profiles
+profiles_dir=$TEMP_DIR/profiles
 timestamp=2001-01-01T00:00:00Z
 profile_names=(a b c)
 snapshot_paths=()
 
-mkdir -p "$profile_dir"
+mkdir -p "$profiles_dir"
 
 for name in "${profile_names[@]}"; do
     subvolume=$TEMP_DIR/subvolumes/$name
@@ -23,7 +24,8 @@ for name in "${profile_names[@]}"; do
     mkdir -p "$subvolume"
     echo -n "$name" >"$subvolume"/marker
 
-    create_profile "$subvolume" "$snapshots" >"$profile_dir/$name.conf"
+    profile_lines=("SUBVOLUME=$subvolume" "SNAPSHOTS=$snapshots")
+    printf "%s\n" "${profile_lines[@]}" >"$profiles_dir/$name.conf"
 done
 
 stdout_lines=()
@@ -36,10 +38,11 @@ done
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 printf -v stderr "%s\n" "${stderr_lines[@]}"
 
-export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
 export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
 
-assert_success assert_output "$stdout" "$stderr" btrfs-snapshots create
+assert_success assert_output "$stdout" "$stderr" \
+    btrfs-snapshots create
 
 for i in "${!profile_names[@]}"; do
     marker=${snapshot_paths[i]}/marker

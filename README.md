@@ -52,7 +52,6 @@ Check out the man pages for detailed information about configuration and usage:
 
 ```sh
 man ./share/man/man8/btrfs-snapshots.8
-man ./share/man/man5/btrfs-snapshots.d.5
 man ./share/man/man5/btrfs-snapshots.conf.5
 ```
 
@@ -67,7 +66,7 @@ To run the included tests:
 To see which tests are run:
 
 ```sh
-VERBOSE=1 ./test.sh
+TESTS_VERBOSE=1 ./test.sh
 ```
 
 To run a specific test (passes arguments to `find`):

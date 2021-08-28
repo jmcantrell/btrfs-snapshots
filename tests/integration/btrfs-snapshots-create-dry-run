@@ -7,11 +7,11 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profile_dir=$TEMP_DIR/profiles
-mkdir -p "$profile_dir"
+profiles_dir=$TEMP_DIR/profiles
+mkdir -p "$profiles_dir"
 
 profile_name=foo
-profile_file=$profile_dir/$profile_name.conf
+profile_file=$profiles_dir/$profile_name.conf
 
 timestamp=2001-01-01T00:00:00Z
 
@@ -20,11 +20,14 @@ mkdir -p "$subvolume"
 
 snapshots=$TEMP_DIR/snapshots
 
-create_profile "$subvolume" "$snapshots" >"$profile_file"
+cat >"$profile_file" <<-EOF
+SUBVOLUME=$subvolume
+SNAPSHOTS=$snapshots
+EOF
 
 snapshot=$snapshots/$timestamp
 
-export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
 export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
 
 printf -v stdout "%s\n" "$snapshot"
@@ -32,5 +35,7 @@ printf -v stdout "%s\n" "$snapshot"
 printf -v stderr "%s\n" \
     "$(format "$TEXT_ACTION" ACTION=create PROFILE_NAME="$profile_name")"
 
-assert_success assert_output "$stdout" "$stderr" btrfs-snapshots -n create
+assert_success assert_output "$stdout" "$stderr" \
+    btrfs-snapshots -n create
+
 assert_no_directory "$snapshot"

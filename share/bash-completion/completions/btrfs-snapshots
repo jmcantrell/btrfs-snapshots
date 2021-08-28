@@ -4,7 +4,7 @@ _btrfs-snapshots() {
 
     local profile_names
     readarray -t profile_names < <(
-        find "${BTRFS_SNAPSHOTS_PROFILE_DIR:-/usr/local/etc/btrfs-snapshots.d}" \
+        find "${BTRFS_SNAPSHOTS_PROFILES_DIR:-/usr/local/etc/btrfs-snapshots.d}" \
             -type f -name "*.conf" -exec basename "{}" .conf \;
     )
 

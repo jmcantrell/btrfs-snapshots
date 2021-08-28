@@ -9,17 +9,22 @@ set -eu
 
 subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
-profile_dir=$TEMP_DIR/profiles
+profiles_dir=$TEMP_DIR/profiles
 profile_name=foo
 
-mkdir -p "$profile_dir"
+mkdir -p "$profiles_dir"
 
-create_profile "$subvolume" "$snapshots" >"$profile_dir/$profile_name.conf"
+cat >"$profiles_dir/$profile_name.conf" <<-EOF
+SUBVOLUME=$subvolume
+SNAPSHOTS=$snapshots
+EOF
 
-export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
 
 # Notice that there is only one message expected.
-printf -v message "%s\n" "$(format "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME="$profile_name")"
+printf -v message "%s\n" \
+    "$(format "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME="$profile_name")"
 
 # Notice that the same profile is requested twice.
-assert_success assert_stderr "$message" btrfs-snapshots -p "$profile_name" -p "$profile_name" create
+assert_success assert_stderr "$message" \
+    btrfs-snapshots -p "$profile_name" -p "$profile_name" create

@@ -9,7 +9,7 @@ set -eu
 
 assert_success is_timestamp "2000-01-01T00:00:00Z"
 
-# This is a valid UTC date, but it's not in the correct format.
+# This is a valid UTC date, but it's not in the recognized format.
 assert_failure is_timestamp "2000-01-01T00:00:00+00:00"
 
 # Only recognize ISO-8601 formatted dates.

@@ -11,6 +11,5 @@ die() {
     done
 
     error "$@"
-
     exit 1
 }

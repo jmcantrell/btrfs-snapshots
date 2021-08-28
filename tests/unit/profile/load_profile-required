@@ -10,7 +10,7 @@ set -eu
 profile_name=foo
 profile_file=$TEMP_DIR/$profile_name
 variables=(SUBVOLUME SNAPSHOTS)
-values=()
+profile_lines=()
 
 # For each required variable, try loading a profile with the following conditions:
 # - variable is unset
@@ -18,29 +18,33 @@ values=()
 # - variable is set to a relative path
 
 export PROFILE_FILE=$profile_file
+export DEFAULTS_FILE=/does/not/matter
 
 for ((i = 0; i < ${#variables[@]}; i++)); do
     variable=${variables[i]}
 
-    create_profile_unsafe "${values[@]}" >"$profile_file"
+    printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
-    printf -v message_not_set "%s\n" \
+    printf -v stderr_not_set "%s\n" \
         "ERROR: $(format "$TEXT_PROFILE_VARIABLE_NOT_SET" VARIABLE="$variable" PROFILE_NAME="$profile_name")"
 
-    assert_failure assert_stderr "$message_not_set" load_profile
+    assert_failure assert_stderr "$stderr_not_set" \
+        load_profile
 
-    values+=("")
-    create_profile_unsafe "${values[@]}" >"$profile_file"
+    profile_lines+=("$variable=")
+    printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
-    assert_failure assert_stderr "$message_not_set" load_profile
+    assert_failure assert_stderr "$stderr_not_set" \
+        load_profile
 
-    values[-1]=./relative/path
-    create_profile_unsafe "${values[@]}" >"$profile_file"
+    profile_lines[-1]=$variable=./relative/path
+    printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
-    printf -v message_abs_path "%s\n" \
+    printf -v stderr_abs_path "%s\n" \
         "ERROR: $(format "$TEXT_PROFILE_ABS_PATH" VARIABLE="$variable" PROFILE_NAME="$profile_name")"
 
-    assert_failure assert_stderr "$message_abs_path" load_profile
+    assert_failure assert_stderr "$stderr_abs_path" \
+        load_profile
 
-    values[-1]=$TEMP_DIR
+    profile_lines[-1]=$variable=$TEMP_DIR
 done

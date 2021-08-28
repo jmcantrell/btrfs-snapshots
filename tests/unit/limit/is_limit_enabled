@@ -10,9 +10,6 @@ set -eu
 name=whatever
 assert_failure is_limit_enabled "$name"
 
-export DEFAULT_LIMIT_WHATEVER=1
-assert_success is_limit_enabled "$name"
-
 set_limit "$name" 0
 assert_failure is_limit_enabled "$name"
 

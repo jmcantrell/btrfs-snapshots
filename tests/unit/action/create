@@ -9,12 +9,10 @@ set -eu
 
 export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
+export BTRFS_SNAPSHOTS_TIMESTAMP=2001-01-01T00:00:00Z
 export PROFILE_NAME=foo
 
-timestamp=2001-01-01T00:00:00Z
-snapshot=$SNAPSHOTS/$timestamp
-
-export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
+snapshot=$SNAPSHOTS/$BTRFS_SNAPSHOTS_TIMESTAMP
 
 mkdir -p "$SUBVOLUME"
 touch "$SUBVOLUME"/marker
@@ -24,6 +22,8 @@ printf -v stdout "%s\n" "$snapshot"
 printf -v stderr "%s\n" \
     "$(format "$TEXT_ACTION" ACTION=create PROFILE_NAME)"
 
-assert_success assert_output "$stdout" "$stderr" create
+assert_success assert_output "$stdout" "$stderr" \
+    create
+
 assert_directory "$snapshot"
 assert_file "$snapshot"/marker

@@ -12,4 +12,5 @@ printf -v message "%s\n" \
 
 export PROFILE_FILE=/path/to/foo.conf
 
-assert_failure assert_stderr "$message" load_profile
+assert_failure assert_stderr "$message" \
+    load_profile

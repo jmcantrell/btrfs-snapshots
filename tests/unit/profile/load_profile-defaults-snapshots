@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Show that the default snapshot directory can be set.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+export PROFILE_FILE=$TEMP_DIR/profile.conf
+echo "SUBVOLUME=$TEMP_DIR" >"$PROFILE_FILE"
+
+export DEFAULTS_FILE=$TEMP_DIR/defaults.conf
+echo "SNAPSHOTS=$TEMP_DIR" >"$DEFAULTS_FILE"
+
+printf -v stderr "%s\n" \
+    "ERROR: $(format "$TEXT_DEFAULTS_SNAPSHOTS_MISSING_NAME")"
+
+assert_failure assert_stderr "$stderr" \
+    load_profile
+
+echo "SNAPSHOTS=$TEMP_DIR/%NAME%" >"$DEFAULTS_FILE"
+
+assert_success assert_no_output \
+    load_profile
+
+assert_equal "$SNAPSHOTS" "$TEMP_DIR/profile"

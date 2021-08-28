@@ -1,14 +1,26 @@
 #!/usr/bin/env bash
 
-# Show that snapshots can be listed.
+# Show that snapshots can be listed in chronological order.
 
 set -eu
 
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-snapshots=$TEMP_DIR
+export SNAPSHOTS=$TEMP_DIR
 
-export SNAPSHOTS=$snapshots
+assert_success assert_no_output \
+    list
 
-assert_success assert_no_output list
+stdout_lines=()
+
+while IFS= read -r -d $'\n' timestamp; do
+    snapshot=$TEMP_DIR/$timestamp
+    stdout_lines+=("$snapshot")
+    mkdir -p "$snapshot"
+done < <(timestamp_sequence "2001-01-01T00:00:00Z" "1 hour" 10)
+
+printf -v stdout "%s\n" "${stdout_lines[@]}"
+
+assert_success assert_stdout "$stdout" \
+    list

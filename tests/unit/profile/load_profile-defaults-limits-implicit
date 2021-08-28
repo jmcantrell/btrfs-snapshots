@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# Show that default limit values can be set.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+export PROFILE_FILE=$TEMP_DIR/profile.conf
+
+cat >"$PROFILE_FILE" <<-EOF
+SUBVOLUME=$TEMP_DIR
+SNAPSHOTS=$TEMP_DIR
+EOF
+
+export DEFAULTS_FILE=$TEMP_DIR/defaults.conf
+
+assert_success assert_no_output \
+    load_profile
+
+# Ensure the base default is zero.
+for event_name in "${EVENT_NAMES[@]}"; do
+    variable_name=$(get_limit_variable "$event_name")
+    assert_equal "${!variable_name}" 0
+done

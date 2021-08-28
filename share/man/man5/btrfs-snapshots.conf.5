@@ -1,36 +1,61 @@
 .TH btrfs\-snapshots.conf 5
-
 .SH NAME
-btrfs\-snapshots.conf - btrfs-snapshots main configuration file
-
+btrfs\-snapshots.conf \- btrfs-snapshots configuration files
 .SH SYNOPSIS
-/usr/local/etc/btrfs-snapshots.conf
-
+/usr/local/etc/btrfs-snapshots/defaults.conf
+.br
+/usr/local/etc/btrfs-snapshots/profiles.d/*.conf
 .SH DESCRIPTION
-Configuration options common to all profiles are stored in this file.
-
-An example file is located in the share directory:
+Configuration of btrfs\-snapshots involves placing a \fIprofile.conf\fR file for
+each subvolume required in the \fIprofiles.d\fR directory. The file name does
+not matter, but it's recommended to name it after the subvolume it represents
+(e.g. \fI@home.conf\fP). The extension must be ".conf" for the file to be recognized.
+.PP
+Additionally, default settings can be added to \fIdefaults.conf\fR (with some
+caveats) that will apply to every profile.
+.PP
+None of these files exist by default, and configuration is left to the
+administrator. Example files with the available settings are at:
 .IP
-\fI/usr/local/share/btrfs-snapshots/main.conf\fR.
-
+\fI/usr/local/share/doc/btrfs-snapshots/defaults.conf
+.br
+\fI/usr/local/share/doc/btrfs-snapshots/profile.conf
 .SH OPTIONS
-
-.IP \fBDEFAULT_SNAPSHOTS\fR="/path/to/snapshots/%NAME%"
-This option defines the default snapshot location for subvolumes that do not
-have the option \fBSNAPSHOTS\fR set in their profile. This is useful in cases
-where you have a central location for snapshots, but have them subdivided by
-name.
-
-It's not required, but if set, %NAME% should appear somewhere in the right-hand
-side.  This will be replaced at run time with the profile name.
-
-For example, let's say it's defined as `/.snapshots/%NAME%`. There are three
-profiles in \fI/usr/local/etc/btrfs-snapshots.d\fR named `@.conf`, `@home.conf`, and
-`@var.conf`. The command to create snapshots is run at 12 noon (UTC) on December
-31st 2021.  There will be three snapshots created and stored like so:
-
-.RS 16
-.nf
+Both the defaults configuration file and every profile configuration file can
+have the same settings, with a few enforced caveats.
+.IP \[bu]
+The SUBVOLUME setting can only appear in the profile configuration and it is
+required.
+.IP \[bu]
+The SNAPSHOTS setting, if it appears in the defaults file, must contain the
+%NAME% placeholder so it can be differentiated for each subvolume.
+.IP \[bu]
+If the SNAPSHOTS setting is not defined in the defaults file, it must be defined
+in every profile, and must be unique.
+.TP
+.BR SUBVOLUME ="/path/to/subvolume"
+This option defines the location of the subvolume to use as the source for
+snapshots. It's required, and must be an absolute path to the mount point of the
+subvolume.
+.IP
+If, during snapshot creation, the subvolume is not mounted, no error occurs, and
+execution continues with any remaining subvolumes. A message is logged noting
+its absense.
+.TP
+.BR SNAPSHOTS ="/path/to/snapshots"
+This option defines the location that will be used to store a subvolume's
+snapshots.  If snapshots will be kept in a central location, like
+\fI/.snapshots\fR, it's recommended to set this in the defaults file (inluding
+the %NAME% placeholder). This setting could, of course, be set individually in
+each profile configuration or only overridden for certain profiles.
+.IP
+For example, let's say it's defined in the defaults configuration as
+"/.snapshots/%NAME%". There are three profiles in \fIprofiles.d\fR named
+\fI@.conf\fR, \fI@home.conf\fR, and \fI@var.conf\fR. The command to create
+snapshots is run at 12 noon (UTC) on December 31st 2021.  There will be three
+snapshots created and stored like so:
+.IP
+.EX
 /.snapshots
 ├── @
 │   └── 2021-12-31T12:00:00Z
@@ -38,18 +63,56 @@ profiles in \fI/usr/local/etc/btrfs-snapshots.d\fR named `@.conf`, `@home.conf`,
 │   └── 2021-12-31T12:00:00Z
 └── @var
     └── 2021-12-31T12:00:00Z
-.fi
-.RE
-
-.IP \fBDEFAULT_LIMIT_<EVENT>\fR=<NUMBER>
-This option defines a default limit on the number (specified by NUMBER) of the
-first snapshots taken during the EVENT recurrence, where EVENT is one of the
-following: MINUTELY, HOURLY, DAILY, WEEKLY, MONTHLY, QUARTERLY, or YEARLY.
-
-There can be zero or more default limits set. For any default limit left
-unspecified, the implicit value for NUMBER is zero (0). See
-\fBbtrfs\-snapshots.d\fR(5) for details on how limits work.
-
+.EE
+.IP
+.IR Note :
+When pruning snapshots, any not named using the recognized timestamp format will
+be ignored. This is useful if there have been manual snapshots taken and you
+don't want them to be pruned along with the timestamped ones.
+.TP
+.BR LIMIT_<EVENT> =<NUMBER>
+Where EVENT can be one of the following: MINUTELY, HOURLY, DAILY,
+WEEKLY, MONTHLY, QUARTERLY, or YEARLY.
+.IP
+This option defines a limit on the number of the snapshots taken during an EVENT
+recurrence. Only the earliest snapshot for each unique event is retained, for
+the NUMBER most recent events, up to the defined limit.
+.IP
+There can be zero or more limits set. If the limit for an event type is not set
+in the profile, the value set in the defaults file is used. If it's not set in
+the defaults file, it's assumed to be "0" (disabled, or, in other words, keep a
+maximum of zero snapshots for that event type during pruning).
+.IP
+For example, if \fI@home.conf\fP contains the line "LIMIT_HOURLY=3" and the
+following snapshots exist:
+.IP
+.EX
+/.snapshots/@home
+    ├── 2021-12-31T09:00:00Z
+    ├── 2021-12-31T09:30:00Z
+    ├── 2021-12-31T10:00:00Z
+    ├── 2021-12-31T10:30:00Z
+    ├── 2021-12-31T11:00:00Z
+    ├── 2021-12-31T11:30:00Z
+    ├── 2021-12-31T12:00:00Z
+    └── 2021-12-31T12:30:00Z
+.EE
+.IP
+Running the prune action will delete snapshots, leaving the tree looking like this:
+.IP
+.EX
+/.snapshots/@home
+    ├── 2021-12-31T10:00:00Z
+    ├── 2021-12-31T11:00:00Z
+    └── 2021-12-31T12:00:00Z
+.EE
+.IP
+Because the hourly limit was set to "3", a total of only three snapshot could be
+kept. The algorithm found the most recent three unique events' snapshots up to
+the limit value, but only keeping the first snapshot (chronologically) for each
+distinct hour.
+.IP
+Both snapshots occurring earlier than 10am were deleted because they were part
+of the fourth unique event, falling outside of the limit for that event type.
 .SH SEE ALSO
 .BR btrfs\-snapshots (8),
-.BR btrfs\-snapshots.d (5)

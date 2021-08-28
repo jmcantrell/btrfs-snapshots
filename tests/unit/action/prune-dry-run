@@ -25,5 +25,7 @@ export SNAPSHOTS=$snapshots
 export PROFILE_NAME=$profile_name
 export DRY_RUN=1
 
-assert_success assert_output "$stdout" "$stderr" prune
+assert_success assert_output "$stdout" "$stderr" \
+    prune
+
 assert_directory "$snapshot"

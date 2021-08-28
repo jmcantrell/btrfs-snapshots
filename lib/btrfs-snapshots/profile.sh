@@ -1,3 +1,5 @@
+declare -A SNAPSHOTS_VALUES_SEEN=()
+
 load_profile() {
     PROFILE_NAME=${PROFILE_FILE##*/}
     PROFILE_NAME=${PROFILE_NAME%.conf}
@@ -14,11 +16,22 @@ load_profile() {
         set_limit "$event_name"
     done
 
-    . "$PROFILE_FILE" || return 1
-
-    if [[ ! -v SNAPSHOTS && -v DEFAULT_SNAPSHOTS ]]; then
-        SNAPSHOTS=$(format "$DEFAULT_SNAPSHOTS" NAME="$PROFILE_NAME")
+    if [[ -r $DEFAULTS_FILE ]] && ! . "$DEFAULTS_FILE"; then
+        error "$TEXT_DEFAULTS_FAILED"
+        return 1
     fi
+
+    if [[ -v SUBVOLUME ]]; then
+        error "$TEXT_DEFAULTS_SUBVOLUME"
+        return 1
+    fi
+
+    if [[ -v SNAPSHOTS && $SNAPSHOTS != *%NAME%* ]]; then
+        error "$TEXT_DEFAULTS_SNAPSHOTS_MISSING_NAME"
+        return 1
+    fi
+
+    . "$PROFILE_FILE" || return 1
 
     local variable
     for variable in SUBVOLUME SNAPSHOTS; do
@@ -32,4 +45,13 @@ load_profile() {
             return 1
         fi
     done
+
+    SNAPSHOTS=$(format "$SNAPSHOTS" NAME="$PROFILE_NAME")
+
+    if [[ -v SNAPSHOTS_VALUES_SEEN[$SNAPSHOTS] ]]; then
+        error "$TEXT_PROFILE_SNAPSHOTS_UNIQUE" PROFILE_NAME
+        return 1
+    fi
+
+    SNAPSHOTS_VALUES_SEEN[$SNAPSHOTS]=1
 }

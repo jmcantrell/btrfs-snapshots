@@ -11,8 +11,8 @@ Arguments:
     ACTION     perform ACTION on the selected profiles (default: list)
 
 Actions:
-    create     create a new snapshot
     list       print the full path of every recognized snapshot
+    create     create a new timestamped snapshot in the configured location
     prune      delete any snapshots that fall outside of the defined limits
 "
 
@@ -21,9 +21,12 @@ export TEXT_INVALID="Invalid %NAME%: %VALUE%"
 export TEXT_PROFILE_NOT_EXIST="Profile does not exist: %PROFILE_NAME%"
 export TEXT_PROFILE_VARIABLE_NOT_SET="Invalid profile '%PROFILE_NAME%': %VARIABLE% is not set"
 export TEXT_PROFILE_ABS_PATH="Invalid profile '%PROFILE_NAME%': %VARIABLE% must be an absolute path"
+export TEXT_PROFILE_SNAPSHOTS_UNIQUE="Invalid profile '%PROFILE_NAME%': SNAPSHOTS value is already defined in another profile"
 export TEXT_PROFILE_FAILED="Unable to load profile '%PROFILE_FILE%'"
 
-export TEXT_CONFIG_FAILED="Unable to load configuration: %CONFIG_FILE%"
+export TEXT_DEFAULTS_SUBVOLUME="Invalid defaults: SUBVOLUME must be set in the profile configuration"
+export TEXT_DEFAULTS_SNAPSHOTS_MISSING_NAME="Invalid defaults: SNAPSHOTS is missing %NAME% placeholder"
+export TEXT_DEFAULTS_FAILED="Unable to load defaults: %DEFAULTS_FILE%"
 
 export TEXT_ACTION="Performing action '%ACTION%' for profile '%PROFILE_NAME%'"
 export TEXT_ACTION_FAILED="Unable to perform action '%ACTION%'"

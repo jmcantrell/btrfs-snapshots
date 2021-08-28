@@ -23,15 +23,14 @@ btrfs_subvolume_snapshot() {
 
     if [[ $options != -r ]]; then
         die "command should create a readonly snapshot"
-        return 1
     fi
 
     if [[ ! -d $subvolume ]]; then
-        return 1
+        die "subvolume should be a directory"
     fi
 
     if [[ -d $snapshot ]]; then
-        return 1
+        die "snapshot should not already exist"
     fi
 
     cp -rT "$subvolume" "$snapshot" >&2
@@ -41,7 +40,7 @@ btrfs_subvolume_delete() {
     local snapshot=$1
 
     if [[ ! -d $snapshot ]]; then
-        return 1
+        die "snapshot should be a directory"
     fi
 
     rm -rf "$snapshot" >&2

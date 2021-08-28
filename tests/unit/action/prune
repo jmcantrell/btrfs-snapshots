@@ -41,13 +41,16 @@ for event_name in "${EVENT_NAMES[@]}"; do
     done < <(timestamp_sequence_event "$timestamp1" "$event_name" "$limit" | tac)
 
     printf -v stdout "%s\n" "${stdout_lines[@]}"
-    printf -v stderr "%s\n" "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
+
+    printf -v stderr "%s\n" \
+        "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
 
     export SUBVOLUME=$subvolume
     export SNAPSHOTS=$snapshots
     export PROFILE_NAME=$profile_name
 
-    assert_success assert_output "$stdout" "$stderr" prune
+    assert_success assert_output "$stdout" "$stderr" \
+        prune
 
     assert_equal "$(get_snapshots "$snapshots" | wc -l)" "$limit"
 

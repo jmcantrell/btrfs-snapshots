@@ -8,14 +8,17 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_name=foo
-profile_dir=$TEMP_DIR/profiles
+profiles_dir=$TEMP_DIR/profiles
 subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
 timestamp=2001-01-01T00:00:00Z
 
-mkdir -p "$profile_dir" "$subvolume" "$snapshots/$timestamp"
+mkdir -p "$profiles_dir" "$subvolume" "$snapshots/$timestamp"
 
-create_profile "$subvolume" "$snapshots" >"$profile_dir/$profile_name.conf"
+cat >"$profiles_dir/$profile_name.conf" <<-EOF
+SUBVOLUME=$subvolume
+SNAPSHOTS=$snapshots
+EOF
 
 btrfs() {
     error "fake message from btrfs"
@@ -31,8 +34,9 @@ for action in create prune; do
         "$(format "ERROR: $TEXT_BTRFS_FAILED" STATUS=5)" \
         "$(format "ERROR: $TEXT_ACTION_FAILED" ACTION="$action")"
 
-    export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+    export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
     export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
 
-    assert_failure assert_stderr "$message" btrfs-snapshots -p foo "$action"
+    assert_failure assert_stderr "$message" \
+        btrfs-snapshots -p foo "$action"
 done

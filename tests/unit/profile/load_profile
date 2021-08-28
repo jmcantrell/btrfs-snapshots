@@ -12,15 +12,22 @@ snapshots=$TEMP_DIR/$RANDOM
 profile_file=$TEMP_DIR/profile
 limits=()
 
+cat >"$profile_file" <<-EOF
+SUBVOLUME=$subvolume
+SNAPSHOTS=$snapshots
+EOF
+
 for event_name in "${EVENT_NAMES[@]}"; do
-    limits+=("$event_name=$((1 + RANDOM))")
+    limit=$((1 + RANDOM))
+    limits+=("$limit")
+    echo "LIMIT_${event_name@U}=$limit" >>"$profile_file"
 done
 
-create_profile "$subvolume" "$snapshots" "${limits[@]}" >"$profile_file"
-
 export PROFILE_FILE=$profile_file
+export DEFAULTS_FILE=/does/not/matter
 
-load_profile
+assert_success assert_no_output \
+    load_profile
 
 # shellcheck disable=SC2153
 assert_equal "$SUBVOLUME" "$subvolume"
@@ -28,6 +35,5 @@ assert_equal "$SUBVOLUME" "$subvolume"
 assert_equal "$SNAPSHOTS" "$snapshots"
 
 for i in "${!EVENT_NAMES[@]}"; do
-    limit=${limits[i]}
-    assert_equal "$(get_limit "${EVENT_NAMES[i]}")" "${limit##*=}"
+    assert_equal "$(get_limit "${EVENT_NAMES[i]}")" "${limits[i]}"
 done

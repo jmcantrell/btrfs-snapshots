@@ -7,15 +7,16 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profile_dir=$TEMP_DIR
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR
+
 profile_name=bogus
+profile_file=$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf
 
 printf -v message "%s\n" \
     "ERROR: $(format "$TEXT_PROFILE_NOT_EXIST" PROFILE_NAME="$profile_name")" \
-    "ERROR: $(format "$TEXT_PROFILE_FAILED" PROFILE_FILE="$profile_dir/$profile_name.conf")"
-
-export BTRFS_SNAPSHOTS_PROFILE_DIR=$profile_dir
+    "ERROR: $(format "$TEXT_PROFILE_FAILED" PROFILE_FILE="$profile_file")"
 
 for action in create prune; do
-    assert_failure assert_stderr "$message" btrfs-snapshots -p "$profile_name" "$action"
+    assert_failure assert_stderr "$message" \
+        btrfs-snapshots -p "$profile_name" "$action"
 done

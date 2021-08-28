@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Show that a multiple profiles cannot use the same snapshot location.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+# It's perfectly okay for a subvolume to have multiple snapshot locations, but
+# any given snapshot location can only store snapshots for one subvolume.
+profile_lines=("SUBVOLUME=$TEMP_DIR" "SNAPSHOTS=$TEMP_DIR")
+
+export DEFAULTS_FILE=/does/not/matter
+
+profile_names=(foo bar)
+
+for i in "${!profile_names[@]}"; do
+    profile_name=${profile_names[i]}
+    export PROFILE_FILE=$TEMP_DIR/$profile_name.conf
+    printf "%s\n" "${profile_lines[@]}" >"$PROFILE_FILE"
+
+    if ((i == 0)); then
+        # The snapshot locations are first come, first serve.
+        assert_success assert_no_output \
+            load_profile
+    else
+        printf -v stderr "%s\n" \
+            "ERROR: $(format "$TEXT_PROFILE_SNAPSHOTS_UNIQUE" PROFILE_NAME="$profile_name")"
+
+        assert_failure assert_stderr "$stderr" \
+            load_profile
+    fi
+done
