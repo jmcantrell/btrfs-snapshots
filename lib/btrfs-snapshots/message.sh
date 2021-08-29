@@ -1,9 +1,10 @@
 export TEXT_USAGE="Manage timestamped collections of btrfs snapshots.
 
-Usage: btrfs-snapshots [OPTIONS] ACTION
+Usage:
+    btrfs-snapshots [OPTIONS] [ACTION]
 
 Options:
-    -h         show this help message
+    -h         show this help text
     -n         only report what would happen (no changes are made)
     -p NAME    only perform ACTION on the NAME profile (default: all)
 
