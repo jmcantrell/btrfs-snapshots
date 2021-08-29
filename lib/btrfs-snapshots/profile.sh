@@ -40,7 +40,7 @@ load_profile() {
             return 1
         fi
 
-        if [[ ! ${!variable} =~ ^/.* ]]; then
+        if [[ ${!variable} != /* ]]; then
             error "$TEXT_PROFILE_ABS_PATH" VARIABLE="$variable" PROFILE_NAME
             return 1
         fi
