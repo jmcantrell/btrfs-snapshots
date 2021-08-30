@@ -3,9 +3,10 @@
 set -eu
 shopt -s nullglob
 
-bin_name=${0##*/}
-export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$bin_name}
-export DEFAULTS_FILE=${BTRFS_SNAPSHOTS_DEFAULTS_FILE:-/usr/local/etc/$bin_name/defaults.conf}
+name=${0##*/}
+
+export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$name}
+export DEFAULTS_FILE=${BTRFS_SNAPSHOTS_DEFAULTS_FILE:-/usr/local/etc/$name/defaults.conf}
 
 . "$LIB_DIR"/init.sh
 
@@ -27,7 +28,7 @@ create | prune | list) ;;
 *) die "$TEXT_INVALID" NAME=action VALUE="$action" ;;
 esac
 
-profiles_dir=${BTRFS_SNAPSHOTS_PROFILES_DIR:-/usr/local/etc/$bin_name/profiles.d}
+profiles_dir=${BTRFS_SNAPSHOTS_PROFILES_DIR:-/usr/local/etc/$name/profiles.d}
 
 declare -a profile_files
 
