@@ -13,5 +13,14 @@ export BTRFS_SNAPSHOTS_DEFAULTS_FILE=$PWD/etc/main.conf
 export BTRFS_SNAPSHOTS_PROFILES_DIR=$PWD/etc/profiles.d
 export BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED=1
 
-find ./tests/{unit,integration} -type f -executable "$@" -print0 |
-    parallel -j0 -0 'test -v TESTS_VERBOSE && echo "running test: {}"; "{}" || echo "test failed: {}"'
+failure=0
+
+while IFS= read -r -d '' script; do
+    if ! "$script"; then
+        echo "test failed: $script" >&2
+        failure=1
+        continue
+    fi
+done < <(find ./tests/{unit,integration} -type f -executable "$@" -print0)
+
+exit "$failure"

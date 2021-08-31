@@ -10,6 +10,4 @@ set -eu
 unset BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED
 
 assert_success is_mounted /
-assert_success is_mounted /tmp
-assert_failure is_mounted /proc/tty
-assert_failure is_mounted /proc/cpuinfo
+assert_failure is_mounted .

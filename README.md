@@ -63,12 +63,6 @@ To run the included tests:
 ./test.sh
 ```
 
-To see which tests are run:
-
-```sh
-TESTS_VERBOSE=1 ./test.sh
-```
-
 To run a specific test (passes arguments to `find`):
 
 ```sh
