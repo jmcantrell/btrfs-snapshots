@@ -7,10 +7,10 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
+export PROFILE_FILE=/path/to/foo.conf
+
 printf -v message "%s\n" \
     "ERROR: $(format "$TEXT_PROFILE_NOT_EXIST" PROFILE_NAME=foo)"
-
-export PROFILE_FILE=/path/to/foo.conf
 
 assert_failure assert_stderr "$message" \
     load_profile

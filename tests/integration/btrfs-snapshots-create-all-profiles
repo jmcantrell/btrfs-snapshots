@@ -8,10 +8,13 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profiles_dir=$TEMP_DIR/profiles
+profiles_dir=$TEMP_DIR/profiles.d
 timestamp=2001-01-01T00:00:00Z
 profile_names=(a b c)
 snapshot_paths=()
+
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
+export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
 
 mkdir -p "$profiles_dir"
 
@@ -24,8 +27,10 @@ for name in "${profile_names[@]}"; do
     mkdir -p "$subvolume"
     echo -n "$name" >"$subvolume"/marker
 
-    profile_lines=("SUBVOLUME=$subvolume" "SNAPSHOTS=$snapshots")
-    printf "%s\n" "${profile_lines[@]}" >"$profiles_dir/$name.conf"
+    printf "%s\n" \
+        SUBVOLUME="$subvolume" \
+        SNAPSHOTS="$snapshots" \
+        >"$profiles_dir/$name.conf"
 done
 
 stdout_lines=()
@@ -37,9 +42,6 @@ done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 printf -v stderr "%s\n" "${stderr_lines[@]}"
-
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
-export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
 
 assert_success assert_output "$stdout" "$stderr" \
     btrfs-snapshots create

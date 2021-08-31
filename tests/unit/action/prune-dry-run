@@ -13,17 +13,17 @@ profile_name=foo
 timestamp=2001-01-01T00:00:00Z
 snapshot=$snapshots/$timestamp
 
+export SUBVOLUME=$subvolume
+export SNAPSHOTS=$snapshots
+export PROFILE_NAME=$profile_name
+export DRY_RUN=1
+
 mkdir -p "$snapshot"
 
 printf -v stdout "%s\n" "$snapshot"
 
 printf -v stderr "%s\n" \
     "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
-
-export SUBVOLUME=$subvolume
-export SNAPSHOTS=$snapshots
-export PROFILE_NAME=$profile_name
-export DRY_RUN=1
 
 assert_success assert_output "$stdout" "$stderr" \
     prune

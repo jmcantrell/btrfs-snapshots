@@ -8,9 +8,9 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 export PROFILE_FILE=$TEMP_DIR/profile.conf
-echo "SUBVOLUME=$TEMP_DIR" >"$PROFILE_FILE"
-
 export DEFAULTS_FILE=$TEMP_DIR/defaults.conf
+
+echo "SUBVOLUME=$TEMP_DIR" >"$PROFILE_FILE"
 echo "SNAPSHOTS=$TEMP_DIR" >"$DEFAULTS_FILE"
 
 printf -v stderr "%s\n" \

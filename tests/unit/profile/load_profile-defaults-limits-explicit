@@ -8,13 +8,12 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 export PROFILE_FILE=$TEMP_DIR/profile.conf
+export DEFAULTS_FILE=$TEMP_DIR/defaults.conf
 
 cat >"$PROFILE_FILE" <<-EOF
 SUBVOLUME=$TEMP_DIR
 SNAPSHOTS=$TEMP_DIR
 EOF
-
-export DEFAULTS_FILE=$TEMP_DIR/defaults.conf
 
 # Create random defaults for every limit.
 limits=()

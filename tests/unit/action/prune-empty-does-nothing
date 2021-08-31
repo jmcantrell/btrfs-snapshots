@@ -7,8 +7,8 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export SNAPSHOTS=$TEMP_DIR/snapshots
 export PROFILE_NAME=foo
+export SNAPSHOTS=$TEMP_DIR/snapshots
 
 printf -v stderr "%s\n" \
     "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME)"

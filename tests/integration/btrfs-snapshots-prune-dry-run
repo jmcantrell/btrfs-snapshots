@@ -7,26 +7,22 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profiles_dir=$TEMP_DIR/profiles
-mkdir -p "$profiles_dir"
-
 profile_name=foo
+profiles_dir=$TEMP_DIR/profiles.d
 profile_file=$profiles_dir/$profile_name.conf
-
-timestamp=2001-01-01T00:00:00Z
-
 subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
+timestamp=2001-01-01T00:00:00Z
+snapshot=$snapshots/$timestamp
+
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
+
+mkdir -p "$profiles_dir" "$snapshot"
 
 cat >"$profile_file" <<-EOF
 SUBVOLUME=$subvolume
 SNAPSHOTS=$snapshots
 EOF
-
-snapshot=$snapshots/$timestamp
-mkdir -p "$snapshot"
-
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
 
 printf -v stdout "%s\n" "$snapshot"
 

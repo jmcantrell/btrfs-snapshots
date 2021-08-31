@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that snapshots can be listed in chronological order.
+# Show that snapshots will be listed in chronological order.
 
 set -eu
 

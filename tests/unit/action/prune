@@ -13,6 +13,10 @@ timestamp1=2001-01-01T00:00:00Z
 profile_name=foo
 limit=3
 
+export SUBVOLUME=$subvolume
+export SNAPSHOTS=$snapshots
+export PROFILE_NAME=$profile_name
+
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
 
@@ -22,14 +26,16 @@ for event_name in "${EVENT_NAMES[@]}"; do
     fillers=()
     stdout_lines=()
 
-    while read -r timestamp2; do
-        # This snapshot should not get pruned.
+    while IFS= read -r -d $'\n' timestamp2; do
+        # This snapshot is the earliest one of this event, so it should not be
+        # deleted.
         keeper=$snapshots/$timestamp2
         keepers+=("$keeper")
-        while read -r timestamp3; do
-            # Generate a bunch of filler snapshots that will be deleted.
-            snapshot=$snapshots/$timestamp3
 
+        # Generate a bunch of filler snapshots within the same event that will
+        # eventually be deleted.
+        while IFS= read -r -d $'\n' timestamp3; do
+            snapshot=$snapshots/$timestamp3
             mkdir -p "$snapshot"
 
             # Only predict the message if it's not the keeper.
@@ -44,10 +50,6 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     printf -v stderr "%s\n" \
         "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
-
-    export SUBVOLUME=$subvolume
-    export SNAPSHOTS=$snapshots
-    export PROFILE_NAME=$profile_name
 
     assert_success assert_output "$stdout" "$stderr" \
         prune

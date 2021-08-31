@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Show that get_snapshots will only return existing snapshots with a recognized timestamp.
+# Show that get_snapshots will only return existing snapshots with a recognized
+# timestamp only at the top level directory and in the correct order.
 
 set -eu
 
@@ -9,8 +10,12 @@ set -eu
 
 assert_snapshots() {
     local directory=$1
+    shift
 
+    local actual
     readarray -t actual < <(get_snapshots "$directory")
+
+    local expected=("$@")
 
     assert_equal "${#actual[@]}" "${#expected[@]}"
 
@@ -21,7 +26,6 @@ assert_snapshots() {
 }
 
 timestamp=2001-01-01T00:00:00Z
-expected=()
 
 # Does not complain about non-exsistent directories.
 assert_snapshots /path/to/nowhere
@@ -44,15 +48,15 @@ reset_temp
 touch "$TEMP_DIR/$timestamp"
 assert_snapshots "$TEMP_DIR"
 
-# Returns all found snapshots.
+# Returns all found snapshots in chronological order.
 reset_temp
-while read -r timestamp_step; do
+while IFS= read -r -d $'\n' timestamp_step; do
     snapshot=$TEMP_DIR/$timestamp_step
-    mkdir -p "$snapshot"
     expected+=("$snapshot")
+    mkdir -p "$snapshot"
 done < <(timestamp_sequence "$timestamp" hour 24)
-assert_snapshots "$TEMP_DIR"
+assert_snapshots "$TEMP_DIR" "${expected[@]}"
 
 # Does not look more than one level deep.
 mkdir -p "$TEMP_DIR/$timestamp/$timestamp"
-assert_snapshots "$TEMP_DIR"
+assert_snapshots "$TEMP_DIR" "${expected[@]}"

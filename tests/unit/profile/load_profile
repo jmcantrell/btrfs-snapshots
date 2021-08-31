@@ -12,6 +12,9 @@ snapshots=$TEMP_DIR/$RANDOM
 profile_file=$TEMP_DIR/profile
 limits=()
 
+export PROFILE_FILE=$profile_file
+export DEFAULTS_FILE=/does/not/matter
+
 cat >"$profile_file" <<-EOF
 SUBVOLUME=$subvolume
 SNAPSHOTS=$snapshots
@@ -22,9 +25,6 @@ for event_name in "${EVENT_NAMES[@]}"; do
     limits+=("$limit")
     echo "LIMIT_${event_name@U}=$limit" >>"$profile_file"
 done
-
-export PROFILE_FILE=$profile_file
-export DEFAULTS_FILE=/does/not/matter
 
 assert_success assert_no_output \
     load_profile

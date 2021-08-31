@@ -8,7 +8,7 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_name=foo
-profiles_dir=$TEMP_DIR/profiles
+profiles_dir=$TEMP_DIR/profiles.d
 profile_file=$profiles_dir/$profile_name.conf
 defaults_file=$TEMP_DIR/defaults.conf
 subvolume=$TEMP_DIR/subvolume
@@ -17,6 +17,9 @@ timestamp1=2001-01-01T00:00:00Z
 # There will be no snapshot directory defined in the profile, so it should
 # assume this default that will be in the main configuration file.
 snapshots=$TEMP_DIR/snapshots/$profile_name
+
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
+export BTRFS_SNAPSHOTS_DEFAULTS_FILE=$defaults_file
 
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
@@ -34,16 +37,17 @@ for event_name in "${EVENT_NAMES[@]}"; do
     echo "$limit_variable=$limit" >>"$defaults_file"
 
     # Create just enough snapshots to test the limit.
-    # If the default limits are not seen, then will all be pruned, causing the
-    # following test to fail.
-    while read -r timestamp2; do
+    # If the default limits are not seen, then they will all be pruned, causing
+    # the following test to fail.
+    while IFS= read -r -d $'\n' timestamp2; do
         mkdir -p "$snapshots/$timestamp2"
     done < <(timestamp_sequence_event "$timestamp1" "$event_name" "$limit")
 
     expected_count=$(get_snapshots "$snapshots" | wc -l)
 
-    export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
-    export BTRFS_SNAPSHOTS_DEFAULTS_FILE=$defaults_file
+    # There should be no stdout, because nothing will be pruned.  If there is,
+    # the assert_stderr will fail because it's implied that stdout being empty
+    # is a requirement.
 
     printf -v stderr "%s\n" \
         "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
@@ -51,5 +55,6 @@ for event_name in "${EVENT_NAMES[@]}"; do
     assert_success assert_stderr "$stderr" \
         btrfs-snapshots -p "$profile_name" prune
 
+    # If the default limits were not seen, the snapshot count will be zero.
     assert_equal "$(get_snapshots "$snapshots" | wc -l)" "$expected_count"
 done

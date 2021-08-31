@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Show that btrfs errors and exit status are reported.
+# Show that requesting the same profile at the command line multiple times will
+# only perform the action once.
 
 set -eu
 
@@ -9,8 +10,10 @@ set -eu
 
 subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
-profiles_dir=$TEMP_DIR/profiles
+profiles_dir=$TEMP_DIR/profiles.d
 profile_name=foo
+
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
 
 mkdir -p "$profiles_dir"
 
@@ -18,8 +21,6 @@ cat >"$profiles_dir/$profile_name.conf" <<-EOF
 SUBVOLUME=$subvolume
 SNAPSHOTS=$snapshots
 EOF
-
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
 
 # Notice that there is only one message expected.
 printf -v message "%s\n" \

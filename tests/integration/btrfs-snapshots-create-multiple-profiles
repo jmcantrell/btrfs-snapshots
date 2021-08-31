@@ -7,7 +7,7 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profiles_dir=$TEMP_DIR/profiles
+profiles_dir=$TEMP_DIR/profiles.d
 timestamp=2001-01-01T00:00:00Z
 profile_names=(a b c)
 subvolume_paths=()
@@ -25,8 +25,10 @@ for profile_name in "${profile_names[@]}"; do
     mkdir -p "$subvolume"
     echo -n "$profile_name" >"$subvolume"/marker
 
-    profile_lines=("SUBVOLUME=$subvolume" "SNAPSHOTS=$snapshots")
-    printf "%s\n" "${profile_lines[@]}" >"$profiles_dir/$profile_name.conf"
+    printf "%s\n" \
+        SUBVOLUME="$subvolume" \
+        SNAPSHOTS="$snapshots" \
+        >"$profiles_dir/$profile_name.conf"
 done
 
 options=()
