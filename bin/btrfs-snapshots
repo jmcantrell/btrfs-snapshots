@@ -6,6 +6,7 @@ shopt -s nullglob
 name=${0##*/}
 
 export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$name}
+export PROFILES_DIR=${BTRFS_SNAPSHOTS_PROFILES_DIR:-/usr/local/etc/$name/profiles.d}
 export DEFAULTS_FILE=${BTRFS_SNAPSHOTS_DEFAULTS_FILE:-/usr/local/etc/$name/defaults.conf}
 
 . "$LIB_DIR"/init.sh
@@ -28,17 +29,15 @@ create | prune | list) ;;
 *) die "$TEXT_INVALID" NAME=action VALUE="$action" ;;
 esac
 
-profiles_dir=${BTRFS_SNAPSHOTS_PROFILES_DIR:-/usr/local/etc/$name/profiles.d}
-
 declare -a profile_files
 
 if ((${#profile_names[@]} > 0)); then
     profile_files=()
     for profile_name in "${profile_names[@]}"; do
-        profile_files+=("$profiles_dir/$profile_name.conf")
+        profile_files+=("$PROFILES_DIR/$profile_name.conf")
     done
 else
-    profile_files=("$profiles_dir"/*.conf)
+    profile_files=("$PROFILES_DIR"/*.conf)
 fi
 
 declare -A profiles_seen=()
