@@ -1,0 +1,9 @@
+image: archlinux:latest
+
+before_script:
+  - pacman -S parallel diffutils
+
+test:
+  stage: test
+  script:
+    - ./test.sh
