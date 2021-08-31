@@ -6,7 +6,7 @@ _arguments -S \
     "(-n -p 1)-h[show the help text]" \
     "(-h)-n[only report what would happen]" \
     "(-h)*-p[select a profile]:profile:->profile" \
-    "(-h -n -p)::action:(create prune)" \
+    "(-h -n -p)::action:(list create prune)" \
     && return 0
 
 if [[ $state == profile ]]; then
