@@ -25,7 +25,7 @@ install -m644 -Dt ./lib/systemd/system \
     "$src_dir"/lib/systemd/system/*
 
 install -m644 -Dt ./share/doc/"$pkg_name"/config \
-    "$src_dir"/share/doc/"$pkg_name"/config/* \
+    "$src_dir"/share/doc/"$pkg_name"/config/*
 
 install -m644 -Dt ./share/doc/"$pkg_name" \
     "$src_dir"/{README,LICENSE}.md
