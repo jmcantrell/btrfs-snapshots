@@ -1,7 +1,7 @@
 image: archlinux:latest
 
 before_script:
-  - pacman -Sy parallel diffutils
+  - pacman -Sy --noconfirm parallel diffutils
 
 test:
   stage: test
