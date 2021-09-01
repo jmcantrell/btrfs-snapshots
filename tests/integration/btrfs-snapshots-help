@@ -7,7 +7,7 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-printf -v stdout "%s\n" "$(format "$TEXT_USAGE")"
+printf -v stdout "%s\n" "$(format "$TEXT_USAGE" ETC_DIR)"
 
 assert_success assert_stdout "$stdout" \
     btrfs-snapshots -h

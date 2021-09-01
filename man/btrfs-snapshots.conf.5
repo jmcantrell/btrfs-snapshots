@@ -27,11 +27,11 @@ have the same settings, with a few enforced caveats.
 The SUBVOLUME setting can only appear in the profile configuration and it is
 required.
 .IP \[bu]
-The SNAPSHOTS setting, if it appears in the defaults file, must contain the
-%NAME% placeholder so it can be differentiated for each subvolume.
+The SNAPSHOTS setting, if it appears in the defaults configuration file, must
+contain the %NAME% placeholder so it can be differentiated for each subvolume.
 .IP \[bu]
-If the SNAPSHOTS setting is not defined in the defaults file, it must be defined
-in every profile, and must be unique.
+If the SNAPSHOTS setting is not defined in the defaults configuration file, it
+must be defined in every profile, and must be unique.
 .TP
 .BR SUBVOLUME ="/path/to/subvolume"
 This option defines the location of the subvolume to use as the source for
@@ -45,11 +45,12 @@ its absense.
 .BR SNAPSHOTS ="/path/to/snapshots"
 This option defines the location that will be used to store a subvolume's
 snapshots.  If snapshots will be kept in a central location, like
-\fI/.snapshots\fR, it's recommended to set this in the defaults file (inluding
-the %NAME% placeholder). This setting could, of course, be set individually in
-each profile configuration or only overridden for certain profiles.
+\fI/.snapshots\fR, it's recommended to set this in the defaults configuration
+file (inluding the %NAME% placeholder). This setting could, of course, be set
+individually in each profile configuration or only overridden for certain
+profiles.
 .IP
-For example, let's say it's defined in the defaults configuration as
+For example, let's say it's defined in the defaults configuration file as
 "/.snapshots/%NAME%". There are three profiles in \fIprofiles.d\fR named
 \fI@.conf\fR, \fI@home.conf\fR, and \fI@var.conf\fR. The command to create
 snapshots is run at 12 noon (UTC) on December 31st 2021.  There will be three
@@ -79,9 +80,10 @@ recurrence. Only the earliest snapshot for each unique event is retained, for
 the NUMBER most recent events, up to the defined limit.
 .IP
 There can be zero or more limits set. If the limit for an event type is not set
-in the profile, the value set in the defaults file is used. If it's not set in
-the defaults file, it's assumed to be "0" (disabled, or, in other words, keep a
-maximum of zero snapshots for that event type during pruning).
+in the profile configuration, the value set in the defaults configuration file
+is used. If it's not set anywhere, it's assumed to be "0" (disabled, or, in
+other words, keep a maximum of zero snapshots for that event type during
+pruning).
 .IP
 For example, if \fI@home.conf\fP contains the line "LIMIT_HOURLY=3" and the
 following snapshots exist:

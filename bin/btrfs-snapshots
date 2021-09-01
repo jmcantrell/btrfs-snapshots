@@ -12,11 +12,12 @@ export ETC_DIR=${BTRFS_SNAPSHOTS_ETC_DIR:-/usr/local/etc/$name}
 
 declare -a profile_names=()
 
-while getopts ":hnp:" option; do
+while getopts ":C:p:h" option; do
     case $option in
+    C) export ETC_DIR=$OPTARG ;;
     p) profile_names+=("$OPTARG") ;;
     h)
-        info "$TEXT_USAGE"
+        info "$TEXT_USAGE" ETC_DIR
         exit 0
         ;;
     *) die "$TEXT_INVALID" NAME=option VALUE="$OPTARG" ;;

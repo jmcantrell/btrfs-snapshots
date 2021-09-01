@@ -5,16 +5,18 @@ Usage:
     btrfs-snapshots [-p NAME]... [ACTION]
 
 Options:
-    -h         show this help text
-    -p NAME    perform ACTION on the NAME profile (default: all)
+    -h              show this help text
+    -p NAME         profile to perform action on (can be used multiple times)
+    -C DIRECTORY    directory to use for configuration
+                    (default: %ETC_DIR%)
 
 Arguments:
-    ACTION     perform ACTION on the selected profiles (default: list)
+    ACTION          action to perform on selected profiles (default: list)
 
 Actions:
-    list       print the full path of every recognized snapshot
-    create     create a new timestamped snapshot in the configured location
-    prune      delete any snapshots that fall outside of the defined limits
+    list            print full path of every recognized snapshot
+    create          create a new snapshot in the configured location
+    prune           delete snapshots that fall outside of defined limits
 
 If no profiles are specified with -p, then every profile is selected.
 "

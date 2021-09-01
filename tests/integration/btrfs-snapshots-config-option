@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Show that btrfs errors and exit status are reported.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+default_profile_dir=$ETC_DIR/profile.d
+
+mkdir -p "$default_profile_dir"
+
+# This is a valid configuration that should produce a snapshot, but since the
+# configuration directory is going to be overridden, it should not be seen and
+# nothing should happen.
+cat >"$default_profile_dir"/foo.conf <<-EOF
+SUBVOLUME=$TEMP_DIR
+SNAPSHOTS=$TEMP_DIR
+EOF
+
+assert_success assert_no_output \
+    btrfs-snapshots -C /path/to/nowhere create
+
+assert_equal "$(get_snapshots "$TEMP_DIR" | wc -l)" 0

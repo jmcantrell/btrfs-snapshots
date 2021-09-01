@@ -6,6 +6,7 @@ btrfs\-snapshots \- Manage timestamped collections of btrfs snapshots
 .B \-h
 .YS
 .SY btrfs\-snapshots
+.OP \-C DIRECTORY
 .OP \-p NAME
 .RI [ ACTION ]
 .YS
@@ -42,8 +43,10 @@ snapshot path to stdout.
 Display the help message and exit.
 .TP
 .B \-p \fINAME\fP
-Select the NAME profile to perform ACTION on.  Can be specified multiple times
-to select multiple profiles.
+Select a profile to perform ACTION on.  Can be specified multiple times.
+.TP
+.B \-C \fIDIRECTORY\fP
+Look for configuration files in DIRECTORY instead of \fI/usr/local/etc\fP.
 .SH TIMERS
 While not a requirement, the intention is that snapshots will be automatically
 created and pruned using the included
