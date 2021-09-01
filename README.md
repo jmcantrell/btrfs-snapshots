@@ -26,13 +26,13 @@ administrators that prefer a minimum of baked-in opinions.
 To install in the default location (`/usr/local`):
 
 ```sh
-sudo ./install.sh
+sudo ./scripts/install
 ```
 
 To install in a different location:
 
 ```sh
-INSTALL_ROOT=/usr sudo ./install.sh
+INSTALL_ROOT=/usr sudo ./scripts/install
 ```
 
 ### Arch User Repository (AUR)
@@ -65,20 +65,20 @@ The following packages are needed to run tests:
 To run the included tests:
 
 ```sh
-./test.sh
+./scripts/test
 ```
 
 To see which tests are being run:
 
 ```sh
-TESTS_VERBOSE=1 ./test.sh
+TESTS_VERBOSE=1 ./scripts/test
 ```
 
 To run a specific test (passes arguments to `find`):
 
 ```sh
-./test.sh -name specific-test
-./test.sh -path "*/unit/*"
+./scripts/test -name specific-test
+./scripts/test -path "*/unit/*"
 ```
 
 ## Hacking

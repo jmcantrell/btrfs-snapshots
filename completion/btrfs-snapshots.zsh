@@ -6,7 +6,7 @@ local config_dir=${BTRFS_SNAPSHOTS_ETC_DIR:-/usr/local/etc/btrfs-snapshots}
 _arguments -S \
     "(-p -C 1)-h[show the help text]" \
     "(-h)*-p[select a profile]:profile:->profile" \
-    "(-h)-C[configuration directory]:configuration directory:_files -/" \
+    "(-h)-C[set the configuration directory]:configuration directory:_files -/" \
     "(-h -p -C)::action:(list create prune)" \
     && return 0
 

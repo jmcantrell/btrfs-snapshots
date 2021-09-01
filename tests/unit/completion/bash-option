@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Show that the option prefix completes with the available options.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+_init_completion() {
+    cur="-"
+    prev="btrfs-snapshots"
+    words=("btrfs-snapshots" "-")
+}
+
+export -f _init_completion
+
+. "$PWD/completion/btrfs-snapshots.bash"
+
+_btrfs_snapshots
+
+options=(-C -h -p)
+
+assert_arrays_equal COMPREPLY options

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Show that actions are the first choice for completion if an option has not
+# been requested.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+_init_completion() {
+    cur=""
+    prev="btrfs-snapshots"
+    words=("btrfs-snapshots" "")
+}
+
+export -f _init_completion
+
+. "$PWD/completion/btrfs-snapshots.bash"
+
+_btrfs_snapshots
+
+actions=(create list prune)
+
+assert_arrays_equal COMPREPLY actions

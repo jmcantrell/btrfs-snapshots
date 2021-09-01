@@ -125,3 +125,24 @@ assert_file_content() {
         die "File contents should have been equal"
     fi
 }
+
+assert_arrays_equal() {
+    local -n array1=$1
+    local -n array2=$2
+
+    if ((${#array1[@]} != ${#array2[@]})); then
+        die "Arrays should be the same length: ${#array1[@]} != ${#array2[@]}"
+    fi
+
+    local i mismatch=0
+    for ((i = 0; i < ${#array1[@]}; i++)); do
+        if [[ ${array1[i]} != "${array2[i]}" ]]; then
+            echo "Array items at index '$i' should match: ${array1[i]} != ${array2[i]}" >&2
+            mismatch=1
+        fi
+    done
+
+    if ((mismatch)); then
+        die "Array items should have been equal"
+    fi
+}

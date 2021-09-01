@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Show that the profile option completes with the correct profile names.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+_init_completion() {
+    cur=""
+    prev="-p"
+    words=("btrfs-snapshots" "-p" "")
+}
+
+export -f _init_completion
+
+. "$PWD/completion/btrfs-snapshots.bash"
+
+# Ensure that if there are no profiles, there are no completions.
+_btrfs_snapshots
+profiles=()
+assert_arrays_equal COMPREPLY profiles
+
+# Ensure that if there are profiles, there are completions.
+profile_dir=$ETC_DIR/profile.d
+mkdir -p "$profile_dir"
+touch "$profile_dir"/{a,b,c}.conf
+_btrfs_snapshots
+profiles=(a b c)
+assert_arrays_equal COMPREPLY profiles
