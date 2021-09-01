@@ -29,8 +29,8 @@ install -m644 -Dt ./share/doc/"$pkg_name"/config \
 install -m644 -Dt ./share/doc/"$pkg_name" \
     "$src_dir"/{README,LICENSE}.md
 
-install -m644 -Dt ./share/zsh/site-functions \
-    "$src_dir"/completion/*.zsh
+install -m644 -DT "$src_dir/completion/$pkg_name.zsh" \
+    ./share/zsh/site-functions/_"$pkg_name"
 
-install -m644 -Dt ./share/bash-completion/completions \
-    "$src_dir"/completion/*.bash
+install -m644 -DT "$src_dir/completion/$pkg_name.bash" \
+    ./share/bash-completion/completions/"$pkg_name"
