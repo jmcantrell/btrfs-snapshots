@@ -4,11 +4,7 @@ PATH_add tests/bin
 # See what tests are being run.
 export TESTS_VERBOSE=1
 
-# This will allow tests to be run directly.
-export LIB_DIR=$PWD/lib
-export TESTS_LIB_DIR=$PWD/tests/lib
-
 # Tell the main command to look for files in the current directory.
-export BTRFS_SNAPSHOTS_LIB_DIR=$LIB_DIR
-export BTRFS_SNAPSHOTS_ETC_DIR=$ETC_DIR
+export BTRFS_SNAPSHOTS_LIB_DIR=$PWD/lib
+export BTRFS_SNAPSHOTS_ETC_DIR=$PWD/.mine/etc
 export BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED=1
