@@ -10,6 +10,10 @@ export PATH=$PWD/tests/bin:$PWD/bin:$PATH
 export BTRFS_SNAPSHOTS_LIB_DIR=$LIB_DIR
 export BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED=1
 
+# Set these to something that doesn't exist, so they're not read from the system.
+export BTRFS_SNAPSHOTS_PROFILES_DIR=
+export BTRFS_SNAPSHOTS_DEFAULTS_FILE=
+
 run_test() {
     local file=$1
 
