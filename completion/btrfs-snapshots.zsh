@@ -3,10 +3,9 @@
 local state state_descr context line opt_args
 
 _arguments -S \
-    "(-n -p 1)-h[show the help text]" \
-    "(-h)-n[only report what would happen]" \
+    "(-p 1)-h[show the help text]" \
     "(-h)*-p[select a profile]:profile:->profile" \
-    "(-h -n -p)::action:(list create prune)" \
+    "(-h -p)::action:(list create prune)" \
     && return 0
 
 if [[ $state == profile ]]; then

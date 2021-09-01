@@ -33,7 +33,7 @@ _btrfs-snapshots() {
     esac
 
     local actions=" list create prune "
-    local options=" -h -n "
+    local options=" -h "
 
     readarray -t COMPREPLY < <(compgen -W "-p $options $actions" -- "$cur")
 
