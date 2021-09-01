@@ -9,5 +9,5 @@ _arguments -S \
     && return 0
 
 if [[ $state == profile ]]; then
-    _values 'profiles' /usr/local/etc/btrfs-snapshots/profiles.d/*.conf(N:r:t)
+    _values 'profiles' "${BTRFS_SNAPSHOTS_ETC_DIR:-/usr/local/etc/btrfs-snapshots}"/profiles.d/*.conf(N:r:t)
 fi
