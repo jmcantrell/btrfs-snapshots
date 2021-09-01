@@ -22,9 +22,9 @@ SNAPSHOTS=$snapshots
 EOF
 
 # Notice that there is only one message expected.
-printf -v message "%s\n" \
+printf -v stderr "%s\n" \
     "$(format "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME="$profile_name")"
 
 # Notice that the same profile is requested twice.
-assert_success assert_stderr "$message" \
+assert_success assert_stderr "$stderr" \
     btrfs-snapshots -p "$profile_name" -p "$profile_name" create

@@ -31,10 +31,10 @@ btrfs() {
 export -f btrfs
 
 for action in create prune; do
-    printf -v message "%s\n" \
+    printf -v stderr "%s\n" \
         "$(format "ERROR: $TEXT_BTRFS_FAILED" STATUS=5)" \
         "$(format "ERROR: $TEXT_ACTION_FAILED" ACTION="$action")"
 
-    assert_failure assert_stderr "$message" \
+    assert_failure assert_stderr "$stderr" \
         btrfs-snapshots -p "$profile_name" "$action"
 done

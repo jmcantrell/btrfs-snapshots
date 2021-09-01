@@ -11,10 +11,10 @@ export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
 export PROFILE_NAME=foo
 
-printf -v message "%s\n" \
+printf -v stderr "%s\n" \
     "$(format "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME)"
 
-assert_success assert_stderr "$message" \
+assert_success assert_stderr "$stderr" \
     create
 
 assert_equal "$(list | wc -l)" 0
