@@ -57,17 +57,28 @@ man ./share/man/man5/btrfs-snapshots.conf.5
 
 ## Testing
 
+The following packages are needed to run tests:
+
+- diffutils
+- parallel
+
 To run the included tests:
 
 ```sh
 ./test.sh
 ```
 
+To see which tests are being run:
+
+```sh
+TESTS_VERBOSE=1 ./test.sh
+```
+
 To run a specific test (passes arguments to `find`):
 
 ```sh
 ./test.sh -name specific-test
-./test.sh -wholename "*/unit/*"
+./test.sh -path "*/unit/*"
 ```
 
 ## Hacking
@@ -89,6 +100,19 @@ You could have [direnv][direnv] load that file automatically:
 cp .envrc.example .envrc
 direnv allow
 ```
+
+That will allow you to run the command from within the repository, but
+you'll probably want to create some configuration files to test it.
+
+To do that, you'll need to add these lines to `.envrc`:
+
+```sh
+export BTRFS_SNAPSHOTS_PROFILES_DIR=/path/to/your/profiles.d
+export BTRFS_SNAPSHOTS_DEFAULTS_FILE=/path/to/your/defaults.conf
+```
+
+Then just create configuration files in those locations using
+`./config/{defaults,profile}.conf` as examples.
 
 [snapper]: http://snapper.io/
 [direnv]: https://direnv.net/

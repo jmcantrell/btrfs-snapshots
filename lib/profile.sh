@@ -17,7 +17,7 @@ load_profile() {
     done
 
     if [[ -r $DEFAULTS_FILE ]] && ! . "$DEFAULTS_FILE"; then
-        error "$TEXT_DEFAULTS_FAILED"
+        error "$TEXT_DEFAULTS_FAILED" DEFAULTS_FILE
         return 1
     fi
 

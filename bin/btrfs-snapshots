@@ -31,6 +31,10 @@ create | prune | list) ;;
 *) die "$TEXT_INVALID" NAME=action VALUE="$action" ;;
 esac
 
+if [[ ! -d $PROFILES_DIR ]]; then
+    exit 0
+fi
+
 declare -a profile_files
 
 if ((${#profile_names[@]} > 0)); then
