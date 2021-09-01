@@ -17,7 +17,7 @@ while getopts ":C:p:h" option; do
     C) export ETC_DIR=$OPTARG ;;
     p) profile_names+=("$OPTARG") ;;
     h)
-        info "$TEXT_USAGE" ETC_DIR
+        info "$TEXT_USAGE"
         exit 0
         ;;
     *) die "$TEXT_INVALID" NAME=option VALUE="$OPTARG" ;;

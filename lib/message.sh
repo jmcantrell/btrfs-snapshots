@@ -8,7 +8,6 @@ Options:
     -h              show this help text
     -p NAME         profile to perform action on (can be used multiple times)
     -C DIRECTORY    directory to use for configuration
-                    (default: %ETC_DIR%)
 
 Arguments:
     ACTION          action to perform on selected profiles (default: list)
