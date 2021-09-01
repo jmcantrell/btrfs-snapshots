@@ -8,11 +8,11 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profiles_dir=$ETC_DIR/profiles.d
+profile_dir=$ETC_DIR/profile.d
 profile_names=(a b c)
 snapshot_paths=()
 
-mkdir -p "$profiles_dir"
+mkdir -p "$profile_dir"
 
 for name in "${profile_names[@]}"; do
     subvolume=$TEMP_DIR/subvolumes/$name
@@ -25,7 +25,7 @@ for name in "${profile_names[@]}"; do
     printf "%s\n" \
         SUBVOLUME="$subvolume" \
         SNAPSHOTS="$snapshots" \
-        >"$ETC_DIR/profiles.d/$name.conf"
+        >"$ETC_DIR/profile.d/$name.conf"
 done
 
 stdout_lines=()

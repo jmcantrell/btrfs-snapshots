@@ -9,14 +9,14 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_name=foo
-profiles_dir=$ETC_DIR/profiles.d
+profile_dir=$ETC_DIR/profile.d
 
 subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
 
-mkdir -p "$profiles_dir"
+mkdir -p "$profile_dir"
 
-cat >"$profiles_dir/$profile_name.conf" <<-EOF
+cat >"$profile_dir/$profile_name.conf" <<-EOF
 SUBVOLUME=$subvolume
 SNAPSHOTS=$snapshots
 EOF

@@ -7,9 +7,9 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profiles_dir=$ETC_DIR/profiles.d
+profile_dir=$ETC_DIR/profile.d
 
-mkdir -p "$profiles_dir"
+mkdir -p "$profile_dir"
 
 profile_names=(a b c)
 subvolume_paths=()
@@ -28,7 +28,7 @@ for profile_name in "${profile_names[@]}"; do
     printf "%s\n" \
         SUBVOLUME="$subvolume" \
         SNAPSHOTS="$snapshots" \
-        >"$profiles_dir/$profile_name.conf"
+        >"$profile_dir/$profile_name.conf"
 done
 
 selected=(1 2)

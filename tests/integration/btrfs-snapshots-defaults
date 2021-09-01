@@ -8,8 +8,8 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_name=foo
-profiles_dir=$ETC_DIR/profiles.d
-profile_file=$profiles_dir/$profile_name.conf
+profile_dir=$ETC_DIR/profile.d
+profile_file=$profile_dir/$profile_name.conf
 subvolume=$TEMP_DIR/subvolume
 
 # There will be no snapshot directory defined in the profile, so it should
@@ -19,7 +19,7 @@ snapshots=$TEMP_DIR/snapshots/$profile_name
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
 
-    mkdir -p "$subvolume" "$ETC_DIR"/profiles.d
+    mkdir -p "$subvolume" "$ETC_DIR"/profile.d
 
     # There are no limits defined in the profile, so it should assume the defaults
     # that will be set in the main configuration file.

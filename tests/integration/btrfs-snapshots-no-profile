@@ -8,7 +8,7 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_name=bogus
-profile_file=$ETC_DIR/profiles.d/$profile_name.conf
+profile_file=$ETC_DIR/profile.d/$profile_name.conf
 
 printf -v stderr "%s\n" \
     "$(format "ERROR: $TEXT_PROFILE_NOT_EXIST" PROFILE_NAME="$profile_name")" \

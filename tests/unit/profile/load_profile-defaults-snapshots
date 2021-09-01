@@ -7,12 +7,12 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profiles_dir=$ETC_DIR/profiles.d
+profile_dir=$ETC_DIR/profile.d
 defaults_file=$ETC_DIR/defaults.conf
 
-export PROFILE_FILE=$profiles_dir/foo.conf
+export PROFILE_FILE=$profile_dir/foo.conf
 
-mkdir -p "$profiles_dir"
+mkdir -p "$profile_dir"
 
 echo "SUBVOLUME=$TEMP_DIR" >"$PROFILE_FILE"
 echo "SNAPSHOTS=$TEMP_DIR" >"$defaults_file"
