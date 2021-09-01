@@ -13,8 +13,8 @@ profile_name=bogus
 profile_file=$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf
 
 printf -v message "%s\n" \
-    "ERROR: $(format "$TEXT_PROFILE_NOT_EXIST" PROFILE_NAME="$profile_name")" \
-    "ERROR: $(format "$TEXT_PROFILE_FAILED" PROFILE_FILE="$profile_file")"
+    "$(format "ERROR: $TEXT_PROFILE_NOT_EXIST" PROFILE_NAME="$profile_name")" \
+    "$(format "ERROR: $TEXT_PROFILE_FAILED" PROFILE_FILE="$profile_file")"
 
 for action in create prune; do
     assert_failure assert_stderr "$message" \

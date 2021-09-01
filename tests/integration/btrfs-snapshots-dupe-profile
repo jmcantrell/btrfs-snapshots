@@ -8,23 +8,22 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
+
 subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
-profiles_dir=$TEMP_DIR/profiles.d
 profile_name=foo
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
+mkdir -p "$BTRFS_SNAPSHOTS_PROFILES_DIR"
 
-mkdir -p "$profiles_dir"
-
-cat >"$profiles_dir/$profile_name.conf" <<-EOF
+cat >"$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf" <<-EOF
 SUBVOLUME=$subvolume
 SNAPSHOTS=$snapshots
 EOF
 
 # Notice that there is only one message expected.
 printf -v message "%s\n" \
-    "$(format "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME="$profile_name")"
+    "$(format "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME="$profile_name")"
 
 # Notice that the same profile is requested twice.
 assert_success assert_stderr "$message" \

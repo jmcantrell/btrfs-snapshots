@@ -25,8 +25,10 @@ for i in "${!profile_names[@]}"; do
         assert_success assert_no_output \
             load_profile
     else
-        printf -v stderr "%s\n" \
-            "ERROR: $(format "$TEXT_PROFILE_SNAPSHOTS_UNIQUE" PROFILE_NAME="$profile_name")"
+        printf -v stderr "%s\n" "$(
+            format "ERROR: $TEXT_PROFILE_SNAPSHOTS_UNIQUE" \
+                PROFILE_NAME="$profile_name"
+        )"
 
         assert_failure assert_stderr "$stderr" \
             load_profile

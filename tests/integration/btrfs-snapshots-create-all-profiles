@@ -8,20 +8,20 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profiles_dir=$TEMP_DIR/profiles.d
-timestamp=2001-01-01T00:00:00Z
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
+export BTRFS_SNAPSHOTS_TIMESTAMP=2001-01-01T00:00:00Z
+
 profile_names=(a b c)
 snapshot_paths=()
+stdout_lines=()
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
-export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
+mkdir -p "$BTRFS_SNAPSHOTS_PROFILES_DIR"
 
-mkdir -p "$profiles_dir"
-
-for name in "${profile_names[@]}"; do
+for i in "${!profile_names[@]}"; do
+    name=${profile_names[i]}
     subvolume=$TEMP_DIR/subvolumes/$name
     snapshots=$TEMP_DIR/snapshots/$name
-    snapshot=$snapshots/$timestamp
+    snapshot=$snapshots/$BTRFS_SNAPSHOTS_TIMESTAMP
     snapshot_paths+=("$snapshot")
 
     mkdir -p "$subvolume"
@@ -30,20 +30,18 @@ for name in "${profile_names[@]}"; do
     printf "%s\n" \
         SUBVOLUME="$subvolume" \
         SNAPSHOTS="$snapshots" \
-        >"$profiles_dir/$name.conf"
-done
+        >"$BTRFS_SNAPSHOTS_PROFILES_DIR/$name.conf"
 
-stdout_lines=()
-stderr_lines=()
-for i in "${!profile_names[@]}"; do
-    stdout_lines+=("${snapshot_paths[i]}")
-    stderr_lines+=("$(format "$TEXT_ACTION" ACTION=create PROFILE_NAME="${profile_names[i]}")")
+    stdout_lines+=("$(
+        format "$TEXT_BTRFS_CREATE" \
+            SUBVOLUME="$subvolume" \
+            SNAPSHOT="$snapshot"
+    )")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
-printf -v stderr "%s\n" "${stderr_lines[@]}"
 
-assert_success assert_output "$stdout" "$stderr" \
+assert_success assert_stdout "$stdout" \
     btrfs-snapshots create
 
 for i in "${!profile_names[@]}"; do

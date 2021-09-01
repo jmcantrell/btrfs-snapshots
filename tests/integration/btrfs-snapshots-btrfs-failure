@@ -7,27 +7,24 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
+export BTRFS_SNAPSHOTS_TIMESTAMP=2001-01-01T00:00:00Z
+
 profile_name=foo
-profiles_dir=$TEMP_DIR/profiles.d
 subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
-timestamp=2001-01-01T00:00:00Z
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
-export BTRFS_SNAPSHOTS_TIMESTAMP=$timestamp
-
-mkdir -p "$profiles_dir" "$subvolume"
+mkdir -p "$BTRFS_SNAPSHOTS_PROFILES_DIR" "$subvolume"
 
 # Create a snapshot so there is a reason for calling btrfs during the prune.
-mkdir -p "$snapshots/$timestamp"
+mkdir -p "$snapshots/$BTRFS_SNAPSHOTS_TIMESTAMP"
 
-cat >"$profiles_dir/$profile_name.conf" <<-EOF
+cat >"$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf" <<-EOF
 SUBVOLUME=$subvolume
 SNAPSHOTS=$snapshots
 EOF
 
 btrfs() {
-    error "fake message from btrfs"
     return 5
 }
 
@@ -35,8 +32,6 @@ export -f btrfs
 
 for action in create prune; do
     printf -v message "%s\n" \
-        "$(format "$TEXT_ACTION" ACTION="$action" PROFILE_NAME="$profile_name")" \
-        "ERROR: fake message from btrfs" \
         "$(format "ERROR: $TEXT_BTRFS_FAILED" STATUS=5)" \
         "$(format "ERROR: $TEXT_ACTION_FAILED" ACTION="$action")"
 

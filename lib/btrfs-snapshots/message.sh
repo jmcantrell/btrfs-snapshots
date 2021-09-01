@@ -2,11 +2,10 @@ export TEXT_USAGE="Manage timestamped collections of btrfs snapshots.
 
 Usage:
     btrfs-snapshots -h
-    btrfs-snapshots [-n] [-p NAME]... [ACTION]
+    btrfs-snapshots [-p NAME]... [ACTION]
 
 Options:
     -h         show this help text
-    -n         only report what would happen (no changes are made)
     -p NAME    perform ACTION on the NAME profile (default: all)
 
 Arguments:
@@ -32,9 +31,8 @@ export TEXT_DEFAULTS_SUBVOLUME="Invalid defaults; SUBVOLUME must be set in the p
 export TEXT_DEFAULTS_SNAPSHOTS_MISSING_NAME="Invalid defaults; SNAPSHOTS is missing %NAME% placeholder"
 export TEXT_DEFAULTS_FAILED="Unable to load defaults '%DEFAULTS_FILE%'"
 
-export TEXT_ACTION="Performing action '%ACTION%' for profile '%PROFILE_NAME%'"
 export TEXT_ACTION_FAILED="Unable to perform action '%ACTION%'"
 
 export TEXT_CREATE_SUBVOLUME_MISSING="Skipping profile '%PROFILE_NAME%'; subvolume is missing"
 
-export TEXT_BTRFS_FAILED="The btrfs command errored with status code '%STATUS%'"
+export TEXT_BTRFS_FAILED="The btrfs command exited with status code '%STATUS%'"

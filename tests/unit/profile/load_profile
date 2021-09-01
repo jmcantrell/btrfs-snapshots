@@ -7,15 +7,14 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-subvolume=$TEMP_DIR/$RANDOM
-snapshots=$TEMP_DIR/$RANDOM
-profile_file=$TEMP_DIR/profile
-limits=()
-
-export PROFILE_FILE=$profile_file
+export PROFILE_FILE=$TEMP_DIR/profile
 export DEFAULTS_FILE=/does/not/matter
 
-cat >"$profile_file" <<-EOF
+subvolume=$TEMP_DIR/$RANDOM
+snapshots=$TEMP_DIR/$RANDOM
+limits=()
+
+cat >"$PROFILE_FILE" <<-EOF
 SUBVOLUME=$subvolume
 SNAPSHOTS=$snapshots
 EOF
@@ -23,7 +22,7 @@ EOF
 for event_name in "${EVENT_NAMES[@]}"; do
     limit=$((1 + RANDOM))
     limits+=("$limit")
-    echo "LIMIT_${event_name@U}=$limit" >>"$profile_file"
+    echo "LIMIT_${event_name@U}=$limit" >>"$PROFILE_FILE"
 done
 
 assert_success assert_no_output \

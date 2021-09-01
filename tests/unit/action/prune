@@ -7,15 +7,12 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-subvolume=$TEMP_DIR/subvolume
-snapshots=$TEMP_DIR/snapshots
-timestamp1=2001-01-01T00:00:00Z
-profile_name=foo
-limit=3
+export SUBVOLUME=$TEMP_DIR/subvolume
+export SNAPSHOTS=$TEMP_DIR/snapshots
+export PROFILE_NAME=foo
 
-export SUBVOLUME=$subvolume
-export SNAPSHOTS=$snapshots
-export PROFILE_NAME=$profile_name
+timestamp1=2001-01-01T00:00:00Z
+limit=3
 
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
@@ -29,32 +26,29 @@ for event_name in "${EVENT_NAMES[@]}"; do
     while IFS= read -r -d $'\n' timestamp2; do
         # This snapshot is the earliest one of this event, so it should not be
         # deleted.
-        keeper=$snapshots/$timestamp2
+        keeper=$SNAPSHOTS/$timestamp2
         keepers+=("$keeper")
 
         # Generate a bunch of filler snapshots within the same event that will
         # eventually be deleted.
         while IFS= read -r -d $'\n' timestamp3; do
-            snapshot=$snapshots/$timestamp3
+            snapshot=$SNAPSHOTS/$timestamp3
             mkdir -p "$snapshot"
 
             # Only predict the message if it's not the keeper.
             if [[ $snapshot != "$keeper" ]]; then
                 fillers+=("$snapshot")
-                stdout_lines+=("$snapshot")
+                stdout_lines+=("$(format "$TEXT_BTRFS_DELETE" SNAPSHOT="$snapshot")")
             fi
         done < <(timestamp_sequence "$timestamp2" "1 second" "$limit" | tac)
     done < <(timestamp_sequence_event "$timestamp1" "$event_name" "$limit" | tac)
 
     printf -v stdout "%s\n" "${stdout_lines[@]}"
 
-    printf -v stderr "%s\n" \
-        "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
-
-    assert_success assert_output "$stdout" "$stderr" \
+    assert_success assert_stdout "$stdout" \
         prune
 
-    assert_equal "$(get_snapshots "$snapshots" | wc -l)" "$limit"
+    assert_equal "$(list | wc -l)" "$limit"
 
     for keeper in "${keepers[@]}"; do
         assert_directory "$keeper"

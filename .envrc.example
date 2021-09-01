@@ -1,7 +1,11 @@
 PATH_add bin
 PATH_add tests/bin
 
+# See what tests are being run.
+export TESTS_VERBOSE=1
+
 # Convenience for running tests directly.
+export BIN_NAME=btrfs-snapshots
 export LIB_DIR=$PWD/lib/btrfs-snapshots
 export TESTS_LIB_DIR=$PWD/tests/lib
 

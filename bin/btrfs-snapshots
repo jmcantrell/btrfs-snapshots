@@ -15,9 +15,11 @@ declare -a profile_names=()
 
 while getopts ":hnp:" option; do
     case $option in
-    n) export DRY_RUN=1 ;;
     p) profile_names+=("$OPTARG") ;;
-    h) finish "$TEXT_USAGE" ;;
+    h)
+        info "$TEXT_USAGE"
+        exit 0
+        ;;
     *) die "$TEXT_INVALID" NAME=option VALUE="$OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))

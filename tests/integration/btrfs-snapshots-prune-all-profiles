@@ -8,14 +8,13 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profiles_dir=$TEMP_DIR/profiles.d
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
+
 timestamp=2001-01-01T00:00:00Z
 profile_names=(a b c)
 snapshot_paths=()
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
-
-mkdir -p "$profiles_dir"
+mkdir -p "$BTRFS_SNAPSHOTS_PROFILES_DIR"
 
 for name in "${profile_names[@]}"; do
     subvolume=$TEMP_DIR/subvolumes/$name
@@ -28,20 +27,17 @@ for name in "${profile_names[@]}"; do
     printf "%s\n" \
         SUBVOLUME="$subvolume" \
         SNAPSHOTS="$snapshots" \
-        >"$profiles_dir/$name.conf"
+        >"$BTRFS_SNAPSHOTS_PROFILES_DIR/$name.conf"
 done
 
 stdout_lines=()
-stderr_lines=()
 for i in "${!profile_names[@]}"; do
-    stdout_lines+=("${snapshot_paths[i]}")
-    stderr_lines+=("$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="${profile_names[i]}")")
+    stdout_lines+=("$(format "$TEXT_BTRFS_DELETE" SNAPSHOT="${snapshot_paths[i]}")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
-printf -v stderr "%s\n" "${stderr_lines[@]}"
 
-assert_success assert_output "$stdout" "$stderr" \
+assert_success assert_stdout "$stdout" \
     btrfs-snapshots prune
 
 for i in "${!profile_names[@]}"; do

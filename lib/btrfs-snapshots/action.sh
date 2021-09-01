@@ -4,31 +4,22 @@ list() {
 
 create() {
     if ! is_mounted "$SUBVOLUME"; then
-        info "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME
+        warning "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME
         return 0
     fi
 
-    info "$TEXT_ACTION" ACTION=create PROFILE_NAME
-
     TIMESTAMP=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(get_timestamp)}
 
-    local snapshot
-    snapshot=$SNAPSHOTS/$TIMESTAMP
+    local snapshot=$SNAPSHOTS/$TIMESTAMP
 
-    if [[ ! -v DRY_RUN ]]; then
-        mkdir -p "$SNAPSHOTS"
-        btrfs subvolume snapshot -r "$SUBVOLUME" "$snapshot" >&2 || {
-            error "$TEXT_BTRFS_FAILED" STATUS="$?"
-            return 1
-        }
-    fi
-
-    printf "%s\n" "$snapshot"
+    mkdir -p "$SNAPSHOTS"
+    btrfs subvolume snapshot -r "$SUBVOLUME" "$snapshot" || {
+        error "$TEXT_BTRFS_FAILED" STATUS="$?"
+        return 1
+    }
 }
 
 prune() {
-    info "$TEXT_ACTION" ACTION=prune PROFILE_NAME
-
     local event_name counts=() limits=()
     for event_name in "${EVENT_NAMES[@]}"; do
         counts+=(0)
@@ -78,13 +69,9 @@ prune() {
             continue
         fi
 
-        if [[ ! -v DRY_RUN ]]; then
-            btrfs subvolume delete "$snapshot" >&2 || {
-                error "$TEXT_BTRFS_FAILED" STATUS="$?"
-                return 1
-            }
-        fi
-
-        printf "%s\n" "$snapshot"
+        btrfs subvolume delete "$snapshot" || {
+            error "$TEXT_BTRFS_FAILED" STATUS="$?"
+            return 1
+        }
     done
 }

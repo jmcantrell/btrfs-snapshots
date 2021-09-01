@@ -7,17 +7,14 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-subvolume=$TEMP_DIR/subvolume
-snapshots=$TEMP_DIR/snapshots
-
-export SUBVOLUME=$subvolume
-export SNAPSHOTS=$snapshots
+export SUBVOLUME=$TEMP_DIR/subvolume
+export SNAPSHOTS=$TEMP_DIR/snapshots
 export PROFILE_NAME=foo
 
 printf -v message "%s\n" \
-    "$(format "$TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME)"
+    "$(format "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME)"
 
 assert_success assert_stderr "$message" \
     create
 
-assert_equal "$(get_snapshots "$snapshots" | wc -l)" 0
+assert_equal "$(list | wc -l)" 0

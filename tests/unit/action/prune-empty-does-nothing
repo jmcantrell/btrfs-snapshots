@@ -10,8 +10,5 @@ set -eu
 export PROFILE_NAME=foo
 export SNAPSHOTS=$TEMP_DIR/snapshots
 
-printf -v stderr "%s\n" \
-    "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME)"
-
-assert_success assert_stderr "$stderr" \
+assert_success assert_no_output \
     prune

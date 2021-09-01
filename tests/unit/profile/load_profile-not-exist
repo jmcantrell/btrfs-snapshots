@@ -10,7 +10,7 @@ set -eu
 export PROFILE_FILE=/path/to/foo.conf
 
 printf -v message "%s\n" \
-    "ERROR: $(format "$TEXT_PROFILE_NOT_EXIST" PROFILE_NAME=foo)"
+    "$(format "ERROR: $TEXT_PROFILE_NOT_EXIST" PROFILE_NAME=foo)"
 
 assert_failure assert_stderr "$message" \
     load_profile

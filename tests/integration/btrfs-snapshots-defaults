@@ -7,10 +7,11 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
+export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
+export BTRFS_SNAPSHOTS_DEFAULTS_FILE=$TEMP_DIR/defaults.conf
+
 profile_name=foo
-profiles_dir=$TEMP_DIR/profiles.d
-profile_file=$profiles_dir/$profile_name.conf
-defaults_file=$TEMP_DIR/defaults.conf
+profile_file=$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf
 subvolume=$TEMP_DIR/subvolume
 timestamp1=2001-01-01T00:00:00Z
 
@@ -18,13 +19,10 @@ timestamp1=2001-01-01T00:00:00Z
 # assume this default that will be in the main configuration file.
 snapshots=$TEMP_DIR/snapshots/$profile_name
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$profiles_dir
-export BTRFS_SNAPSHOTS_DEFAULTS_FILE=$defaults_file
-
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
 
-    mkdir -p "$subvolume" "$profiles_dir"
+    mkdir -p "$subvolume" "$BTRFS_SNAPSHOTS_PROFILES_DIR"
 
     # There are no limits defined in the profile, so it should assume the defaults
     # that will be set in the main configuration file.
@@ -33,8 +31,8 @@ for event_name in "${EVENT_NAMES[@]}"; do
     limit=$((RANDOM % 5 + 1))
     limit_variable=$(get_limit_variable "$event_name")
 
-    echo "SNAPSHOTS=$TEMP_DIR/snapshots/%NAME%" >"$defaults_file"
-    echo "$limit_variable=$limit" >>"$defaults_file"
+    echo "SNAPSHOTS=$TEMP_DIR/snapshots/%NAME%" >"$BTRFS_SNAPSHOTS_DEFAULTS_FILE"
+    echo "$limit_variable=$limit" >>"$BTRFS_SNAPSHOTS_DEFAULTS_FILE"
 
     # Create just enough snapshots to test the limit.
     # If the default limits are not seen, then they will all be pruned, causing
@@ -45,14 +43,8 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     expected_count=$(get_snapshots "$snapshots" | wc -l)
 
-    # There should be no stdout, because nothing will be pruned.  If there is,
-    # the assert_stderr will fail because it's implied that stdout being empty
-    # is a requirement.
-
-    printf -v stderr "%s\n" \
-        "$(format "$TEXT_ACTION" ACTION=prune PROFILE_NAME="$profile_name")"
-
-    assert_success assert_stderr "$stderr" \
+    # There should be no output, because nothing will be pruned.
+    assert_success assert_no_output \
         btrfs-snapshots -p "$profile_name" prune
 
     # If the default limits were not seen, the snapshot count will be zero.

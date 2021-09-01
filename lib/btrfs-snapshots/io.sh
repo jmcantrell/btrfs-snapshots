@@ -20,21 +20,22 @@ format() {
 info() {
     local message
     message=$(format "$@")
-    printf "%s\n" "$message" >&2
+    printf "%s\n" "$message"
+}
+
+warning() {
+    local message
+    message=$(format "$@")
+    printf "WARNING: %s\n" "$message" >&2
 }
 
 error() {
-    local message=$1
-    shift
-    info "ERROR: $message" "$@"
+    local message
+    message=$(format "$@")
+    printf "ERROR: %s\n" "$message" >&2
 }
 
 die() {
     (($# > 0)) && error "$@"
     exit 1
-}
-
-finish() {
-    (($# > 0)) && info "$@"
-    exit 0
 }

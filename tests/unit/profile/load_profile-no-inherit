@@ -17,8 +17,10 @@ for variable in SUBVOLUME SNAPSHOTS; do
     # Try to trick the function into accepting an inheritable value.
     export "$variable=$TEMP_DIR"
 
-    printf -v stderr "%s\n" \
-        "ERROR: $(format "$TEXT_PROFILE_VARIABLE_NOT_SET" PROFILE_NAME=profile VARIABLE="$variable")"
+    printf -v stderr "%s\n" "$(
+        format "ERROR: $TEXT_PROFILE_VARIABLE_NOT_SET" \
+            PROFILE_NAME=profile VARIABLE="$variable"
+    )"
 
     assert_failure assert_stderr "$stderr" \
         load_profile
