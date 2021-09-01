@@ -12,7 +12,7 @@ run_test() {
     if [[ -v TESTS_VERBOSE ]]; then
         echo "Running test: $file"
     fi
-    
+
     if ! "$file"; then
         echo "Test failed: $file" >&2
         return 1
