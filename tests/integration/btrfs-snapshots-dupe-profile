@@ -8,15 +8,15 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
+profile_name=foo
+profiles_dir=$ETC_DIR/profiles.d
 
 subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
-profile_name=foo
 
-mkdir -p "$BTRFS_SNAPSHOTS_PROFILES_DIR"
+mkdir -p "$profiles_dir"
 
-cat >"$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf" <<-EOF
+cat >"$profiles_dir/$profile_name.conf" <<-EOF
 SUBVOLUME=$subvolume
 SNAPSHOTS=$snapshots
 EOF

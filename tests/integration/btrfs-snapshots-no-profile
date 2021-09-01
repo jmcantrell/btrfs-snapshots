@@ -7,10 +7,8 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR
-
 profile_name=bogus
-profile_file=$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf
+profile_file=$ETC_DIR/profiles.d/$profile_name.conf
 
 printf -v stderr "%s\n" \
     "$(format "ERROR: $TEXT_PROFILE_NOT_EXIST" PROFILE_NAME="$profile_name")" \

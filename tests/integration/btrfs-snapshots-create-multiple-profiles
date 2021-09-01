@@ -7,10 +7,9 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
-export BTRFS_SNAPSHOTS_TIMESTAMP=2001-01-01T00:00:00Z
+profiles_dir=$ETC_DIR/profiles.d
 
-mkdir -p "$BTRFS_SNAPSHOTS_PROFILES_DIR"
+mkdir -p "$profiles_dir"
 
 profile_names=(a b c)
 subvolume_paths=()
@@ -20,7 +19,7 @@ for profile_name in "${profile_names[@]}"; do
     subvolume=$TEMP_DIR/subvolumes/$profile_name
     subvolume_paths+=("$subvolume")
     snapshots=$TEMP_DIR/snapshots/$profile_name
-    snapshot=$snapshots/$BTRFS_SNAPSHOTS_TIMESTAMP
+    snapshot=$snapshots/$TIMESTAMP
     snapshot_paths+=("$snapshot")
 
     mkdir -p "$subvolume"
@@ -29,7 +28,7 @@ for profile_name in "${profile_names[@]}"; do
     printf "%s\n" \
         SUBVOLUME="$subvolume" \
         SNAPSHOTS="$snapshots" \
-        >"$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf"
+        >"$profiles_dir/$profile_name.conf"
 done
 
 selected=(1 2)

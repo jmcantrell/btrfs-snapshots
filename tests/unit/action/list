@@ -14,11 +14,11 @@ assert_success assert_no_output \
 
 stdout_lines=()
 
-while IFS= read -r -d $'\n' timestamp; do
-    snapshot=$TEMP_DIR/$timestamp
+while IFS= read -r -d $'\n' timestamp_step; do
+    snapshot=$TEMP_DIR/$timestamp_step
     stdout_lines+=("$snapshot")
     mkdir -p "$snapshot"
-done < <(timestamp_sequence "2001-01-01T00:00:00Z" "1 hour" 10)
+done < <(timestamp_sequence "$TIMESTAMP" "1 hour" 10)
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 

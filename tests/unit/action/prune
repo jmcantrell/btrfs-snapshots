@@ -11,7 +11,6 @@ export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
 export PROFILE_NAME=foo
 
-timestamp1=2001-01-01T00:00:00Z
 limit=3
 
 for event_name in "${EVENT_NAMES[@]}"; do
@@ -23,16 +22,16 @@ for event_name in "${EVENT_NAMES[@]}"; do
     fillers=()
     stdout_lines=()
 
-    while IFS= read -r -d $'\n' timestamp2; do
+    while IFS= read -r -d $'\n' event_start; do
         # This snapshot is the earliest one of this event, so it should not be
         # deleted.
-        keeper=$SNAPSHOTS/$timestamp2
+        keeper=$SNAPSHOTS/$event_start
         keepers+=("$keeper")
 
         # Generate a bunch of filler snapshots within the same event that will
         # eventually be deleted.
-        while IFS= read -r -d $'\n' timestamp3; do
-            snapshot=$SNAPSHOTS/$timestamp3
+        while IFS= read -r -d $'\n' event_step; do
+            snapshot=$SNAPSHOTS/$event_step
             mkdir -p "$snapshot"
 
             # Only predict the message if it's not the keeper.
@@ -40,8 +39,8 @@ for event_name in "${EVENT_NAMES[@]}"; do
                 fillers+=("$snapshot")
                 stdout_lines+=("$(format "$TEXT_BTRFS_DELETE" SNAPSHOT="$snapshot")")
             fi
-        done < <(timestamp_sequence "$timestamp2" "1 second" "$limit" | tac)
-    done < <(timestamp_sequence_event "$timestamp1" "$event_name" "$limit" | tac)
+        done < <(timestamp_sequence "$event_start" "1 second" "$limit" | tac)
+    done < <(timestamp_sequence_event "$TIMESTAMP" "$event_name" "$limit" | tac)
 
     printf -v stdout "%s\n" "${stdout_lines[@]}"
 

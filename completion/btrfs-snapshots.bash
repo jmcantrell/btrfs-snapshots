@@ -2,11 +2,15 @@ _btrfs-snapshots() {
     local cur prev words cword
     _init_completion || return
 
-    local profile_names
-    readarray -t profile_names < <(
-        find "${BTRFS_SNAPSHOTS_PROFILES_DIR:-/usr/local/etc/btrfs-snapshots.d}" \
-            -type f -name "*.conf" -exec basename "{}" .conf \;
-    )
+    local profiles_dir=${BTRFS_SNAPSHOTS_ETC_DIR:-/usr/local/etc/btrfs-snapshots}/profiles.d
+
+    local -a profile_names=()
+
+    if [[ -d $profiles_dir ]]; then
+        readarray -t profile_names < <(
+            find "$profiles_dir" -type f -name "*.conf" -exec basename "{}" .conf \;
+        )
+    fi
 
     # Remove any profile names that have already been used.
     local i

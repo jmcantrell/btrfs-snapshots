@@ -25,8 +25,6 @@ assert_snapshots() {
     done
 }
 
-timestamp=2001-01-01T00:00:00Z
-
 # Does not complain about non-exsistent directories.
 assert_snapshots /path/to/nowhere
 
@@ -45,7 +43,7 @@ assert_snapshots "$TEMP_DIR"
 
 # Does not recognized timestamped regular files.
 reset_temp
-touch "$TEMP_DIR/$timestamp"
+touch "$TEMP_DIR/$TIMESTAMP"
 assert_snapshots "$TEMP_DIR"
 
 # Returns all found snapshots in chronological order.
@@ -54,9 +52,9 @@ while IFS= read -r -d $'\n' timestamp_step; do
     snapshot=$TEMP_DIR/$timestamp_step
     expected+=("$snapshot")
     mkdir -p "$snapshot"
-done < <(timestamp_sequence "$timestamp" hour 24)
+done < <(timestamp_sequence "$TIMESTAMP" hour 24)
 assert_snapshots "$TEMP_DIR" "${expected[@]}"
 
 # Does not look more than one level deep.
-mkdir -p "$TEMP_DIR/$timestamp/$timestamp"
+mkdir -p "$TEMP_DIR/$TIMESTAMP/$TIMESTAMP"
 assert_snapshots "$TEMP_DIR" "${expected[@]}"

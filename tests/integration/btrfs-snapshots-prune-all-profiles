@@ -8,18 +8,16 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
-
-timestamp=2001-01-01T00:00:00Z
+profiles_dir=$ETC_DIR/profiles.d
 profile_names=(a b c)
 snapshot_paths=()
 
-mkdir -p "$BTRFS_SNAPSHOTS_PROFILES_DIR"
+mkdir -p "$profiles_dir"
 
 for name in "${profile_names[@]}"; do
     subvolume=$TEMP_DIR/subvolumes/$name
     snapshots=$TEMP_DIR/snapshots/$name
-    snapshot=$snapshots/$timestamp
+    snapshot=$snapshots/$TIMESTAMP
     snapshot_paths+=("$snapshot")
 
     mkdir -p "$snapshot"
@@ -27,7 +25,7 @@ for name in "${profile_names[@]}"; do
     printf "%s\n" \
         SUBVOLUME="$subvolume" \
         SNAPSHOTS="$snapshots" \
-        >"$BTRFS_SNAPSHOTS_PROFILES_DIR/$name.conf"
+        >"$ETC_DIR/profiles.d/$name.conf"
 done
 
 stdout_lines=()

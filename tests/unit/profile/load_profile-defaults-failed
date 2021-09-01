@@ -7,18 +7,22 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export PROFILE_FILE=$TEMP_DIR/profile.conf
-export DEFAULTS_FILE=$TEMP_DIR/defaults.conf
+profiles_dir=$ETC_DIR/profiles.d
+defaults_file=$ETC_DIR/defaults.conf
+
+export PROFILE_FILE=$profiles_dir/foo.conf
+
+mkdir -p "$profiles_dir"
 
 cat >"$PROFILE_FILE" <<-EOF
 SUBVOLUME=$TEMP_DIR
 SNAPSHOTS=$TEMP_DIR
 EOF
 
-echo "return 1" >"$DEFAULTS_FILE"
+echo "return 1" >"$defaults_file"
 
 printf -v stderr "%s\n" \
-    "$(format "ERROR: $TEXT_DEFAULTS_FAILED" DEFAULTS_FILE)"
+    "$(format "ERROR: $TEXT_DEFAULTS_FAILED" DEFAULTS_FILE="$defaults_file")"
 
 assert_failure assert_stderr "$stderr" \
     load_profile

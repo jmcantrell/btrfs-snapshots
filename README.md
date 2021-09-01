@@ -104,15 +104,9 @@ direnv allow
 That will allow you to run the command from within the repository, but
 you'll probably want to create some configuration files to test it.
 
-To do that, you'll need to add these lines to `.envrc`:
-
-```sh
-export BTRFS_SNAPSHOTS_PROFILES_DIR=/path/to/your/profiles.d
-export BTRFS_SNAPSHOTS_DEFAULTS_FILE=/path/to/your/defaults.conf
-```
-
-Then just create configuration files in those locations using
-`./config/{defaults,profile}.conf` as examples.
+Then just populate whatever you set `BTRFS_SNAPSHOTS_ETC_DIR` to with
+some configuration files, using the examples in
+`./config/{defaults,profile}.conf`.
 
 [snapper]: http://snapper.io/
 [direnv]: https://direnv.net/

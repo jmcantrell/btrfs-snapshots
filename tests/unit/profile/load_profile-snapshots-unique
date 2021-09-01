@@ -11,9 +11,7 @@ set -eu
 # any given snapshot location can only store snapshots for one subvolume.
 profile_lines=("SUBVOLUME=$TEMP_DIR" "SNAPSHOTS=$TEMP_DIR")
 
-export DEFAULTS_FILE=/does/not/matter
-
-profile_names=(foo bar)
+profile_names=(foo bar baz)
 
 for i in "${!profile_names[@]}"; do
     profile_name=${profile_names[i]}

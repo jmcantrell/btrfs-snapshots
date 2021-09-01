@@ -7,13 +7,10 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
-export BTRFS_SNAPSHOTS_DEFAULTS_FILE=$TEMP_DIR/defaults.conf
-
 profile_name=foo
-profile_file=$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf
+profiles_dir=$ETC_DIR/profiles.d
+profile_file=$profiles_dir/$profile_name.conf
 subvolume=$TEMP_DIR/subvolume
-timestamp1=2001-01-01T00:00:00Z
 
 # There will be no snapshot directory defined in the profile, so it should
 # assume this default that will be in the main configuration file.
@@ -22,7 +19,7 @@ snapshots=$TEMP_DIR/snapshots/$profile_name
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
 
-    mkdir -p "$subvolume" "$BTRFS_SNAPSHOTS_PROFILES_DIR"
+    mkdir -p "$subvolume" "$ETC_DIR"/profiles.d
 
     # There are no limits defined in the profile, so it should assume the defaults
     # that will be set in the main configuration file.
@@ -31,15 +28,15 @@ for event_name in "${EVENT_NAMES[@]}"; do
     limit=$((RANDOM % 5 + 1))
     limit_variable=$(get_limit_variable "$event_name")
 
-    echo "SNAPSHOTS=$TEMP_DIR/snapshots/%NAME%" >"$BTRFS_SNAPSHOTS_DEFAULTS_FILE"
-    echo "$limit_variable=$limit" >>"$BTRFS_SNAPSHOTS_DEFAULTS_FILE"
+    echo "SNAPSHOTS=$TEMP_DIR/snapshots/%NAME%" >"$ETC_DIR"/defaults.conf
+    echo "$limit_variable=$limit" >>"$ETC_DIR"/defaults.conf
 
     # Create just enough snapshots to test the limit.
     # If the default limits are not seen, then they will all be pruned, causing
     # the following test to fail.
     while IFS= read -r -d $'\n' timestamp2; do
         mkdir -p "$snapshots/$timestamp2"
-    done < <(timestamp_sequence_event "$timestamp1" "$event_name" "$limit")
+    done < <(timestamp_sequence_event "$TIMESTAMP" "$event_name" "$limit")
 
     expected_count=$(get_snapshots "$snapshots" | wc -l)
 

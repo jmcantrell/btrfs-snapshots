@@ -8,7 +8,6 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 export PROFILE_FILE=$TEMP_DIR/profile
-export DEFAULTS_FILE=/does/not/matter
 
 touch "$PROFILE_FILE"
 

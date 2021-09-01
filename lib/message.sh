@@ -7,6 +7,7 @@ Usage:
 Options:
     -h         show this help text
     -p NAME    perform ACTION on the NAME profile (default: all)
+    -C DIRECTORY    directory to use for configuration (default: %
 
 Arguments:
     ACTION     perform ACTION on the selected profiles (default: list)

@@ -9,10 +9,9 @@ set -eu
 
 export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
-export BTRFS_SNAPSHOTS_TIMESTAMP=2001-01-01T00:00:00Z
 export PROFILE_NAME=foo
 
-snapshot=$SNAPSHOTS/$BTRFS_SNAPSHOTS_TIMESTAMP
+snapshot=$SNAPSHOTS/$TIMESTAMP
 
 mkdir -p "$SUBVOLUME"
 touch "$SUBVOLUME"/marker

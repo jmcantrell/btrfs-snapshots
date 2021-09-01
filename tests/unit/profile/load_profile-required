@@ -18,7 +18,6 @@ profile_lines=()
 # - variable is set to a relative path
 
 export PROFILE_FILE=$profile_file
-export DEFAULTS_FILE=/does/not/matter
 
 for ((i = 0; i < ${#variables[@]}; i++)); do
     variable=${variables[i]}

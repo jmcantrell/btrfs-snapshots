@@ -8,14 +8,13 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 # There's only one second of difference.
-timestamp1=2001-01-01T00:00:01Z
-timestamp2=2001-01-01T00:00:02Z
+later=$(get_timestamp --date="$TIMESTAMP + 1 second")
 
 # A "less than" result should return -1.
-assert_equal "$(timestamp_compare "$timestamp1" "$timestamp2")" -1
+assert_equal "$(timestamp_compare "$TIMESTAMP" "$later")" -1
 
 # A "greater than" result should return 1
-assert_equal "$(timestamp_compare "$timestamp2" "$timestamp1")" 1
+assert_equal "$(timestamp_compare "$later" "$TIMESTAMP")" 1
 
 # An "equal to" result should return 0
-assert_equal "$(timestamp_compare "$timestamp1" "$timestamp1")" 0
+assert_equal "$(timestamp_compare "$TIMESTAMP" "$TIMESTAMP")" 0

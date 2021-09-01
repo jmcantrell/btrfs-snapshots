@@ -7,8 +7,12 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export PROFILE_FILE=$TEMP_DIR/profile.conf
-export DEFAULTS_FILE=$TEMP_DIR/defaults.conf
+profiles_dir=$ETC_DIR/profiles.d
+defaults_file=$ETC_DIR/defaults.conf
+
+export PROFILE_FILE=$profiles_dir/foo.conf
+
+mkdir -p "$profiles_dir"
 
 cat >"$PROFILE_FILE" <<-EOF
 SUBVOLUME=$TEMP_DIR
@@ -20,7 +24,7 @@ limits=()
 for event_name in "${EVENT_NAMES[@]}"; do
     limit=$((1 + RANDOM))
     limits+=("$limit")
-    echo "$(get_limit_variable "$event_name")=$limit" >>"$DEFAULTS_FILE"
+    echo "$(get_limit_variable "$event_name")=$limit" >>"$defaults_file"
 done
 
 assert_success assert_no_output \

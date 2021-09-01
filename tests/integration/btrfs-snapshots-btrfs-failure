@@ -7,19 +7,18 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export BTRFS_SNAPSHOTS_PROFILES_DIR=$TEMP_DIR/profiles.d
-export BTRFS_SNAPSHOTS_TIMESTAMP=2001-01-01T00:00:00Z
-
 profile_name=foo
+profiles_dir=$ETC_DIR/profiles.d
+
 subvolume=$TEMP_DIR/subvolume
 snapshots=$TEMP_DIR/snapshots
 
-mkdir -p "$BTRFS_SNAPSHOTS_PROFILES_DIR" "$subvolume"
+mkdir -p "$profiles_dir" "$subvolume"
 
 # Create a snapshot so there is a reason for calling btrfs during the prune.
-mkdir -p "$snapshots/$BTRFS_SNAPSHOTS_TIMESTAMP"
+mkdir -p "$snapshots/$TIMESTAMP"
 
-cat >"$BTRFS_SNAPSHOTS_PROFILES_DIR/$profile_name.conf" <<-EOF
+cat >"$profiles_dir/$profile_name.conf" <<-EOF
 SUBVOLUME=$subvolume
 SNAPSHOTS=$snapshots
 EOF
