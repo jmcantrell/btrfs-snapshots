@@ -9,7 +9,7 @@ load_profile() {
         return 1
     fi
 
-    unset SUBVOLUME SNAPSHOTS
+    unset SNAPSHOTS
 
     local event_name
     for event_name in "${EVENT_NAMES[@]}"; do
@@ -23,10 +23,7 @@ load_profile() {
         return 1
     fi
 
-    if [[ -v SUBVOLUME ]]; then
-        error "$TEXT_DEFAULTS_SUBVOLUME"
-        return 1
-    fi
+    unset SUBVOLUME
 
     if [[ -v SNAPSHOTS && $SNAPSHOTS != *%NAME%* ]]; then
         error "$TEXT_DEFAULTS_SNAPSHOTS_MISSING_NAME"

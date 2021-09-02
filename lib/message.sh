@@ -28,7 +28,6 @@ export TEXT_PROFILE_ABS_PATH="Invalid profile '%PROFILE_NAME%'; %VARIABLE% must 
 export TEXT_PROFILE_SNAPSHOTS_UNIQUE="Invalid profile '%PROFILE_NAME%'; SNAPSHOTS value is already defined in another profile"
 export TEXT_PROFILE_FAILED="Unable to load profile '%PROFILE_FILE%'"
 
-export TEXT_DEFAULTS_SUBVOLUME="Invalid defaults; SUBVOLUME must be set in the profile configuration"
 export TEXT_DEFAULTS_SNAPSHOTS_MISSING_NAME="Invalid defaults; SNAPSHOTS is missing %NAME% placeholder"
 export TEXT_DEFAULTS_FAILED="Unable to load defaults '%DEFAULTS_FILE%'"
 

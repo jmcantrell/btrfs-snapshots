@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# Show that the subvolume cannot be set in the defaults configuration.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_name=foo
+profile_dir=$ETC_DIR/profile.d
+
+export PROFILE_FILE=$profile_dir/$profile_name.conf
+
+mkdir -p "$profile_dir"
+
+# Create a profile that does not have the subvolume set.
+echo "SNAPSHOTS=$TEMP_DIR" >"$PROFILE_FILE"
+
+# If there's no protection, this value will get used.
+echo "SUBVOLUME=$TEMP_DIR" >"$ETC_DIR"/defaults.conf
+
+printf -v stderr "%s\n" "$(
+    format "ERROR: $TEXT_PROFILE_VARIABLE_NOT_SET" \
+        PROFILE_NAME="$profile_name" VARIABLE=SUBVOLUME
+)"
+
+assert_failure assert_stderr "$stderr" \
+    load_profile
