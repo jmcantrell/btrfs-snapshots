@@ -30,13 +30,11 @@ profiles. This is the default action, if unspecified.
 .TP
 .B create
 Create a new snapshot in the configured directory for the selected profiles.
-Any subvolumes that are not mounted will be skipped. A log message will be
-written to stderr and the created snapshot path to stdout.
+Any subvolumes that are not mounted will be skipped with a warning message.
 .TP
 .B prune
 Delete all snapshots for the selected profiles that fall outside of the
-configured limits. A log message will be written to stderr and each deleted
-snapshot path to stdout.
+configured limits.
 .SH OPTIONS
 .TP
 .B \-h

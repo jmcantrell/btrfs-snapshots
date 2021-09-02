@@ -51,8 +51,8 @@ Unstable, based on the latest commit to the main branch:
 Check out the man pages for detailed information about configuration and usage:
 
 ```sh
-man ./share/man/man8/btrfs-snapshots.8
-man ./share/man/man5/btrfs-snapshots.conf.5
+man ./man/btrfs-snapshots.8
+man ./man/btrfs-snapshots.conf.5
 ```
 
 ## Testing
