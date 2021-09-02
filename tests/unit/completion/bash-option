@@ -8,8 +8,11 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 _init_completion() {
+    # shellcheck disable=SC2034
     cur="-"
+    # shellcheck disable=SC2034
     prev="btrfs-snapshots"
+    # shellcheck disable=SC2034
     words=("btrfs-snapshots" "-")
 }
 
@@ -19,6 +22,7 @@ export -f _init_completion
 
 _btrfs_snapshots
 
+# shellcheck disable=SC2034
 options=(-C -h -p)
 
 assert_arrays_equal COMPREPLY options

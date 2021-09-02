@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
 
-# Show that if the configuration directory has been overridden, the profile
-# completion choices come from there instead.
+# Show that no profiles are completed if there are none.
 
 set -eu
 
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
-
-alt_etc_dir=$TEMP_DIR/alt_etc
-alt_profile_dir=$alt_etc_dir/profile.d
-mkdir -p "$alt_profile_dir"
-touch "$alt_profile_dir"/{a,b,c}.conf
 
 _init_completion() {
     # shellcheck disable=SC2034
@@ -19,16 +13,16 @@ _init_completion() {
     # shellcheck disable=SC2034
     prev="-p"
     # shellcheck disable=SC2034
-    words=("btrfs-snapshots" "-C" "$alt_etc_dir" -p "")
+    words=("btrfs-snapshots" "-p" "")
 }
 
 export -f _init_completion
 
 . "$PWD/completion/btrfs-snapshots.bash"
 
-_btrfs_snapshots
-
 # shellcheck disable=SC2034
-profiles=(a b c)
+profiles=()
+
+_btrfs_snapshots
 
 assert_arrays_equal COMPREPLY profiles
