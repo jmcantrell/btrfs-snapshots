@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# Show that when an error occurs, nothing else will be done.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_dir=$ETC_DIR/profile.d
+
+mkdir -p "$profile_dir"
+
+profile_names=(a b c)
+subvolume_dirs=()
+snapshots_dirs=()
+profile_files=()
+
+for profile_name in "${profile_names[@]}"; do
+    subvolume_dir=$TEMP_DIR/subvolumes/$profile_name
+    snapshots_dir=$TEMP_DIR/snapshots/$profile_name
+    profile_file=$profile_dir/$profile_name.conf
+
+    subvolume_dirs+=("$subvolume_dir")
+    snapshots_dirs+=("$snapshots_dir")
+    profile_files+=("$profile_file")
+
+    mkdir -p "$subvolume_dir"
+
+    printf "%s\n" \
+        "SUBVOLUME=$subvolume_dir" \
+        "SNAPSHOTS=$snapshots_dir" \
+        >"$profile_file"
+done
+
+before=0
+
+printf -v stdout "%s\n" "$(
+    format "$TEXT_BTRFS_CREATE" \
+        SUBVOLUME="${subvolume_dirs[$before]}" \
+        SNAPSHOT="${snapshots_dirs[$before]}/$TIMESTAMP"
+)"
+
+target=1
+
+# Sabotage one of the profiles.
+echo "return 1" >>"${profile_files[$target]}"
+
+printf -v stderr "%s\n" "$(
+    format "ERROR: $TEXT_PROFILE_FAILED" \
+        PROFILE_FILE="${profile_files[$target]}"
+)"
+
+assert_failure assert_output "$stdout" "$stderr" \
+    btrfs-snapshots create
