@@ -10,20 +10,21 @@ set -eu
 
 profile_name=foo
 profile_dir=$ETC_DIR/profile.d
-
-subvolume=$TEMP_DIR/subvolume
-snapshots=$TEMP_DIR/snapshots
+subvolume_dir=$TEMP_DIR/subvolume
+snapshots_dir=$TEMP_DIR/snapshots
 
 mkdir -p "$profile_dir"
 
 cat >"$profile_dir/$profile_name.conf" <<-EOF
-SUBVOLUME=$subvolume
-SNAPSHOTS=$snapshots
+SUBVOLUME=$subvolume_dir
+SNAPSHOTS=$snapshots_dir
 EOF
 
 # Notice that there is only one message expected.
-printf -v stderr "%s\n" \
-    "$(format "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING" PROFILE_NAME="$profile_name")"
+printf -v stderr "%s\n" "$(
+    format "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING" \
+        PROFILE_NAME="$profile_name"
+)"
 
 # Notice that the same profile is requested twice.
 assert_success assert_stderr "$stderr" \

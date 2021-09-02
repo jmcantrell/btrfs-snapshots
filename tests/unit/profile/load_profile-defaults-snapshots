@@ -7,18 +7,18 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profile_dir=$ETC_DIR/profile.d
+profile_name=foo
 defaults_file=$ETC_DIR/defaults.conf
 
-export PROFILE_FILE=$profile_dir/foo.conf
+export PROFILE_FILE=$ETC_DIR/$profile_name.conf
 
-mkdir -p "$profile_dir"
+mkdir -p "$ETC_DIR"
 
 echo "SUBVOLUME=$TEMP_DIR" >"$PROFILE_FILE"
 echo "SNAPSHOTS=$TEMP_DIR" >"$defaults_file"
 
 printf -v stderr "%s\n" \
-    "ERROR: $(format "$TEXT_DEFAULTS_SNAPSHOTS_MISSING_NAME")"
+    "$(format "ERROR: $TEXT_DEFAULTS_SNAPSHOTS_MISSING_NAME")"
 
 assert_failure assert_stderr "$stderr" \
     load_profile
@@ -28,4 +28,4 @@ echo "SNAPSHOTS=$TEMP_DIR/%NAME%" >"$defaults_file"
 assert_success assert_no_output \
     load_profile
 
-assert_equal "$SNAPSHOTS" "$TEMP_DIR"/foo
+assert_equal "$SNAPSHOTS" "$TEMP_DIR/$profile_name"

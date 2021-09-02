@@ -54,7 +54,7 @@ for PROFILE_FILE in "${profile_files[@]}"; do
     profiles_seen[$PROFILE_FILE]=1
 
     if ! load_profile; then
-        die "$TEXT_PROFILE_FAILED" PROFILE_FILE
+        die "$TEXT_PROFILE_LOAD_FAILED" PROFILE_FILE
     fi
 
     if ! "$action"; then

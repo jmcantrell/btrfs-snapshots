@@ -9,30 +9,31 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_dir=$ETC_DIR/profile.d
-profile_names=(a b c)
-snapshot_paths=()
-stdout_lines=()
 
 mkdir -p "$profile_dir"
 
+profile_names=(a b c)
+snapshots=()
+stdout_lines=()
+
 for i in "${!profile_names[@]}"; do
     name=${profile_names[i]}
-    subvolume=$TEMP_DIR/subvolumes/$name
-    snapshots=$TEMP_DIR/snapshots/$name
-    snapshot=$snapshots/$TIMESTAMP
-    snapshot_paths+=("$snapshot")
+    subvolume_dir=$TEMP_DIR/subvolume/$name
+    snapshots_dir=$TEMP_DIR/snapshots/$name
+    snapshot=$snapshots_dir/$TIMESTAMP
+    snapshots+=("$snapshot")
 
-    mkdir -p "$subvolume"
-    echo -n "$name" >"$subvolume"/marker
+    mkdir -p "$subvolume_dir"
+    echo -n "$name" >"$subvolume_dir"/marker
 
     printf "%s\n" \
-        SUBVOLUME="$subvolume" \
-        SNAPSHOTS="$snapshots" \
+        SUBVOLUME="$subvolume_dir" \
+        SNAPSHOTS="$snapshots_dir" \
         >"$profile_dir/$name.conf"
 
     stdout_lines+=("$(
         format "$TEXT_BTRFS_CREATE" \
-            SUBVOLUME="$subvolume" \
+            SUBVOLUME="$subvolume_dir" \
             SNAPSHOT="$snapshot"
     )")
 done
@@ -43,7 +44,7 @@ assert_success assert_stdout "$stdout" \
     btrfs-snapshots create
 
 for i in "${!profile_names[@]}"; do
-    marker=${snapshot_paths[i]}/marker
+    marker=${snapshots[i]}/marker
     assert_file "$marker"
     assert_file_content "$marker" "${profile_names[i]}"
 done

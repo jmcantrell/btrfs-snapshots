@@ -7,14 +7,14 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-default_profile_dir=$ETC_DIR/profile.d
+profile_dir=$ETC_DIR/profile.d
 
-mkdir -p "$default_profile_dir"
+mkdir -p "$profile_dir"
 
 # This is a valid configuration that should produce a snapshot, but since the
 # configuration directory is going to be overridden, it should not be seen and
 # nothing should happen.
-cat >"$default_profile_dir"/foo.conf <<-EOF
+cat >"$profile_dir"/foo.conf <<-EOF
 SUBVOLUME=$TEMP_DIR
 SNAPSHOTS=$TEMP_DIR
 EOF

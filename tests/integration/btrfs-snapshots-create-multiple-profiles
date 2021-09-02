@@ -12,22 +12,22 @@ profile_dir=$ETC_DIR/profile.d
 mkdir -p "$profile_dir"
 
 profile_names=(a b c)
-subvolume_paths=()
-snapshot_paths=()
+subvolume_dirs=()
+snapshots=()
 
 for profile_name in "${profile_names[@]}"; do
-    subvolume=$TEMP_DIR/subvolumes/$profile_name
-    subvolume_paths+=("$subvolume")
-    snapshots=$TEMP_DIR/snapshots/$profile_name
-    snapshot=$snapshots/$TIMESTAMP
-    snapshot_paths+=("$snapshot")
+    subvolume_dir=$TEMP_DIR/subvolume/$profile_name
+    subvolume_dirs+=("$subvolume_dir")
+    snapshots_dir=$TEMP_DIR/snapshots/$profile_name
+    snapshot=$snapshots_dir/$TIMESTAMP
+    snapshots+=("$snapshot")
 
-    mkdir -p "$subvolume"
-    echo -n "$profile_name" >"$subvolume"/marker
+    mkdir -p "$subvolume_dir"
+    echo -n "$profile_name" >"$subvolume_dir"/marker
 
     printf "%s\n" \
-        SUBVOLUME="$subvolume" \
-        SNAPSHOTS="$snapshots" \
+        SUBVOLUME="$subvolume_dir" \
+        SNAPSHOTS="$snapshots_dir" \
         >"$profile_dir/$profile_name.conf"
 done
 
@@ -39,8 +39,8 @@ for i in "${selected[@]}"; do
     options+=(-p "${profile_names[i]}")
     stdout_lines+=("$(
         format "$TEXT_BTRFS_CREATE" \
-            SUBVOLUME="${subvolume_paths[i]}" \
-            SNAPSHOT="${snapshot_paths[i]}"
+            SUBVOLUME="${subvolume_dirs[i]}" \
+            SNAPSHOT="${snapshots[i]}"
     )")
 done
 
@@ -50,6 +50,6 @@ assert_success assert_stdout "$stdout" \
     btrfs-snapshots "${options[@]}" create
 
 for i in "${selected[@]}"; do
-    assert_file "${snapshot_paths[i]}"/marker
-    assert_file_content "${snapshot_paths[i]}"/marker "${profile_names[i]}"
+    assert_file "${snapshots[i]}"/marker
+    assert_file_content "${snapshots[i]}"/marker "${profile_names[i]}"
 done

@@ -11,10 +11,8 @@ create() {
     # Allow ability to override the running timestamp, simplifying testing.
     TIMESTAMP=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(get_timestamp)}
 
-    local snapshot=$SNAPSHOTS/$TIMESTAMP
-
     mkdir -p "$SNAPSHOTS"
-    btrfs subvolume snapshot -r "$SUBVOLUME" "$snapshot" || {
+    btrfs subvolume snapshot -r "$SUBVOLUME" "$SNAPSHOTS/$TIMESTAMP" || {
         error "$TEXT_BTRFS_FAILED" STATUS="$?"
         return 1
     }
@@ -27,12 +25,12 @@ prune() {
         limits+=("$(get_limit "$event_name")")
     done
 
-    local all_snapshots
-    readarray -t all_snapshots < <(get_snapshots "$SNAPSHOTS" | sort -r)
+    local snapshots
+    readarray -t snapshots < <(get_snapshots "$SNAPSHOTS" | sort -r)
 
     local snapshot_index
-    for ((snapshot_index = 0; snapshot_index < ${#all_snapshots[@]}; snapshot_index++)); do
-        local snapshot=${all_snapshots[snapshot_index]}
+    for ((snapshot_index = 0; snapshot_index < ${#snapshots[@]}; snapshot_index++)); do
+        local snapshot=${snapshots[snapshot_index]}
         local timestamp=${snapshot##*/}
 
         local event_index keep=0
@@ -45,8 +43,8 @@ prune() {
             local event_name=${EVENT_NAMES[event_index]}
 
             local other_snapshot_index
-            for ((other_snapshot_index = snapshot_index + 1; other_snapshot_index < ${#all_snapshots[@]}; other_snapshot_index++)); do
-                local other_snapshot=${all_snapshots[other_snapshot_index]}
+            for ((other_snapshot_index = snapshot_index + 1; other_snapshot_index < ${#snapshots[@]}; other_snapshot_index++)); do
+                local other_snapshot=${snapshots[other_snapshot_index]}
                 local other_timestamp=${other_snapshot##*/}
 
                 # If any earlier timestamp after the given one occurs in a different

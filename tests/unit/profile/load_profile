@@ -9,13 +9,13 @@ set -eu
 
 export PROFILE_FILE=$TEMP_DIR/profile
 
-subvolume=$TEMP_DIR/$RANDOM
-snapshots=$TEMP_DIR/$RANDOM
+subvolume_dir=$TEMP_DIR/$RANDOM
+snapshots_dir=$TEMP_DIR/$RANDOM
 limits=()
 
 cat >"$PROFILE_FILE" <<-EOF
-SUBVOLUME=$subvolume
-SNAPSHOTS=$snapshots
+SUBVOLUME=$subvolume_dir
+SNAPSHOTS=$snapshots_dir
 EOF
 
 for event_name in "${EVENT_NAMES[@]}"; do
@@ -27,8 +27,8 @@ done
 assert_success assert_no_output \
     load_profile
 
-assert_equal "$SUBVOLUME" "$subvolume"
-assert_equal "$SNAPSHOTS" "$snapshots"
+assert_equal "$SUBVOLUME" "$subvolume_dir"
+assert_equal "$SNAPSHOTS" "$snapshots_dir"
 
 for i in "${!EVENT_NAMES[@]}"; do
     assert_equal "$(get_limit "${EVENT_NAMES[i]}")" "${limits[i]}"

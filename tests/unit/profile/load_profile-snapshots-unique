@@ -15,7 +15,9 @@ profile_names=(foo bar baz)
 
 for i in "${!profile_names[@]}"; do
     profile_name=${profile_names[i]}
+
     export PROFILE_FILE=$TEMP_DIR/$profile_name.conf
+
     printf "%s\n" "${profile_lines[@]}" >"$PROFILE_FILE"
 
     if ((i == 0)); then

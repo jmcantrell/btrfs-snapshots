@@ -8,32 +8,33 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_dir=$ETC_DIR/profile.d
-profile_names=(a b c)
-snapshot_paths=()
 
 mkdir -p "$profile_dir"
 
+profile_names=(a b c)
+snapshots=()
+
 for profile_name in "${profile_names[@]}"; do
-    subvolume=$TEMP_DIR/subvolumes/$profile_name
-    snapshots=$TEMP_DIR/snapshots/$profile_name
-    snapshot=$snapshots/$TIMESTAMP
-    snapshot_paths+=("$snapshot")
+    subvolume_dir=$TEMP_DIR/subvolume/$profile_name
+    snapshots_dir=$TEMP_DIR/snapshots/$profile_name
+    snapshot=$snapshots_dir/$TIMESTAMP
+    snapshots+=("$snapshot")
 
     mkdir -p "$snapshot"
 
     printf "%s\n" \
-        SUBVOLUME="$subvolume" \
-        SNAPSHOTS="$snapshots" \
-        >"$ETC_DIR/profile.d/$profile_name.conf"
+        SUBVOLUME="$subvolume_dir" \
+        SNAPSHOTS="$snapshots_dir" \
+        >"$profile_dir/$profile_name.conf"
 done
 
+selection=(0 2)
 options=()
 stdout_lines=()
-selection=(0 2)
 
 for i in "${selection[@]}"; do
     options+=(-p "${profile_names[i]}")
-    stdout_lines+=("$(format "$TEXT_BTRFS_DELETE" SNAPSHOT="${snapshot_paths[i]}")")
+    stdout_lines+=("$(format "$TEXT_BTRFS_DELETE" SNAPSHOT="${snapshots[i]}")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
@@ -42,8 +43,8 @@ assert_success assert_stdout "$stdout" \
     btrfs-snapshots "${options[@]}" prune
 
 for i in "${selection[@]}"; do
-    assert_no_directory "${snapshot_paths[i]}"
+    assert_no_directory "${snapshots[i]}"
 done
 
 # Make sure the non-selected profile kept its snapshot.
-assert_directory "${snapshot_paths[1]}"
+assert_directory "${snapshots[1]}"
