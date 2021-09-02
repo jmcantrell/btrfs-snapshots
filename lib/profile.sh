@@ -18,7 +18,7 @@ load_profile() {
 
     local defaults_file=$ETC_DIR/defaults.conf
 
-    if [[ -r $defaults_file ]] && ! . "$defaults_file"; then
+    if [[ -f $defaults_file ]] && ! . "$defaults_file"; then
         error "$TEXT_DEFAULTS_FAILED" DEFAULTS_FILE="$defaults_file"
         return 1
     fi
