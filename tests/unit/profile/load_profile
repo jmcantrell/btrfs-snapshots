@@ -27,9 +27,7 @@ done
 assert_success assert_no_output \
     load_profile
 
-# shellcheck disable=SC2153
 assert_equal "$SUBVOLUME" "$subvolume"
-# shellcheck disable=SC2153
 assert_equal "$SNAPSHOTS" "$snapshots"
 
 for i in "${!EVENT_NAMES[@]}"; do

@@ -81,5 +81,3 @@ _btrfs_snapshots() {
 }
 
 complete -F _btrfs_snapshots btrfs-snapshots
-
-# vi:ft=sh

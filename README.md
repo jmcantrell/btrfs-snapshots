@@ -41,10 +41,10 @@ There are two packages available for Arch Linux, available via the
 AUR.
 
 Stable, based on the latest tagged release:
-[btrfs-snapshots][btrfs-snapshots-aur]
+[btrfs-snapshots][aur]
 
 Unstable, based on the latest commit to the main branch:
-[btrfs-snapshots-git][btrfs-snapshots-aur-git]
+[btrfs-snapshots-git][aur-git]
 
 ## Help
 
@@ -110,5 +110,5 @@ examples in `./config/{defaults,profile}.conf`.
 
 [snapper]: http://snapper.io/
 [direnv]: https://direnv.net/
-[btrfs-snapshots-aur]: https://aur.archlinux.org/packages/btrfs-snapshots/
-[btrfs-snapshots-aur-git]: https://aur.archlinux.org/packages/btrfs-snapshots-git/
+[aur]: https://aur.archlinux.org/packages/btrfs-snapshots/
+[aur-git]: https://aur.archlinux.org/packages/btrfs-snapshots-git/
