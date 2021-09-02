@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that btrfs errors and exit status are reported.
+# Show that the configuration directory can be overridden.
 
 set -eu
 

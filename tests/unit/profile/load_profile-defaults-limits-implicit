@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that default limit values can be set.
+# Show that the default limit value is zero.
 
 set -eu
 

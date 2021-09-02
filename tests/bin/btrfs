@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# A fake implementation of the btrfs functionality used in the tests.
+# Simulates the same messages. Operates on regular directories instead.
+
 set -eu
 
 . "$LIB_DIR"/init.sh

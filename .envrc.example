@@ -7,4 +7,6 @@ export TESTS_VERBOSE=1
 # Tell the main command to look for files in the current directory.
 export BTRFS_SNAPSHOTS_LIB_DIR=$PWD/lib
 export BTRFS_SNAPSHOTS_ETC_DIR=$PWD/.mine/etc
+
+# Pretend that any regular directory is mounted.
 export BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED=1

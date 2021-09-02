@@ -3,6 +3,9 @@
 set -eu
 
 export PATH=$PWD/tests/bin:$PWD/bin:$PATH
+
+# Shortened variables for convenience when writing tests.
+# See `./tests/lib/init.sh` for ETC_DIR and more details.
 export LIB_DIR=$PWD/lib
 export TESTS_LIB_DIR=$PWD/tests/lib
 

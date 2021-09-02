@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that errors loading the defaults file will be reported.
+# Show that errors while loading the defaults file will be reported.
 
 set -eu
 

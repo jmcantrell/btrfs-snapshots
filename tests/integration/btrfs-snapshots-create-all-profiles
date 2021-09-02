@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that no profile selection is the same as selecting all of them when
+# Show that no profile selection is equivalent to selecting all of them when
 # creating snapshots.
 
 set -eu

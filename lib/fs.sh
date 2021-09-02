@@ -13,6 +13,7 @@ is_mounted() {
         return 1
     fi
 
+    # Allow mount path check to be bypassed for testing.
     if [[ -v BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED ]]; then
         return 0
     fi

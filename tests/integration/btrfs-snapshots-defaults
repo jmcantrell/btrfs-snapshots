@@ -13,7 +13,7 @@ profile_file=$profile_dir/$profile_name.conf
 subvolume=$TEMP_DIR/subvolume
 
 # There will be no snapshot directory defined in the profile, so it should
-# assume this default that will be in the main configuration file.
+# assume this one that will be set in the default configuration file.
 snapshots=$TEMP_DIR/snapshots/$profile_name
 
 for event_name in "${EVENT_NAMES[@]}"; do
@@ -21,8 +21,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     mkdir -p "$subvolume" "$ETC_DIR"/profile.d
 
-    # There are no limits defined in the profile, so it should assume the defaults
-    # that will be set in the main configuration file.
+    # There are no limits defined in the profile, so it should assume these.
     echo "SUBVOLUME=$subvolume" >"$profile_file"
 
     limit=$((RANDOM % 5 + 1))

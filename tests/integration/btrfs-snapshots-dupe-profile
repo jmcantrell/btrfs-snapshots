@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Show that requesting the same profile at the command line multiple times will
-# only perform the action once.
+# only load the profile (and subsequently, perform whatever action) once.
 
 set -eu
 

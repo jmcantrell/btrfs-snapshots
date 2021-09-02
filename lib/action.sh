@@ -8,6 +8,7 @@ create() {
         return 0
     fi
 
+    # Allow ability to override the running timestamp, simplifying testing.
     TIMESTAMP=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(get_timestamp)}
 
     local snapshot=$SNAPSHOTS/$TIMESTAMP
