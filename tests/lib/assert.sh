@@ -60,13 +60,18 @@ assert_output() {
     printf "%s" "$expected_stdout" >"$expected_stdout_file"
     printf "%s" "$expected_stderr" >"$expected_stderr_file"
 
+    different=0
+
     for output in stdout stderr; do
         actual_file_name=actual_${output}_file
         expected_file_name=expected_${output}_file
         if ! diff -u "${!actual_file_name}" "${!expected_file_name}"; then
-            die "Command output for %s should have been equal" "$output"
+            different=1
+            error "Command output for %s should have been equal" "$output"
         fi
     done
+
+    ((different)) && die
 
     return "$result"
 }
