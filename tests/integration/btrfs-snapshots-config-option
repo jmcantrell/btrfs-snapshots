@@ -14,10 +14,11 @@ mkdir -p "$profile_dir"
 # This is a valid configuration that should produce a snapshot, but since the
 # configuration directory is going to be overridden, it should not be seen and
 # nothing should happen.
-cat >"$profile_dir"/foo.conf <<-EOF
-SUBVOLUME=$TEMP_DIR
-SNAPSHOTS=$TEMP_DIR
-EOF
+
+printf "%s=%s\n" \
+    SUBVOLUME "$TEMP_DIR" \
+    SNAPSHOTS "$TEMP_DIR" \
+    >"$profile_dir"/foo.conf
 
 assert_success assert_no_output \
     btrfs-snapshots -C /path/to/nowhere create

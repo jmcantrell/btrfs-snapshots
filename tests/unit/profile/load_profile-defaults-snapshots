@@ -14,16 +14,23 @@ export PROFILE_FILE=$ETC_DIR/$profile_name.conf
 
 mkdir -p "$ETC_DIR"
 
-echo "SUBVOLUME=$TEMP_DIR" >"$PROFILE_FILE"
-echo "SNAPSHOTS=$TEMP_DIR" >"$defaults_file"
+printf "%s=%s\n" \
+    SUBVOLUME "$TEMP_DIR" \
+    >"$PROFILE_FILE"
 
-printf -v stderr "%s\n" \
-    "$(format "ERROR: $TEXT_DEFAULTS_SNAPSHOTS_MISSING_NAME")"
+printf "%s=%s\n" \
+    SNAPSHOTS "$TEMP_DIR" \
+    >"$defaults_file"
+
+printf -v stderr \
+    "ERROR: $TEXT_DEFAULTS_SNAPSHOTS_MISSING_PLACEHOLDER\n"
 
 assert_failure assert_stderr "$stderr" \
     load_profile
 
-echo "SNAPSHOTS=$TEMP_DIR/%NAME%" >"$defaults_file"
+printf "%s=%s\n" \
+    SNAPSHOTS "$TEMP_DIR/%s" \
+    >"$defaults_file"
 
 assert_success assert_no_output \
     load_profile

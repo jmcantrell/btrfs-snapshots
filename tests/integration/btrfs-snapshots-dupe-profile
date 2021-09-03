@@ -15,16 +15,13 @@ snapshots_dir=$TEMP_DIR/snapshots
 
 mkdir -p "$profile_dir"
 
-cat >"$profile_dir/$profile_name.conf" <<-EOF
-SUBVOLUME=$subvolume_dir
-SNAPSHOTS=$snapshots_dir
-EOF
+printf "%s=%s\n" \
+    SUBVOLUME "$subvolume_dir" \
+    SNAPSHOTS "$snapshots_dir" \
+    >"$profile_dir/$profile_name.conf"
 
 # Notice that there is only one message expected.
-printf -v stderr "%s\n" "$(
-    format "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING" \
-        PROFILE_NAME="$profile_name"
-)"
+printf -v stderr "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING\n" "$profile_name"
 
 # Notice that the same profile is requested twice.
 assert_success assert_stderr "$stderr" \

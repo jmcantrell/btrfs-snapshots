@@ -17,10 +17,10 @@ mkdir -p "$profile_dir" "$subvolume_dir"
 # Create a snapshot so there is a reason for calling btrfs during the prune.
 mkdir -p "$snapshots_dir/$TIMESTAMP"
 
-cat >"$profile_dir/$profile_name.conf" <<-EOF
-SUBVOLUME=$subvolume_dir
-SNAPSHOTS=$snapshots_dir
-EOF
+printf "%s=%s\n" \
+    SUBVOLUME "$subvolume_dir" \
+    SNAPSHOTS "$snapshots_dir" \
+    >"$profile_dir/$profile_name.conf"
 
 btrfs() {
     return 5
@@ -29,9 +29,11 @@ btrfs() {
 export -f btrfs
 
 for action in create prune; do
-    printf -v stderr "%s\n" \
-        "$(format "ERROR: $TEXT_BTRFS_FAILED" STATUS=5)" \
-        "$(format "ERROR: $TEXT_ACTION_FAILED" ACTION="$action")"
+    stderr_lines=(
+        "$(printf "ERROR: $TEXT_BTRFS_FAILED" 5)"
+        "$(printf "ERROR: $TEXT_ACTION_FAILED" "$action")"
+    )
+    printf -v stderr "%s\n" "${stderr_lines[@]}"
 
     assert_failure assert_stderr "$stderr" \
         btrfs-snapshots -p "$profile_name" "$action"

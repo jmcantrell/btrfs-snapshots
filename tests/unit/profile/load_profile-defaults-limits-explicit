@@ -11,17 +11,21 @@ export PROFILE_FILE=$ETC_DIR/foo.conf
 
 mkdir -p "$ETC_DIR"
 
-cat >"$PROFILE_FILE" <<-EOF
-SUBVOLUME=$TEMP_DIR
-SNAPSHOTS=$TEMP_DIR
-EOF
+printf "%s=%s\n" \
+    SUBVOLUME "$TEMP_DIR" \
+    SNAPSHOTS "$TEMP_DIR" \
+    >"$PROFILE_FILE"
 
 # Create random defaults for every limit.
 limits=()
 for event_name in "${EVENT_NAMES[@]}"; do
     limit=$((1 + RANDOM))
     limits+=("$limit")
-    echo "$(get_limit_variable "$event_name")=$limit" >>"$ETC_DIR"/defaults.conf
+
+    printf "%s=%d\n" \
+        "$(get_limit_variable "$event_name")" \
+        "$limit" \
+        >>"$ETC_DIR"/defaults.conf
 done
 
 assert_success assert_no_output \

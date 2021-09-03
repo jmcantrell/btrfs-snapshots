@@ -10,9 +10,12 @@ set -eu
 profile_name=bogus
 profile_file=$ETC_DIR/profile.d/$profile_name.conf
 
-printf -v stderr "%s\n" \
-    "$(format "ERROR: $TEXT_PROFILE_NOT_EXIST" PROFILE_NAME="$profile_name")" \
-    "$(format "ERROR: $TEXT_PROFILE_LOAD_FAILED" PROFILE_FILE="$profile_file")"
+stderr_lines=(
+    "$(printf "ERROR: $TEXT_PROFILE_NOT_EXIST" "$profile_name")"
+    "$(printf "ERROR: $TEXT_PROFILE_LOAD_FAILED" "$profile_file")"
+)
+
+printf -v stderr "%s\n" "${stderr_lines[@]}"
 
 for action in create prune; do
     assert_failure assert_stderr "$stderr" \

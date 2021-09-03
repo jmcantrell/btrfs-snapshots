@@ -15,24 +15,24 @@ mkdir -p "$profile_dir"
 profile_names=(a b c)
 snapshots=()
 
-for name in "${profile_names[@]}"; do
-    subvolume_dir=$TEMP_DIR/subvolume/$name
-    snapshots_dir=$TEMP_DIR/snapshots/$name
+for profile_name in "${profile_names[@]}"; do
+    subvolume_dir=$TEMP_DIR/subvolume/$profile_name
+    snapshots_dir=$TEMP_DIR/snapshots/$profile_name
     snapshot=$snapshots_dir/$TIMESTAMP
     snapshots+=("$snapshot")
 
     mkdir -p "$snapshot"
 
-    printf "%s\n" \
-        SUBVOLUME="$subvolume_dir" \
-        SNAPSHOTS="$snapshots_dir" \
-        >"$profile_dir/$name.conf"
+    printf "%s=%s\n" \
+        SUBVOLUME "$subvolume_dir" \
+        SNAPSHOTS "$snapshots_dir" \
+        >"$profile_dir/$profile_name.conf"
 done
 
 stdout_lines=()
 
 for i in "${!profile_names[@]}"; do
-    stdout_lines+=("$(format "$TEXT_BTRFS_DELETE" SNAPSHOT="${snapshots[i]}")")
+    stdout_lines+=("$(printf "$TEXT_BTRFS_DELETE" "${snapshots[i]}")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"

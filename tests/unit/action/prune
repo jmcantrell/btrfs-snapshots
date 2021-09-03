@@ -20,7 +20,6 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     keepers=()
     fillers=()
-    stdout_lines=()
 
     while IFS= read -r -d $'\n' event_start; do
         # This snapshot is the earliest one of this event, so it should not be
@@ -37,12 +36,11 @@ for event_name in "${EVENT_NAMES[@]}"; do
             # Only predict the message if it's not the keeper.
             if [[ $snapshot != "$keeper" ]]; then
                 fillers+=("$snapshot")
-                stdout_lines+=("$(format "$TEXT_BTRFS_DELETE" SNAPSHOT="$snapshot")")
             fi
         done < <(timestamp_sequence "$event_start" "1 second" "$limit" | tac)
     done < <(timestamp_sequence_event "$TIMESTAMP" "$event_name" "$limit" | tac)
 
-    printf -v stdout "%s\n" "${stdout_lines[@]}"
+    printf -v stdout "$TEXT_BTRFS_DELETE\n" "${fillers[@]}"
 
     assert_success assert_stdout "$stdout" \
         prune

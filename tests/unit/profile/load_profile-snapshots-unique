@@ -7,10 +7,6 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-# It's perfectly okay for a subvolume to have multiple snapshot locations, but
-# any given snapshot location can only store snapshots for one subvolume.
-profile_lines=("SUBVOLUME=$TEMP_DIR" "SNAPSHOTS=$TEMP_DIR")
-
 profile_names=(foo bar baz)
 
 for i in "${!profile_names[@]}"; do
@@ -18,17 +14,19 @@ for i in "${!profile_names[@]}"; do
 
     export PROFILE_FILE=$TEMP_DIR/$profile_name.conf
 
-    printf "%s\n" "${profile_lines[@]}" >"$PROFILE_FILE"
+    printf "%s=%s\n" \
+        SUBVOLUME "$TEMP_DIR" \
+        SNAPSHOTS "$TEMP_DIR" \
+        >"$PROFILE_FILE"
 
     if ((i == 0)); then
         # The snapshot locations are first come, first serve.
         assert_success assert_no_output \
             load_profile
     else
-        printf -v stderr "%s\n" "$(
-            format "ERROR: $TEXT_PROFILE_SNAPSHOTS_UNIQUE" \
-                PROFILE_NAME="$profile_name"
-        )"
+        printf -v stderr \
+            "ERROR: $TEXT_PROFILE_SNAPSHOTS_UNIQUE\n" \
+            "$profile_name"
 
         assert_failure assert_stderr "$stderr" \
             load_profile

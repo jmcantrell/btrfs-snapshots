@@ -1,7 +1,7 @@
 assert_set() {
     local variable=$1
     if [[ ! -v $variable ]]; then
-        die "Variable '$variable' should have been set"
+        die "Variable '%s' should have been set" "$variable"
     fi
 }
 
@@ -10,7 +10,7 @@ assert_equal() {
     local expected=$2
 
     if [[ $actual != "$expected" ]]; then
-        die "Values should have been equal: $actual != $expected"
+        die "Values should have been equal: %s != %s" "$actual" "$expected"
     fi
 }
 
@@ -57,14 +57,14 @@ assert_output() {
 
     local result=$?
 
-    echo -n "$expected_stdout" >"$expected_stdout_file"
-    echo -n "$expected_stderr" >"$expected_stderr_file"
+    printf "%s" "$expected_stdout" >"$expected_stdout_file"
+    printf "%s" "$expected_stderr" >"$expected_stderr_file"
 
     for output in stdout stderr; do
         actual_file_name=actual_${output}_file
         expected_file_name=expected_${output}_file
         if ! diff -u "${!actual_file_name}" "${!expected_file_name}"; then
-            die "Command output for $output should have been equal"
+            die "Command output for %s should have been equal" "$output"
         fi
     done
 
@@ -74,42 +74,42 @@ assert_output() {
 assert_file() {
     local file=$1
     if [[ ! -f $file ]]; then
-        die "File '$file' should exist"
+        die "File '%s' should exist" "$file"
     fi
 }
 
 assert_no_file() {
     local file=$1
     if [[ -f $file ]]; then
-        die "File '$file' should not exist"
+        die "File '%s' should not exist" "$file"
     fi
 }
 
 assert_directory() {
     local directory=$1
     if [[ ! -d $directory ]]; then
-        die "Directory '$directory' should exist"
+        die "Directory '%s' should exist" "$directory"
     fi
 }
 
 assert_no_directory() {
     local directory=$1
     if [[ -d $directory ]]; then
-        die "Directory '$directory' should not exist"
+        die "Directory '%s' should not exist" "$directory"
     fi
 }
 
 assert_exists() {
     local path=$1
     if [[ ! -e $path ]]; then
-        die "Path '$path' should exist"
+        die "Path '%s' should exist" "$path"
     fi
 }
 
 assert_not_exists() {
     local path=$1
     if [[ -e $path ]]; then
-        die "Path '$path' should not exist"
+        die "Path '%s' should not exist" "$path"
     fi
 }
 
@@ -119,7 +119,7 @@ assert_file_content() {
 
     local expected_file=$TEMP_DIR/expected-content
 
-    echo -n "$content" >"$expected_file"
+    printf "%s" "$content" >"$expected_file"
 
     if ! diff -u "$file" "$expected_file"; then
         die "File contents should have been equal"
@@ -130,19 +130,24 @@ assert_arrays_equal() {
     local -n array1=$1
     local -n array2=$2
 
+    local unequal=0
+
     if ((${#array1[@]} != ${#array2[@]})); then
-        die "Arrays should be the same length: ${#array1[@]} != ${#array2[@]}"
+        printf "Arrays should be the same length: %d != %d\n" \
+            "${#array1[@]}" "${#array2[@]}" >&2
+        unequal=1
+    else
+        local i
+        for ((i = 0; i < ${#array1[@]}; i++)); do
+            if [[ ${array1[i]} != "${array2[i]}" ]]; then
+                printf "Array items at index '%d' should be equal: %s != %s\n" \
+                    "$i" "${array1[i]}" "${array2[i]}" >&2
+                unequal=1
+            fi
+        done
     fi
 
-    local i mismatch=0
-    for ((i = 0; i < ${#array1[@]}; i++)); do
-        if [[ ${array1[i]} != "${array2[i]}" ]]; then
-            echo "Array items at index '$i' should match: ${array1[i]} != ${array2[i]}" >&2
-            mismatch=1
-        fi
-    done
-
-    if ((mismatch)); then
+    if ((unequal)); then
         die "Array items should have been equal"
     fi
 }

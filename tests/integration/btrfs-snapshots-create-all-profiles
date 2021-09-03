@@ -17,25 +17,21 @@ snapshots=()
 stdout_lines=()
 
 for i in "${!profile_names[@]}"; do
-    name=${profile_names[i]}
-    subvolume_dir=$TEMP_DIR/subvolume/$name
-    snapshots_dir=$TEMP_DIR/snapshots/$name
+    profile_name=${profile_names[i]}
+    subvolume_dir=$TEMP_DIR/subvolume/$profile_name
+    snapshots_dir=$TEMP_DIR/snapshots/$profile_name
     snapshot=$snapshots_dir/$TIMESTAMP
     snapshots+=("$snapshot")
 
     mkdir -p "$subvolume_dir"
-    echo -n "$name" >"$subvolume_dir"/marker
+    printf "%s" "$profile_name" >"$subvolume_dir"/marker
 
-    printf "%s\n" \
-        SUBVOLUME="$subvolume_dir" \
-        SNAPSHOTS="$snapshots_dir" \
-        >"$profile_dir/$name.conf"
+    printf "%s=%s\n" \
+        SUBVOLUME "$subvolume_dir" \
+        SNAPSHOTS "$snapshots_dir" \
+        >"$profile_dir/$profile_name.conf"
 
-    stdout_lines+=("$(
-        format "$TEXT_BTRFS_CREATE" \
-            SUBVOLUME="$subvolume_dir" \
-            SNAPSHOT="$snapshot"
-    )")
+    stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE" "$subvolume_dir" "$snapshot")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"

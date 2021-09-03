@@ -15,15 +15,13 @@ export PROFILE_FILE=$profile_dir/$profile_name.conf
 mkdir -p "$profile_dir"
 
 # Create a profile that does not have the subvolume set.
-echo "SNAPSHOTS=$TEMP_DIR" >"$PROFILE_FILE"
+printf "%s=%s\n" SNAPSHOTS "$TEMP_DIR" >"$PROFILE_FILE"
 
 # If there's no protection, this value will get used.
-echo "SUBVOLUME=$TEMP_DIR" >"$ETC_DIR"/defaults.conf
+printf "%s=%s\n" SUBVOLUME "$TEMP_DIR" >"$ETC_DIR"/defaults.conf
 
-printf -v stderr "%s\n" "$(
-    format "ERROR: $TEXT_PROFILE_VARIABLE_NOT_SET" \
-        PROFILE_NAME="$profile_name" VARIABLE=SUBVOLUME
-)"
+printf -v stderr "ERROR: $TEXT_PROFILE_VARIABLE_NOT_SET\n" \
+    "$profile_name" SUBVOLUME
 
 assert_failure assert_stderr "$stderr" \
     load_profile

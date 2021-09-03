@@ -1,17 +1,6 @@
 export EVENT_NAMES=(minutely hourly daily weekly monthly quarterly yearly)
-export TIMESTAMP_FORMAT=%Y-%m-%dT%H:%M:%SZ
-
-digit="[0-9]"
-digit2="$digit{2}"
-digit4="$digit{4}"
-
-TIMESTAMP_PATTERN="^${TIMESTAMP_FORMAT//%Y/$digit4}$"
-
-for placeholder in %m %d %H %M %S; do
-    TIMESTAMP_PATTERN=${TIMESTAMP_PATTERN//$placeholder/$digit2}
-done
-
-unset digit digit2 digit4 placeholder
+export TIMESTAMP_FORMAT="%Y-%m-%dT%H:%M:%SZ"
+export TIMESTAMP_PATTERN="^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z"
 
 get_timestamp() {
     date --utc "$@" +"$TIMESTAMP_FORMAT"
@@ -56,11 +45,14 @@ timestamp_compare() {
     s1=$(date --utc --date="$1" +%s)
     s2=$(date --utc --date="$2" +%s)
 
+    local result
     if ((s1 < s2)); then
-        echo -1
+        result="-1"
     elif ((s1 > s2)); then
-        echo 1
+        result="1"
     else
-        echo 0
+        result="0"
     fi
+
+    printf "%s\n" "$result"
 }

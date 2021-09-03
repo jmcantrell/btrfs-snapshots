@@ -13,15 +13,16 @@ defaults_file=$ETC_DIR/defaults.conf
 
 mkdir -p "$ETC_DIR"
 
-cat >"$PROFILE_FILE" <<-EOF
-SUBVOLUME=$TEMP_DIR
-SNAPSHOTS=$TEMP_DIR
-EOF
+printf "%s=%s\n" \
+    SUBVOLUME "$TEMP_DIR" \
+    SNAPSHOTS "$TEMP_DIR" \
+    >"$PROFILE_FILE"
 
-echo "return 1" >"$defaults_file"
+printf "%s\n" "return 1" >"$defaults_file"
 
-printf -v stderr "%s\n" \
-    "$(format "ERROR: $TEXT_DEFAULTS_LOAD_FAILED" DEFAULTS_FILE="$defaults_file")"
+printf -v stderr \
+    "ERROR: $TEXT_DEFAULTS_LOAD_FAILED\n" \
+    "$defaults_file"
 
 assert_failure assert_stderr "$stderr" \
     load_profile

@@ -9,7 +9,7 @@ __find_array_value() {
         shift
 
         if [[ $straw == "$needle" ]]; then
-            echo "$i"
+            printf "%s\n" "$i"
             return 0
         fi
 
@@ -27,7 +27,7 @@ __get_opt_arg() {
 
     local i
     if i=$(__find_array_value "$opt" "${words[@]}"); then
-        echo "${words[i + 1]}"
+        printf "%s\n" "${words[i + 1]}"
         return 0
     fi
 
@@ -41,10 +41,11 @@ __shallow_basenames() {
     [[ -d $dir ]] || return 0
 
     for file in "$dir"/*"${ext:+$ext}"; do
-        [[ -f $file ]] || continue
-        name=${file##*/}
-        [[ -n $ext ]] && name=${name%"$ext"}
-        echo "$name"
+        if [[ -f $file ]]; then
+            name=${file##*/}
+            name=${name%"$ext"}
+            printf "%s\n" "$name"
+        fi
     done
 }
 

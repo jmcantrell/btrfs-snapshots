@@ -10,7 +10,7 @@ export ETC_DIR=${BTRFS_SNAPSHOTS_ETC_DIR:-/usr/local/etc/$name}
 
 . "$LIB_DIR"/init.sh
 
-declare -a profile_names=()
+profile_names=()
 
 while getopts ":C:p:h" option; do
     case $option in
@@ -20,15 +20,17 @@ while getopts ":C:p:h" option; do
         info "$TEXT_USAGE"
         exit 0
         ;;
-    *) die "$TEXT_INVALID" NAME=option VALUE="$OPTARG" ;;
+    *) die "$TEXT_INVALID" option "$OPTARG" ;;
     esac
 done && shift $((OPTIND - 1))
 
 action=${1:-list}
 
+profile_dir=$ETC_DIR/profile.d
+
 case $action in
 create | prune | list) ;;
-*) die "$TEXT_INVALID" NAME=action VALUE="$action" ;;
+*) die "$TEXT_INVALID" action "$action" ;;
 esac
 
 declare -a profile_files
@@ -36,10 +38,10 @@ declare -a profile_files
 if ((${#profile_names[@]} > 0)); then
     profile_files=()
     for profile_name in "${profile_names[@]}"; do
-        profile_files+=("$ETC_DIR/profile.d/$profile_name.conf")
+        profile_files+=("$profile_dir/$profile_name.conf")
     done
 else
-    profile_files=("$ETC_DIR/profile.d"/*.conf)
+    profile_files=("$profile_dir"/*.conf)
 fi
 
 declare -A profiles_seen=()
@@ -54,10 +56,10 @@ for PROFILE_FILE in "${profile_files[@]}"; do
     profiles_seen[$PROFILE_FILE]=1
 
     if ! load_profile; then
-        die "$TEXT_PROFILE_LOAD_FAILED" PROFILE_FILE
+        die "$TEXT_PROFILE_LOAD_FAILED" "$PROFILE_FILE"
     fi
 
     if ! "$action"; then
-        die "$TEXT_ACTION_FAILED" ACTION="$action"
+        die "$TEXT_ACTION_FAILED" "$action"
     fi
 done

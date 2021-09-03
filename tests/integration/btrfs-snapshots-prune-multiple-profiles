@@ -22,9 +22,9 @@ for profile_name in "${profile_names[@]}"; do
 
     mkdir -p "$snapshot"
 
-    printf "%s\n" \
-        SUBVOLUME="$subvolume_dir" \
-        SNAPSHOTS="$snapshots_dir" \
+    printf "%s=%s\n" \
+        SUBVOLUME "$subvolume_dir" \
+        SNAPSHOTS "$snapshots_dir" \
         >"$profile_dir/$profile_name.conf"
 done
 
@@ -34,7 +34,7 @@ stdout_lines=()
 
 for i in "${selection[@]}"; do
     options+=(-p "${profile_names[i]}")
-    stdout_lines+=("$(format "$TEXT_BTRFS_DELETE" SNAPSHOT="${snapshots[i]}")")
+    stdout_lines+=("$(printf "$TEXT_BTRFS_DELETE" "${snapshots[i]}")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"

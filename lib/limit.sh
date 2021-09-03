@@ -1,11 +1,11 @@
 get_limit_variable() {
-    echo "LIMIT_${1@U}"
+    printf "%s" "LIMIT_${1@U}"
 }
 
 get_limit() {
     local variable
     variable=$(get_limit_variable "$1")
-    echo "${!variable:-0}"
+    printf "%s" "${!variable:-0}"
 }
 
 set_limit() {

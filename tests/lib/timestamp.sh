@@ -5,7 +5,7 @@ timestamp_sequence() {
 
     local i
     for ((i = 0; i < count; i++)); do
-        echo "$timestamp"
+        printf "%s\n" "$timestamp"
         timestamp=$(get_timestamp --date="$timestamp + $increment")
     done
 }

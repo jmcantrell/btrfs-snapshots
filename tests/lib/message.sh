@@ -1,2 +1,2 @@
-export TEXT_BTRFS_CREATE="Create a readonly snapshot of '%SUBVOLUME%' in '%SNAPSHOT%'"
-export TEXT_BTRFS_DELETE="Delete subvolume (no-commit): '%SNAPSHOT%'"
+export TEXT_BTRFS_CREATE="Create a readonly snapshot of '%s' in '%s'"
+export TEXT_BTRFS_DELETE="Delete subvolume (no-commit): '%s'"

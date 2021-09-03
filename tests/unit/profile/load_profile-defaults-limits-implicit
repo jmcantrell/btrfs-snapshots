@@ -9,10 +9,10 @@ set -eu
 
 export PROFILE_FILE=$TEMP_DIR/profile.conf
 
-cat >"$PROFILE_FILE" <<-EOF
-SUBVOLUME=$TEMP_DIR
-SNAPSHOTS=$TEMP_DIR
-EOF
+printf "%s=%s\n" \
+    SUBVOLUME "$TEMP_DIR" \
+    SNAPSHOTS "$TEMP_DIR" \
+    >"$PROFILE_FILE"
 
 assert_success assert_no_output \
     load_profile
