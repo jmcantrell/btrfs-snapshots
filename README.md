@@ -68,17 +68,16 @@ To run the included tests:
 ./scripts/test
 ```
 
+To only run some tests (passes arguments to `find`):
+
+```sh
+./scripts/test -path "*/unit/*"
+```
+
 To see which tests are being run:
 
 ```sh
 TESTS_VERBOSE=1 ./scripts/test
-```
-
-To run a specific test (passes arguments to `find`):
-
-```sh
-./scripts/test -name specific-test
-./scripts/test -path "*/unit/*"
 ```
 
 ## Hacking
