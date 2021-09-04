@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Show that the configuration directory option requires an argument.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+for option in -p --profile --profile=; do
+    printf -v stderr \
+        "ERROR: $TEXT_OPTION_MISSING_ARGUMENT\n" \
+        "${option%=}"
+
+    assert_failure assert_stderr "$stderr" \
+        btrfs-snapshots "$option"
+done
+

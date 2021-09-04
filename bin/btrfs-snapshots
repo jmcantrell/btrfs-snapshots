@@ -10,21 +10,61 @@ export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$name}
 
 . "$LIB_DIR"/init.sh
 
+usage() {
+    printf "%s\n" "$TEXT_USAGE"
+    exit
+}
+
+invalid_option() {
+    warning "$TEXT_INVALID" option "$1"
+}
+
+missing_optarg() {
+    die "$TEXT_OPTION_MISSING_ARGUMENT" "$1"
+}
+
 profile_names=()
 
-while getopts ":C:p:h" option; do
-    case $option in
-    C) export ETC_DIR=$OPTARG ;;
-    p) profile_names+=("$OPTARG") ;;
-    h)
-        info "$TEXT_USAGE"
-        exit 0
-        ;;
-    *) die "$TEXT_INVALID" option "$OPTARG" ;;
-    esac
-done && shift $((OPTIND - 1))
+while [[ -v 1 ]]; do
+    case $1 in
+    -h | -\? | --help) usage ;;
 
-action=${1:-list}
+    -C | --config-dir)
+        [[ -v 2 ]] || missing_optarg "$1"
+        CONFIG_DIR=$2
+        shift
+        ;;
+    --config-dir=)
+        missing_optarg "${1%%=*}"
+        ;;
+    --config-dir=?*)
+        CONFIG_DIR=${1##*=}
+        ;;
+
+    -p | --profile)
+        [[ -v 2 ]] || missing_optarg "$1"
+        profile_names+=("$2")
+        shift
+        ;;
+    --profile=)
+        missing_optarg "${1%%=*}"
+        ;;
+    --profile=?*)
+        profile_names+=("${1##*=}")
+        ;;
+
+    --)
+        shift
+        break
+        ;;
+
+    -?*) invalid_option "$1" ;;
+
+    *) break ;;
+    esac
+
+    shift
+done
 
 action=${1:-list}
 [[ -v 1 ]] && shift

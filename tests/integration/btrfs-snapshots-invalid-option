@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Show that invalid options are reported and ignored.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_name=foo
+profile_dir=$CONFIG_DIR/profile.d
+snapshot=$TEMP_DIR/$TIMESTAMP
+
+mkdir -p "$profile_dir" "$snapshot"
+
+printf "%s=%s\n" \
+    SUBVOLUME "$TEMP_DIR" \
+    SNAPSHOTS "$TEMP_DIR" \
+    >"$profile_dir/$profile_name.conf"
+
+option=-x
+
+printf -v stdout "%s\n" "$snapshot"
+printf -v stderr "WARNING: $TEXT_INVALID\n" option "$option"
+
+assert_success assert_output "$stdout" "$stderr" \
+    btrfs-snapshots "$option"

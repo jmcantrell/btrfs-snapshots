@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Show that the end of options marker is recognized.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+printf -v stderr "ERROR: $TEXT_INVALID\n" action -h
+
+assert_failure assert_stderr "$stderr" \
+    btrfs-snapshots -- -h

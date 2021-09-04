@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Show that profiles can be selected with a command line option.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_names=(a b c d e)
+profile_dir=$CONFIG_DIR/profile.d
+
+mkdir -p "$profile_dir"
+
+subvolume_dirs=()
+snapshots_dirs=()
+
+for profile_name in "${profile_names[@]}"; do
+    subvolume_dir=$TEMP_DIR/subvolume/$profile_name
+    subvolume_dirs+=("$subvolume_dir")
+    snapshots_dir=$TEMP_DIR/snapshots/$profile_name
+    snapshots_dirs+=("$snapshots_dir")
+
+    mkdir -p "$subvolume_dir"
+
+    printf "%s=%s\n" \
+        SUBVOLUME "$subvolume_dir" \
+        SNAPSHOTS "$snapshots_dir" \
+        >"$profile_dir/$profile_name.conf"
+done
+
+selected=(0 2 4)
+stdout_lines=()
+
+for i in "${selected[@]}"; do
+    printf -v message \
+        "$TEXT_BTRFS_CREATE" \
+        "${subvolume_dirs[i]}" "${snapshots_dirs[i]}/$TIMESTAMP"
+
+    stdout_lines+=("$message")
+done
+
+printf -v stdout "%s\n" "${stdout_lines[@]}"
+
+assert_success assert_stdout "$stdout" \
+    btrfs-snapshots \
+    -p "${profile_names[${selected[0]}]}" \
+    --profile "${profile_names[${selected[1]}]}" \
+    --profile="${profile_names[${selected[2]}]}" \
+    create

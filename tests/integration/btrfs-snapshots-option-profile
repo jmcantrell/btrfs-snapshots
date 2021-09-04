@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# Show that profiles can be selected with a command line option.
+
+set -eu
+
+. "$LIB_DIR"/init.sh
+. "$TESTS_LIB_DIR"/init.sh
+
+profile_name=foo
+profile_dir=$CONFIG_DIR/profile.d
+
+assert_option() {
+    subvolume_dir=$TEMP_DIR/subvolume
+    snapshots_dir=$TEMP_DIR/snapshots
+    snapshot=$snapshots_dir/$TIMESTAMP
+
+    reset_temp
+
+    mkdir -p "$profile_dir" "$subvolume_dir"
+
+    printf "%s=%s\n" \
+        SUBVOLUME "$subvolume_dir" \
+        SNAPSHOTS "$snapshots_dir" \
+        >"$profile_dir/$profile_name.conf"
+
+    printf -v stdout \
+        "$TEXT_BTRFS_CREATE\n" \
+        "$subvolume_dir" "$snapshot"
+
+    assert_success assert_stdout "$stdout" \
+        btrfs-snapshots "$@" create
+
+    assert_equal "$(get_snapshots "$snapshots_dir" | wc -l)" 1
+}
+
+assert_option -p "$profile_name"
+assert_option --profile "$profile_name"
+assert_option --profile="$profile_name"

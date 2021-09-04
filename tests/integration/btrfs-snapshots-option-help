@@ -7,5 +7,7 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-assert_success assert_stdout "$TEXT_USAGE"$'\n' \
-    btrfs-snapshots -h
+for option in -h -? --help; do
+    assert_success assert_stdout "$TEXT_USAGE"$'\n' \
+        btrfs-snapshots "$option"
+done

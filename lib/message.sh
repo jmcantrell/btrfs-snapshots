@@ -5,21 +5,23 @@ Usage:
     btrfs-snapshots [-p NAME]... [ACTION]
 
 Options:
-    -h              show this help text
-    -p NAME         profile to perform action on (can be used multiple times)
-    -C DIRECTORY    directory to use for configuration
+    -h, -?, --help                show this help text
+    -p, --profile=NAME            profile to perform action on
+    -C, --config-dir=DIRECTORY    directory to use for configuration
 
 Arguments:
-    ACTION          action to perform on selected profiles (default: list)
+    ACTION    action to perform on selected profiles (default: list)
 
 Actions:
-    list            print full path of every recognized snapshot
-    create          create a new snapshot in the configured location
-    prune           delete snapshots that fall outside of defined limits
+    list      print full path of every recognized snapshot
+    create    create a new snapshot in the configured location
+    prune     delete snapshots that fall outside of defined limits
 
-If no profiles are specified with -p, then every profile is selected."
+If no profiles are specified with -p/--profile, then every profile is selected."
 
 export TEXT_INVALID="Invalid %s '%s'"
+
+export TEXT_OPTION_MISSING_ARGUMENT="Option '%s' requires an argument"
 
 export TEXT_PROFILE_NOT_EXIST="Profile '%s' does not exist"
 export TEXT_PROFILE_VARIABLE_NOT_SET="Invalid profile '%s'; %s is not set"
