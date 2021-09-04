@@ -8,7 +8,7 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_name=foo
-profile_dir=$ETC_DIR/profile.d
+profile_dir=$CONFIG_DIR/profile.d
 
 export PROFILE_FILE=$profile_dir/$profile_name.conf
 
@@ -18,7 +18,7 @@ mkdir -p "$profile_dir"
 printf "%s=%s\n" SNAPSHOTS "$TEMP_DIR" >"$PROFILE_FILE"
 
 # If there's no protection, this value will get used.
-printf "%s=%s\n" SUBVOLUME "$TEMP_DIR" >"$ETC_DIR"/defaults.conf
+printf "%s=%s\n" SUBVOLUME "$TEMP_DIR" >"$CONFIG_DIR"/defaults.conf
 
 printf -v stderr "ERROR: $TEXT_PROFILE_VARIABLE_NOT_SET\n" \
     "$profile_name" SUBVOLUME

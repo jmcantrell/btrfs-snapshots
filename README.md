@@ -104,7 +104,7 @@ That will allow you to run the command from within the repository, but
 you'll probably want to create some configuration files to test it.
 
 Then, just populate the directory you used for
-`BTRFS_SNAPSHOTS_ETC_DIR` with some configuration files, using the
+`BTRFS_SNAPSHOTS_CONFIG_DIR` with some configuration files, using the
 examples in `./config/{defaults,profile}.conf`.
 
 [snapper]: http://snapper.io/

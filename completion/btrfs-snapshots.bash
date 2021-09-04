@@ -55,7 +55,7 @@ _btrfs_snapshots() {
 
     local etc_dir
     if ! etc_dir=$(__get_opt_arg -C "${words[@]}"); then
-        etc_dir=${BTRFS_SNAPSHOTS_ETC_DIR:-/usr/local/etc/btrfs-snapshots}
+        etc_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
     fi
 
     local profile_dir=$etc_dir/profile.d

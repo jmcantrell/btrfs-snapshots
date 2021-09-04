@@ -7,11 +7,11 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export PROFILE_FILE=$ETC_DIR/foo.conf
+export PROFILE_FILE=$CONFIG_DIR/foo.conf
 
-defaults_file=$ETC_DIR/defaults.conf
+defaults_file=$CONFIG_DIR/defaults.conf
 
-mkdir -p "$ETC_DIR"
+mkdir -p "$CONFIG_DIR"
 
 printf "%s=%s\n" \
     SUBVOLUME "$TEMP_DIR" \

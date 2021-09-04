@@ -6,7 +6,7 @@ shopt -s nullglob
 name=${0##*/}
 
 export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$name}
-export ETC_DIR=${BTRFS_SNAPSHOTS_ETC_DIR:-/usr/local/etc/$name}
+export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$name}
 
 . "$LIB_DIR"/init.sh
 
@@ -26,12 +26,15 @@ done && shift $((OPTIND - 1))
 
 action=${1:-list}
 
-profile_dir=$ETC_DIR/profile.d
+action=${1:-list}
+[[ -v 1 ]] && shift
 
 case $action in
 create | prune | list) ;;
 *) die "$TEXT_INVALID" action "$action" ;;
 esac
+
+profile_dir=$CONFIG_DIR/profile.d
 
 declare -a profile_files
 

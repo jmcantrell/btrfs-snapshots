@@ -16,7 +16,7 @@ load_profile() {
         set_limit "$event_name"
     done
 
-    local defaults_file=$ETC_DIR/defaults.conf
+    local defaults_file=$CONFIG_DIR/defaults.conf
 
     if [[ -f $defaults_file ]] && ! . "$defaults_file"; then
         error "$TEXT_DEFAULTS_LOAD_FAILED" "$defaults_file"

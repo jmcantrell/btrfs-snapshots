@@ -1,7 +1,7 @@
 #compdef btrfs-snapshots
 
 local state state_descr context line opt_args
-local config_dir=${BTRFS_SNAPSHOTS_ETC_DIR:-/usr/local/etc/btrfs-snapshots}
+local config_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
 
 _arguments -S \
     "(-p -C 1)-h[show the help text]" \

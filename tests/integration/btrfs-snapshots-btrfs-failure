@@ -8,7 +8,7 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_name=foo
-profile_dir=$ETC_DIR/profile.d
+profile_dir=$CONFIG_DIR/profile.d
 subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots
 

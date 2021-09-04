@@ -8,7 +8,7 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profile_dir=$ETC_DIR/profile.d
+profile_dir=$CONFIG_DIR/profile.d
 
 mkdir -p "$profile_dir"
 

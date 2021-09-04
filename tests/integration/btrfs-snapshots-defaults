@@ -8,9 +8,9 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_name=foo
-profile_dir=$ETC_DIR/profile.d
+profile_dir=$CONFIG_DIR/profile.d
 profile_file=$profile_dir/$profile_name.conf
-defaults_file=$ETC_DIR/defaults.conf
+defaults_file=$CONFIG_DIR/defaults.conf
 subvolume_dir=$TEMP_DIR/subvolume
 
 # There will be no snapshot directory defined in the profile, so it should
