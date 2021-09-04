@@ -32,5 +32,5 @@ done
 
 for file in "$src_dir"/completion/*.bash; do
     name=$(basename "$file" .bash)
-    install -m644 -DT "$file" ./share/bash-comletion/completions/"$name"
+    install -m644 -DT "$file" ./share/bash-completion/completions/"$name"
 done
