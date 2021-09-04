@@ -53,12 +53,12 @@ _btrfs_snapshots() {
     local cur prev words
     _init_completion || return
 
-    local etc_dir
-    if ! etc_dir=$(__get_opt_arg -C "${words[@]}"); then
-        etc_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
+    local config_dir
+    if ! config_dir=$(__get_opt_arg -C "${words[@]}"); then
+        config_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
     fi
 
-    local profile_dir=$etc_dir/profile.d
+    local profile_dir=$config_dir/profile.d
 
     case $prev in
     -C)
