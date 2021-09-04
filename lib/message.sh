@@ -2,7 +2,7 @@ export TEXT_USAGE="Manage timestamped collections of btrfs snapshots.
 
 Usage:
     btrfs-snapshots -h
-    btrfs-snapshots [-p NAME]... [ACTION]
+    btrfs-snapshots [-C DIRECTORY] [-p NAME]... [ACTION]
 
 Options:
     -h, -?, --help                show this help text
