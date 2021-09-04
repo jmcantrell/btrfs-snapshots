@@ -1,8 +1,7 @@
 export TEXT_USAGE="Manage timestamped collections of btrfs snapshots.
 
 Usage:
-    btrfs-snapshots -h
-    btrfs-snapshots [-C DIRECTORY] [-p NAME]... [ACTION]
+    btrfs-snapshots [OPTIONS] [ACTION]
 
 Options:
     -h, -?, --help                show this help text
@@ -10,13 +9,14 @@ Options:
     -C, --config-dir=DIRECTORY    directory to use for configuration
 
 Arguments:
-    ACTION    action to perform on selected profiles (default: list)
+    ACTION    action to perform on selected profiles
 
 Actions:
     list      print full path of every recognized snapshot
     create    create a new snapshot in the configured location
     prune     delete snapshots that fall outside of defined limits
 
+If no action is specified, then it is assumed to be 'list'.
 If no profiles are specified with -p/--profile, then every profile is selected."
 
 export TEXT_INVALID="Invalid %s '%s'"

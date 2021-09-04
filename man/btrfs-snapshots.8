@@ -3,11 +3,7 @@
 btrfs\-snapshots \- Manage timestamped collections of btrfs snapshots
 .SH SYNOPSIS
 .SY btrfs\-snapshots
-.B \-h
-.YS
-.SY btrfs\-snapshots
-.OP \-C DIRECTORY
-.OP \-p NAME
+.RI [ OPTIONS ]
 .RI [ ACTION ]
 .YS
 .SH DESCRIPTION
@@ -37,13 +33,13 @@ Delete all snapshots for the selected profiles that fall outside of the
 configured limits.
 .SH OPTIONS
 .TP
-.B \-h
+.BR \-h ", " \-? ", " \-\-help
 Display the help message and exit.
 .TP
-.B \-p \fINAME\fP
+.BR \-p ", " --profile = \fINAME\fP
 Select a profile to perform ACTION on.  Can be specified multiple times.
 .TP
-.B \-C \fIDIRECTORY\fP
+.BR \-C ", " --config-dir = \fIDIRECTORY\fP
 Look for configuration files in DIRECTORY instead of \fI/usr/local/etc\fP.
 .SH TIMERS
 While not a requirement, the intention is that snapshots will be automatically
