@@ -61,11 +61,11 @@ _btrfs_snapshots() {
     local profile_dir=$config_dir/profile.d
 
     case $prev in
-    -C)
+    -C | --config-dir)
         _filedir -d
         return
         ;;
-    -p)
+    -p | --profile)
         local -a profile_names
         readarray -t profile_names < <(__shallow_basenames "$profile_dir" ".conf")
         readarray -t COMPREPLY < <(compgen -W "${profile_names[*]}" -- "$cur")
@@ -73,12 +73,14 @@ _btrfs_snapshots() {
         ;;
     esac
 
-    if [[ $cur == -* ]]; then
-        readarray -t COMPREPLY < <(compgen -W "-C -h -p" -- "$cur")
-        return
-    fi
-
-    readarray -t COMPREPLY < <(compgen -W "create list prune" -- "$cur")
+    case $cur in
+    -*)
+        readarray -t COMPREPLY < <(compgen -W '$(_parse_help "$1")' -- "$cur")
+        ;;
+    *)
+        readarray -t COMPREPLY < <(compgen -W "create list prune" -- "$cur")
+        ;;
+    esac
 }
 
 complete -F _btrfs_snapshots btrfs-snapshots
