@@ -1,5 +1,5 @@
 [Unit]
-Description=prune btrfs snapshots every day
+Description=Prune timestamped btrfs snapshots periodically
 
 [Timer]
 OnCalendar=daily

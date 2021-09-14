@@ -1,5 +1,5 @@
 [Unit]
-Description=create btrfs snapshots every hour
+Description=Create timestamped btrfs snapshots periodically
 
 [Timer]
 OnCalendar=hourly
