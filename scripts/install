@@ -4,7 +4,7 @@ set -eu
 
 pkg_name=btrfs-snapshots
 src_dir=$PWD
-dst_dir=${INSTALL_ROOT:-/usr/local}
+dst_dir=${PREFIX:-/usr/local}
 
 mkdir -p "$dst_dir"
 cd "$dst_dir"

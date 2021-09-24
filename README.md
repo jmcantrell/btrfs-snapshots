@@ -32,7 +32,7 @@ sudo ./scripts/install
 To install in a different location:
 
 ```sh
-INSTALL_ROOT=/usr sudo ./scripts/install
+PREFIX=/usr sudo ./scripts/install
 ```
 
 ### Arch User Repository (AUR)
