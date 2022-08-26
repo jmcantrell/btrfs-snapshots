@@ -14,3 +14,5 @@ export BTRFS_SNAPSHOTS_CONFIG_DIR=$PWD/.mine/etc
 
 # Pretend that any regular directory is mounted.
 export BTRFS_SNAPSHOTS_BYPASS_IS_MOUNTED=1
+
+# vi:ft=direnv
