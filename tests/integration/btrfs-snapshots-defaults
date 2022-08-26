@@ -36,7 +36,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     # Create just enough snapshots to test the limit.
     # If the default limits are not seen, then they will all be pruned, causing
     # the following test to fail.
-    while IFS= read -r -d $'\n' event_step; do
+    while read -r event_step; do
         mkdir -p "$snapshots_dir/$event_step"
     done < <(timestamp_sequence_event "$TIMESTAMP" "$event_name" "$limit")
 

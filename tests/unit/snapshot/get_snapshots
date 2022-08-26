@@ -48,7 +48,7 @@ assert_snapshots "$TEMP_DIR"
 
 # Returns all found snapshots in chronological order.
 reset_temp
-while IFS= read -r -d $'\n' timestamp_step; do
+while read -r timestamp_step; do
     snapshot=$TEMP_DIR/$timestamp_step
     expected+=("$snapshot")
     mkdir -p "$snapshot"

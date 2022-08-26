@@ -35,7 +35,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     esac
 
     # Ensure every $increment of $event_name is in the same event window.
-    while IFS= read -r -d $'\n' event_step; do
+    while read -r event_step; do
         assert_success assert_no_output \
             is_same_event "$event_name" "$TIMESTAMP" "$event_step"
     done < <(timestamp_sequence "$TIMESTAMP" "$increment" "$count")
@@ -48,8 +48,8 @@ for event_name in "${EVENT_NAMES[@]}"; do
 done
 
 # Ensure every month of a quarter is in the same event window.
-while IFS= read -r -d $'\n' quarter_start; do
-    while IFS= read -r -d $'\n' quarter_step; do
+while read -r quarter_start; do
+    while read -r quarter_step; do
         assert_success assert_no_output \
             is_same_event quarterly "$quarter_start" "$quarter_step"
     done < <(timestamp_sequence "$quarter_start" "1 month" 3)
@@ -69,8 +69,8 @@ assert_failure assert_no_output \
 iso_year_start=2000-01-03T00:00:00Z
 
 # Ensure every day of a week is in the same event window.
-while IFS= read -r -d $'\n' week_start; do
-    while IFS= read -r -d $'\n' week_step; do
+while read -r week_start; do
+    while read -r week_step; do
         assert_success assert_no_output \
             is_same_event weekly "$week_start" "$week_step"
     done < <(timestamp_sequence "$week_start" "1 day" 7)
