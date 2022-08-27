@@ -1,7 +1,7 @@
 assert_set() {
     local variable=$1
     if [[ ! -v $variable ]]; then
-        printf "Variable '%s' should have been set\n" "$variable" >&2
+        printf "$TEXT_ASSERT_SET\n" "$variable" >&2
         return 1
     fi
 }
@@ -11,21 +11,21 @@ assert_equal() {
     local expected=$2
 
     if [[ $actual != "$expected" ]]; then
-        printf "Values should have been equal: %s != %s\n" "$actual" "$expected" >&2
+        printf "$TEXT_ASSERT_EQUAL\n" "$actual" "$expected" >&2
         return 1
     fi
 }
 
 assert_success() {
     if ! "$@"; then
-        printf "Command should have succeeded\n" >&2
+        printf "$TEXT_ASSERT_SUCCESS\n" >&2
         return 1
     fi
 }
 
 assert_failure() {
     if "$@"; then
-        printf "Command should have failed\n" >&2
+        printf "$TEXT_ASSERT_FAILURE\n" >&2
         return 1
     fi
 }
@@ -63,18 +63,20 @@ assert_output() {
     printf "%s" "$expected_stdout" >"$expected_stdout_file"
     printf "%s" "$expected_stderr" >"$expected_stderr_file"
 
-    local different=0
+    local different=()
 
-    for output in stdout stderr; do
-        actual_file_name=actual_${output}_file
-        expected_file_name=expected_${output}_file
+    for stream in stdout stderr; do
+        actual_file_name=actual_${stream}_file
+        expected_file_name=expected_${stream}_file
         if ! diff -u "${!actual_file_name}" "${!expected_file_name}"; then
-            different=1
-            printf "Command output for %s should have been equal\n" "$output" >&2
+            different+=("$stream")
         fi
     done
 
-    ((different)) && return 1
+    if ((${#different[@]} > 0)); then
+        printf "$TEXT_ASSERT_OUTPUT\n" "${different[*]}" >&2
+        return 1
+    fi
 
     return "$result"
 }
@@ -82,7 +84,7 @@ assert_output() {
 assert_file() {
     local file=$1
     if [[ ! -f $file ]]; then
-        printf "File '%s' should exist\n" "$file" >&2
+        printf "$TEXT_ASSERT_FILE_EXISTS\n" "$file" >&2
         return 1
     fi
 }
@@ -90,7 +92,7 @@ assert_file() {
 assert_no_file() {
     local file=$1
     if [[ -f $file ]]; then
-        printf "File '%s' should not exist\n" "$file" >&2
+        printf "$TEXT_ASSERT_FILE_NOT_EXISTS\n" "$file" >&2
         return 1
     fi
 }
@@ -98,7 +100,7 @@ assert_no_file() {
 assert_directory() {
     local directory=$1
     if [[ ! -d $directory ]]; then
-        printf "Directory '%s' should exist\n" "$directory" >&2
+        printf "$TEXT_ASSERT_DIRECTORY_EXISTS\n" "$directory" >&2
         return 1
     fi
 }
@@ -106,7 +108,7 @@ assert_directory() {
 assert_no_directory() {
     local directory=$1
     if [[ -d $directory ]]; then
-        printf "Directory '%s' should not exist\n" "$directory" >&2
+        printf "$TEXT_ASSERT_DIRECTORY_NOT_EXISTS\n" "$directory" >&2
         return 1
     fi
 }
@@ -114,7 +116,7 @@ assert_no_directory() {
 assert_exists() {
     local path=$1
     if [[ ! -e $path ]]; then
-        printf "Path '%s' should exist\n" "$path" >&2
+        printf "$TEXT_ASSERT_PATH_EXISTS\n" "$path" >&2
         return 1
     fi
 }
@@ -122,7 +124,7 @@ assert_exists() {
 assert_not_exists() {
     local path=$1
     if [[ -e $path ]]; then
-        printf "Path '%s' should not exist\n" "$path" >&2
+        printf "$TEXT_ASSERT_PATH_NOT_EXISTS\n" "$path" >&2
         return 1
     fi
 }
@@ -136,7 +138,7 @@ assert_file_content() {
     printf "%s" "$content" >"$expected_file"
 
     if ! diff -u "$file" "$expected_file"; then
-        printf "File contents should have been equal\n" >&2
+        printf "$TEXT_ASSERT_FILE_CONTENTS" >&2
         return 1
     fi
 }
@@ -146,13 +148,13 @@ assert_arrays_equal() {
     local -n array2=$2
 
     if ((${#array1[@]} != ${#array2[@]})); then
-        printf "Arrays should be the same length: %d != %d\n" "${#array1[@]}" "${#array2[@]}" >&2
+        printf "$TEXT_ASSERT_ARRAY_LENGTHS_EQUAL\n" "${#array1[@]}" "${#array2[@]}" >&2
         return 1
     else
         local i
         for ((i = 0; i < ${#array1[@]}; i++)); do
             if [[ ${array1[i]} != "${array2[i]}" ]]; then
-                printf "Array items at index %d should be equal: %s != %s\n" "$i" "${array1[i]}" "${array2[i]}" >&2
+                printf "$TEXT_ASSERT_ARRAY_ITEMS_EQUAL\n" "$i" "${array1[i]}" "${array2[i]}" >&2
                 return 1
             fi
         done
