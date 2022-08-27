@@ -7,20 +7,19 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profile_name=foo
-
-export PROFILE_FILE=$TEMP_DIR/$profile_name.conf
+export PROFILE_NAME=foo
+export PROFILE_FILE=$TEMP_DIR/$PROFILE_NAME.conf
 
 touch "$PROFILE_FILE"
 
 # Ensure non-inheritance of path variables.
 for variable in SUBVOLUME SNAPSHOTS; do
-    # Try to trick the function into accepting an inheritable value.
+    # Try to trick the function into accepting a non-inheritable value.
     export "$variable=$TEMP_DIR"
 
     printf -v stderr \
-        "ERROR: $TEXT_PROFILE_VARIABLE_NOT_SET\n" \
-        "$profile_name" "$variable"
+        "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
+        "$PROFILE_NAME" "$variable"
 
     assert_failure assert_stderr "$stderr" \
         load_profile

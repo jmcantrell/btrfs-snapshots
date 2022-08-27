@@ -10,44 +10,42 @@ export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$name}
 
 . "$LIB_DIR"/init.sh
 
-usage() {
-    printf "%s\n" "$TEXT_USAGE"
-    exit
-}
-
-invalid_option() {
-    warning "$TEXT_INVALID" option "$1"
-}
-
-missing_optarg() {
-    die "$TEXT_OPTION_MISSING_ARGUMENT" "$1"
-}
-
 profile_names=()
 
 while [[ -v 1 ]]; do
     case $1 in
-    -h | -\? | --help) usage ;;
+    -h | -\? | --help)
+        printf "$TEXT_USAGE\n"
+        exit
+        ;;
 
     -C | --config-dir)
-        [[ -v 2 ]] || missing_optarg "$1"
+        if [[ ! -v 2 ]]; then
+            printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "$1" >&2
+            exit 1
+        fi
         CONFIG_DIR=$2
         shift
         ;;
     --config-dir=)
-        missing_optarg "${1%%=*}"
+        printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "${1%%=*}" >&2
+        exit 1
         ;;
     --config-dir=?*)
         CONFIG_DIR=${1##*=}
         ;;
 
     -p | --profile)
-        [[ -v 2 ]] || missing_optarg "$1"
+        if [[ ! -v 2 ]]; then
+            printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "$1" >&2
+            exit 1
+        fi
         profile_names+=("$2")
         shift
         ;;
     --profile=)
-        missing_optarg "${1%%=*}"
+        printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "${1%%=*}" >&2
+        exit 1
         ;;
     --profile=?*)
         profile_names+=("${1##*=}")
@@ -58,7 +56,10 @@ while [[ -v 1 ]]; do
         break
         ;;
 
-    -?*) invalid_option "$1" ;;
+    -?*)
+        printf "$TEXT_OPTION_INVALID\n" "$1" >&2
+        exit 1
+        ;;
 
     *) break ;;
     esac
@@ -71,7 +72,10 @@ action=${1:-list}
 
 case $action in
 create | prune | list) ;;
-*) die "$TEXT_INVALID" action "$action" ;;
+*)
+    printf "$TEXT_ACTION_INVALID\n" "$action" >&2
+    exit 1
+    ;;
 esac
 
 profile_dir=$CONFIG_DIR/profile.d
@@ -92,6 +96,9 @@ declare -A profiles_seen=()
 for PROFILE_FILE in "${profile_files[@]}"; do
     export PROFILE_FILE
 
+    PROFILE_NAME=${PROFILE_FILE##*/}
+    export PROFILE_NAME=${PROFILE_NAME%.conf}
+
     if [[ -v profiles_seen[$PROFILE_FILE] ]]; then
         continue
     fi
@@ -99,10 +106,12 @@ for PROFILE_FILE in "${profile_files[@]}"; do
     profiles_seen[$PROFILE_FILE]=1
 
     if ! load_profile; then
-        die "$TEXT_PROFILE_LOAD_FAILED" "$PROFILE_FILE"
+        printf "$TEXT_PROFILE_LOAD_FAILED\n" "$PROFILE_NAME" >&2
+        exit 1
     fi
 
     if ! "$action"; then
-        die "$TEXT_ACTION_FAILED" "$action"
+        printf "$TEXT_ACTION_FAILED\n" "$action" >&2
+        exit 1
     fi
 done

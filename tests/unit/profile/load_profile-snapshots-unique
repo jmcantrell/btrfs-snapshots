@@ -10,9 +10,8 @@ set -eu
 profile_names=(foo bar baz)
 
 for i in "${!profile_names[@]}"; do
-    profile_name=${profile_names[i]}
-
-    export PROFILE_FILE=$TEMP_DIR/$profile_name.conf
+    export PROFILE_NAME=${profile_names[i]}
+    export PROFILE_FILE=$TEMP_DIR/$PROFILE_NAME.conf
 
     printf "%s=%s\n" \
         SUBVOLUME "$TEMP_DIR" \
@@ -25,8 +24,8 @@ for i in "${!profile_names[@]}"; do
             load_profile
     else
         printf -v stderr \
-            "ERROR: $TEXT_PROFILE_SNAPSHOTS_UNIQUE\n" \
-            "$profile_name"
+            "$TEXT_PROFILE_SNAPSHOTS_NOT_UNIQUE\n" \
+            "$PROFILE_NAME"
 
         assert_failure assert_stderr "$stderr" \
             load_profile

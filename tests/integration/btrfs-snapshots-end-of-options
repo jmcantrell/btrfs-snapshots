@@ -7,7 +7,7 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-printf -v stderr "ERROR: $TEXT_INVALID\n" action -h
+printf -v stderr "$TEXT_ACTION_INVALID\n" -h
 
 assert_failure assert_stderr "$stderr" \
     btrfs-snapshots -- -h

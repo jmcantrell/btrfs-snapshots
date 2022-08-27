@@ -30,8 +30,8 @@ export -f btrfs
 
 for action in create prune; do
     stderr_lines=(
-        "$(printf "ERROR: $TEXT_BTRFS_FAILED" 5)"
-        "$(printf "ERROR: $TEXT_ACTION_FAILED" "$action")"
+        "$(printf "$TEXT_BTRFS_FAILED" 5)"
+        "$(printf "$TEXT_ACTION_FAILED" "$action")"
     )
     printf -v stderr "%s\n" "${stderr_lines[@]}"
 

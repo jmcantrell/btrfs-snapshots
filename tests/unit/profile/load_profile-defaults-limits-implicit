@@ -7,7 +7,8 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export PROFILE_FILE=$TEMP_DIR/profile.conf
+export PROFILE_NAME=foo
+export PROFILE_FILE=$TEMP_DIR/$PROFILE_NAME.conf
 
 printf "%s=%s\n" \
     SUBVOLUME "$TEMP_DIR" \

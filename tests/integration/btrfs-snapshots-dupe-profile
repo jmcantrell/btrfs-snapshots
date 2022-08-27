@@ -21,7 +21,7 @@ printf "%s=%s\n" \
     >"$profile_dir/$profile_name.conf"
 
 # Notice that there is only one message expected.
-printf -v stderr "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING\n" "$profile_name"
+printf -v stderr "$TEXT_PROFILE_SUBVOLUME_MISSING\n" "$profile_name" "$subvolume_dir"
 
 # Notice that the same profile is requested twice.
 assert_success assert_stderr "$stderr" \

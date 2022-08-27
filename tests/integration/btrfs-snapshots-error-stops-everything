@@ -42,9 +42,11 @@ printf -v stdout \
 
 # Sabotage one of the profiles.
 target=1
-printf -v stderr \
-    "ERROR: $TEXT_PROFILE_LOAD_FAILED\n" \
-    "${profile_files[$target]}"
+stderr_lines=(
+    "$(printf "$TEXT_SOURCE_FAILED" "${profile_files[$target]}")"
+    "$(printf "$TEXT_PROFILE_LOAD_FAILED" "${profile_names[$target]}")"
+)
+printf -v stderr "%s\n" "${stderr_lines[@]}"
 printf "%s\n" "return 1" >>"${profile_files[$target]}"
 
 assert_failure assert_output "$stdout" "$stderr" \

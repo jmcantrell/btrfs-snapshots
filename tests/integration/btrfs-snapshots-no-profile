@@ -8,11 +8,10 @@ set -eu
 . "$TESTS_LIB_DIR"/init.sh
 
 profile_name=bogus
-profile_file=$CONFIG_DIR/profile.d/$profile_name.conf
 
 stderr_lines=(
-    "$(printf "ERROR: $TEXT_PROFILE_NOT_EXIST" "$profile_name")"
-    "$(printf "ERROR: $TEXT_PROFILE_LOAD_FAILED" "$profile_file")"
+    "$(printf "$TEXT_PROFILE_MISSING" "$profile_name")"
+    "$(printf "$TEXT_PROFILE_LOAD_FAILED" "$profile_name")"
 )
 
 printf -v stderr "%s\n" "${stderr_lines[@]}"

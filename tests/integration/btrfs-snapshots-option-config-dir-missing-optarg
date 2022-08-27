@@ -9,7 +9,7 @@ set -eu
 
 for option in -C --config-dir --config-dir=; do
     printf -v stderr \
-        "ERROR: $TEXT_OPTION_MISSING_ARGUMENT\n" \
+        "$TEXT_OPTION_MISSING_ARGUMENT\n" \
         "${option%=}"
 
     assert_failure assert_stderr "$stderr" \

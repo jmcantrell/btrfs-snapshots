@@ -7,10 +7,10 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-profile_name=foo
+export PROFILE_NAME=foo
 defaults_file=$CONFIG_DIR/defaults.conf
 
-export PROFILE_FILE=$CONFIG_DIR/$profile_name.conf
+export PROFILE_FILE=$CONFIG_DIR/$PROFILE_NAME.conf
 
 mkdir -p "$CONFIG_DIR"
 
@@ -23,7 +23,7 @@ printf "%s=%s\n" \
     >"$defaults_file"
 
 printf -v stderr \
-    "ERROR: $TEXT_DEFAULTS_SNAPSHOTS_MISSING_PLACEHOLDER\n"
+    "$TEXT_DEFAULTS_SNAPSHOTS_MISSING_PLACEHOLDER\n"
 
 assert_failure assert_stderr "$stderr" \
     load_profile
@@ -35,4 +35,4 @@ printf "%s=%s\n" \
 assert_success assert_no_output \
     load_profile
 
-assert_equal "$SNAPSHOTS" "$TEMP_DIR/$profile_name"
+assert_equal "$SNAPSHOTS" "$TEMP_DIR/$PROFILE_NAME"

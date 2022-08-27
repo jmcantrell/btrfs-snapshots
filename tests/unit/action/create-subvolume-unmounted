@@ -12,8 +12,8 @@ export SNAPSHOTS=$TEMP_DIR/snapshots
 export PROFILE_NAME=foo
 
 printf -v stderr \
-    "WARNING: $TEXT_CREATE_SUBVOLUME_MISSING\n" \
-    "$PROFILE_NAME"
+    "$TEXT_PROFILE_SUBVOLUME_MISSING\n" \
+    "$PROFILE_NAME" "$SUBVOLUME"
 
 assert_success assert_stderr "$stderr" \
     create

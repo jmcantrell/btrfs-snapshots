@@ -7,7 +7,8 @@ set -eu
 . "$LIB_DIR"/init.sh
 . "$TESTS_LIB_DIR"/init.sh
 
-export PROFILE_FILE=$CONFIG_DIR/foo.conf
+export PROFILE_NAME=foo
+export PROFILE_FILE=$CONFIG_DIR/$PROFILE_NAME.conf
 
 defaults_file=$CONFIG_DIR/defaults.conf
 
@@ -21,7 +22,7 @@ printf "%s=%s\n" \
 printf "%s\n" "return 1" >"$defaults_file"
 
 printf -v stderr \
-    "ERROR: $TEXT_DEFAULTS_LOAD_FAILED\n" \
+    "$TEXT_SOURCE_FAILED\n" \
     "$defaults_file"
 
 assert_failure assert_stderr "$stderr" \

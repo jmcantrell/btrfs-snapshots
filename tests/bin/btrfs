@@ -15,7 +15,10 @@ btrfs_subvolume() {
     case $cmd in
     snapshot) btrfs_subvolume_snapshot "$@" ;;
     delete) btrfs_subvolume_delete "$@" ;;
-    *) die "Unexpected btrfs subvolume command: %s" "$cmd" ;;
+    *)
+        printf "Unexpected btrfs subvolume command: %s\n" "$cmd" >&2
+        exit 1
+        ;;
     esac
 }
 
@@ -25,18 +28,21 @@ btrfs_subvolume_snapshot() {
     local snapshot=$3
 
     if [[ $options != -r ]]; then
-        die "Btrfs command should be using -r to create a read-only snapshot"
+        printf "Btrfs command should be using -r to create a read-only snapshot\n" >&2
+        exit 1
     fi
 
     if [[ ! -d $subvolume ]]; then
-        die "Subvolume path should be a directory"
+        printf "Subvolume path should be a directory\n" >&2
+        exit 1
     fi
 
     if [[ -e $snapshot ]]; then
-        die "Snapshot path should not already exist"
+        printf "Snapshot path should not already exist\n" >&2
+        exit 1
     fi
 
-    info "$TEXT_BTRFS_CREATE" "$subvolume" "$snapshot"
+    printf "$TEXT_BTRFS_CREATE\n" "$subvolume" "$snapshot"
 
     cp -rT "$subvolume" "$snapshot" >&2
 }
@@ -45,10 +51,11 @@ btrfs_subvolume_delete() {
     local snapshot=$1
 
     if [[ ! -d $snapshot ]]; then
-        die "Snapshot path should be a directory"
+        printf "Snapshot path should be a directory\n" >&2
+        exit 1
     fi
 
-    info "$TEXT_BTRFS_DELETE" "$snapshot"
+    printf "$TEXT_BTRFS_DELETE\n" "$snapshot"
 
     rm -rf "$snapshot"
 }
@@ -58,5 +65,8 @@ shift
 
 case $cmd in
 subvolume) btrfs_subvolume "$@" ;;
-*) die "Unexpected btrfs command: %s" "$cmd" ;;
+*)
+    printf "Unexpected btrfs command: %s\n" "$cmd" >&2
+    exit 1
+    ;;
 esac
