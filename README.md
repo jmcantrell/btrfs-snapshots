@@ -12,12 +12,10 @@ administrators that prefer a minimum of baked-in opinions.
 ## Features
 
 - Retention policies based around recurring calendar events
-- Included systemd timers, but equally usable with cron
-- Able to operate on one or more subvolumes at a time
 - Configurable snapshot locations for subvolumes
 - Minimal dependencies: bash and coreutils
-- Does not alter the system in any way
-- Shell completion for bash and zsh
+- Included systemd timers, but equally usable with cron
+- Included shell completion for bash and zsh
 
 ## Installation
 
@@ -101,11 +99,8 @@ direnv allow
 ```
 
 That will allow you to run the command from within the repository, but
-you'll probably want to create some configuration files to test it.
-
-Then, just populate the directory you used for
-`BTRFS_SNAPSHOTS_CONFIG_DIR` with some configuration files, using the
-examples in `./config/{defaults,profile}.conf`.
+you'll probably want to create some configuration files in
+`$BTRFS_SNAPSHOTS_CONFIG_DIR`, based on the examples in `./config`.
 
 [snapper]: http://snapper.io/
 [direnv]: https://direnv.net/
