@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that default options can be specified in a configuration file.
+# Show that `btrfs-snapshots` recognizes a default configuration file.
 
 set -euo pipefail
 
@@ -28,11 +28,10 @@ for event_name in "${EVENT_NAMES[@]}"; do
         >"$profile_file"
 
     limit=$((RANDOM % 5 + 1))
-    limit_variable=$(get_limit_variable "$event_name")
 
     printf "%s=%s\n" \
         SNAPSHOTS "$TEMP_DIR/snapshots/%s" \
-        "$limit_variable" "$limit" \
+        LIMIT_"${event_name@U}" "$limit" \
         >"$defaults_file"
 
     # Create just enough snapshots to test the limit.
@@ -42,12 +41,12 @@ for event_name in "${EVENT_NAMES[@]}"; do
         mkdir -p "$snapshots_dir/$event_step"
     done < <(timestamp_sequence_event "$TIMESTAMP" "$event_name" "$limit")
 
-    expected_count=$(get_snapshots "$snapshots_dir" | wc -l)
+    expected_count=$(snapshots "$snapshots_dir" | wc -l)
 
     # There should be no output, because nothing will be pruned.
     assert_no_output assert_success \
         btrfs-snapshots -p "$profile_name" prune
 
     # If the default limits were not seen, the snapshot count will be zero.
-    assert_equal "$(get_snapshots "$snapshots_dir" | wc -l)" "$expected_count"
+    assert_equal "$(snapshots "$snapshots_dir" | wc -l)" "$expected_count"
 done

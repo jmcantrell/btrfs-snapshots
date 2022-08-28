@@ -1,19 +1,9 @@
-get_limit_variable() {
-    printf "%s" "LIMIT_${1@U}"
-}
+limit() {
+    local variable=LIMIT_${1@U}
 
-get_limit() {
-    local variable
-    variable=$(get_limit_variable "$1")
-    printf "%s" "${!variable:-0}"
-}
-
-set_limit() {
-    local variable
-    variable=$(get_limit_variable "$1")
-    export "$variable=${2:-0}"
-}
-
-is_limit_enabled() {
-    (($(get_limit "$1") > 0))
+    if [[ -v 2 ]]; then
+        export "$variable=$2"
+    else
+        printf "%s" "${!variable:-0}"
+    fi
 }

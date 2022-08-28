@@ -6,5 +6,5 @@ reset_temp() {
 }
 
 clean_temp() {
-    rm -rf "$TEMP_DIR"
+    rm -r "$TEMP_DIR"
 }

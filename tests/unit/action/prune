@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that prune will preserve the correct snapshots.
+# Show that `prune` will preserve the correct snapshots.
 
 set -euo pipefail
 
@@ -15,7 +15,7 @@ limit=3
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
 
-    set_limit "$event_name" "$limit"
+    limit "$event_name" "$limit"
 
     keepers=()
     fillers=()

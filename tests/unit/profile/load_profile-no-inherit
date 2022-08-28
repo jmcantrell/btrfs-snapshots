@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that a profile does not inherit settings from a previously loaded one.
+# Show that `load_profile` does not inherit previously loaded settings.
 
 set -euo pipefail
 
@@ -31,7 +31,7 @@ done
 
 # Try to trick the function into accepting inheritable values.
 for event_name in "${EVENT_NAMES[@]}"; do
-    set_limit "$event_name" 1
+    limit "$event_name" 1
 done
 
 # At this point, the profile is valid, but there are no limits set.
@@ -40,5 +40,5 @@ assert_no_output assert_success \
 
 # Ensure non-inheritance of limit values.
 for event_name in "${EVENT_NAMES[@]}"; do
-    assert_equal "$(get_limit "$event_name")" 0
+    assert_equal "$(limit "$event_name")" 0
 done

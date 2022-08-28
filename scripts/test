@@ -12,12 +12,12 @@ export TESTS_LIB_DIR=$PWD/tests/lib
 run_test() {
     local file=$1
 
-    if [[ -v TESTS_VERBOSE ]]; then
-        echo "Running test: $file"
+    if ((${TESTS_VERBOSE:-0})); then
+        printf "Running test: %s\n" "$file"
     fi
 
     if ! "$file"; then
-        echo "Test failed: $file" >&2
+        printf "Test failed: %s\n" "$file" >&2
         return 1
     fi
 }

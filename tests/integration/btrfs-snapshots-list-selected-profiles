@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that multiple profiles can be selected when creating snapshots.
+# Show that `btrfs-snapshots` lists snapshots for all profiles by default.
 
 set -euo pipefail
 
@@ -29,6 +29,8 @@ for profile_name in "${profile_names[@]}"; do
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
         >"$profile_dir/$profile_name.conf"
+
+    mkdir -p "$snapshot"
 done
 
 selected=(1 2)
@@ -37,15 +39,10 @@ stdout_lines=()
 
 for i in "${selected[@]}"; do
     options+=(-p "${profile_names[i]}")
-    stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE" "${subvolume_dirs[i]}" "${snapshots[i]}")")
+    stdout_lines+=("${snapshots[i]}")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 
 assert_stdout "$stdout" assert_success \
-    btrfs-snapshots "${options[@]}" create
-
-for i in "${selected[@]}"; do
-    assert_file "${snapshots[i]}"/marker
-    assert_file_content "${snapshots[i]}"/marker "${profile_names[i]}"
-done
+    btrfs-snapshots "${options[@]}" list

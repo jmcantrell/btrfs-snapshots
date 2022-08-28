@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that errors while loading the defaults file will be reported.
+# Show that `load_profile` reports errors when reading defaults.
 
 set -euo pipefail
 

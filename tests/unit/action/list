@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that snapshots will be listed in chronological order.
+# Show that `list` outputs snapshots in chronological order.
 
 set -euo pipefail
 

@@ -1,5 +1,5 @@
 list() {
-    get_snapshots "$SNAPSHOTS"
+    snapshots "$SNAPSHOTS"
 }
 
 create() {
@@ -9,7 +9,7 @@ create() {
     fi
 
     # Allow ability to override the running timestamp, simplifying testing.
-    TIMESTAMP=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(get_timestamp)}
+    TIMESTAMP=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(timestamp)}
 
     mkdir -p "$SNAPSHOTS"
 
@@ -23,11 +23,11 @@ prune() {
     local event_name counts=() limits=()
     for event_name in "${EVENT_NAMES[@]}"; do
         counts+=(0)
-        limits+=("$(get_limit "$event_name")")
+        limits+=("$(limit "$event_name")")
     done
 
     local snapshots
-    readarray -t snapshots < <(get_snapshots "$SNAPSHOTS" | sort -r)
+    readarray -t snapshots < <(snapshots "$SNAPSHOTS" | sort -r)
 
     local snapshot_index
     for ((snapshot_index = 0; snapshot_index < ${#snapshots[@]}; snapshot_index++)); do

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that an error is reported when the profile does not exist.
+# Show that `btrfs-snapshots` complains when a profile does not exist.
 
 set -euo pipefail
 

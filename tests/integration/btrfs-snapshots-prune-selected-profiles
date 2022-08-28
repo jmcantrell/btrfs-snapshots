@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that `btrfs-snapshots` creates snapshots for all profiles by default.
+# Show that `btrfs-snapshots` prunes snapshots for requested profiles.
 
 set -euo pipefail
 
@@ -13,33 +13,38 @@ mkdir -p "$profile_dir"
 
 profile_names=(a b c)
 snapshots=()
-stdout_lines=()
 
-for i in "${!profile_names[@]}"; do
-    profile_name=${profile_names[i]}
+for profile_name in "${profile_names[@]}"; do
     subvolume_dir=$TEMP_DIR/subvolume/$profile_name
     snapshots_dir=$TEMP_DIR/snapshots/$profile_name
     snapshot=$snapshots_dir/$TIMESTAMP
     snapshots+=("$snapshot")
 
-    mkdir -p "$subvolume_dir"
-    printf "%s" "$profile_name" >"$subvolume_dir"/marker
+    mkdir -p "$snapshot"
 
     printf "%s=%s\n" \
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
         >"$profile_dir/$profile_name.conf"
+done
 
-    stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE" "$subvolume_dir" "$snapshot")")
+selection=(0 2)
+options=()
+stdout_lines=()
+
+for i in "${selection[@]}"; do
+    options+=(-p "${profile_names[i]}")
+    stdout_lines+=("$(printf "$TEXT_BTRFS_DELETE" "${snapshots[i]}")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 
 assert_stdout "$stdout" assert_success \
-    btrfs-snapshots create
+    btrfs-snapshots "${options[@]}" prune
 
-for i in "${!profile_names[@]}"; do
-    marker=${snapshots[i]}/marker
-    assert_file "$marker"
-    assert_file_content "$marker" "${profile_names[i]}"
+for i in "${selection[@]}"; do
+    assert_no_directory "${snapshots[i]}"
 done
+
+# Make sure the non-selected profile kept its snapshot.
+assert_directory "${snapshots[1]}"

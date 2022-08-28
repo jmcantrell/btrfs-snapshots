@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-# Show that a multiple profiles cannot use the same snapshot location.
+# Show that `load_profile` will enforce unique `SNAPSHOTS` values.
 
 set -euo pipefail
 
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-profile_names=(foo bar baz)
+profile_names=(a b c)
 
 for i in "${!profile_names[@]}"; do
     export PROFILE_FILE=$TEMP_DIR/${profile_names[i]}.conf

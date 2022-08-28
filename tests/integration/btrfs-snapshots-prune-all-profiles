@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that no profile selection is the same as selecting all of them when
-# pruning snapshots.
+# Show that `btrfs-snapshots` prunes snapshots for all profiles by default.
 
 set -euo pipefail
 

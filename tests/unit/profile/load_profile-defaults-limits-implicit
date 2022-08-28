@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that the default limit value is zero.
+# Show that `load_profile` sets all limits to a default of zero.
 
 set -euo pipefail
 
@@ -19,6 +19,5 @@ assert_no_output assert_success \
 
 # Ensure the base default is zero.
 for event_name in "${EVENT_NAMES[@]}"; do
-    variable_name=$(get_limit_variable "$event_name")
-    assert_equal "${!variable_name}" 0
+    assert_equal "$(limit "$event_name")" 0
 done

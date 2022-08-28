@@ -7,12 +7,32 @@ assert_set() {
     fi
 }
 
+assert_not_set() {
+    local variable=$1
+    if [[ -v $variable ]]; then
+        printf "$TEXT_ASSERT_NOT_SET\n" "$variable" "${!variable}" >&2
+        stack_trace >&2
+        return 1
+    fi
+}
+
 assert_equal() {
     local actual=$1
     local expected=$2
 
     if [[ $actual != "$expected" ]]; then
         printf "$TEXT_ASSERT_EQUAL\n" "$actual" "$expected" >&2
+        stack_trace >&2
+        return 1
+    fi
+}
+
+assert_not_equal() {
+    local actual=$1
+    local expected=$2
+
+    if [[ $actual == "$expected" ]]; then
+        printf "$TEXT_ASSERT_NOT_EQUAL\n" "$actual" "$expected" >&2
         stack_trace >&2
         return 1
     fi
@@ -86,42 +106,6 @@ assert_output() {
     return "$result"
 }
 
-assert_file() {
-    local file=$1
-    if [[ ! -f $file ]]; then
-        printf "$TEXT_ASSERT_FILE_EXISTS\n" "$file" >&2
-        stack_trace >&2
-        return 1
-    fi
-}
-
-assert_no_file() {
-    local file=$1
-    if [[ -f $file ]]; then
-        printf "$TEXT_ASSERT_FILE_NOT_EXISTS\n" "$file" >&2
-        stack_trace >&2
-        return 1
-    fi
-}
-
-assert_directory() {
-    local directory=$1
-    if [[ ! -d $directory ]]; then
-        printf "$TEXT_ASSERT_DIRECTORY_EXISTS\n" "$directory" >&2
-        stack_trace >&2
-        return 1
-    fi
-}
-
-assert_no_directory() {
-    local directory=$1
-    if [[ -d $directory ]]; then
-        printf "$TEXT_ASSERT_DIRECTORY_NOT_EXISTS\n" "$directory" >&2
-        stack_trace >&2
-        return 1
-    fi
-}
-
 assert_exists() {
     local path=$1
     if [[ ! -e $path ]]; then
@@ -140,6 +124,24 @@ assert_not_exists() {
     fi
 }
 
+assert_file() {
+    local file=$1
+    if [[ ! -f $file ]]; then
+        printf "$TEXT_ASSERT_FILE_EXISTS\n" "$file" >&2
+        stack_trace >&2
+        return 1
+    fi
+}
+
+assert_no_file() {
+    local file=$1
+    if [[ -f $file ]]; then
+        printf "$TEXT_ASSERT_FILE_NOT_EXISTS\n" "$file" >&2
+        stack_trace >&2
+        return 1
+    fi
+}
+
 assert_file_content() {
     local file=$1
     local content=$2
@@ -150,6 +152,24 @@ assert_file_content() {
 
     if ! diff -u "$file" "$expected_file"; then
         printf "$TEXT_ASSERT_FILE_CONTENTS" >&2
+        stack_trace >&2
+        return 1
+    fi
+}
+
+assert_directory() {
+    local directory=$1
+    if [[ ! -d $directory ]]; then
+        printf "$TEXT_ASSERT_DIRECTORY_EXISTS\n" "$directory" >&2
+        stack_trace >&2
+        return 1
+    fi
+}
+
+assert_no_directory() {
+    local directory=$1
+    if [[ -d $directory ]]; then
+        printf "$TEXT_ASSERT_DIRECTORY_NOT_EXISTS\n" "$directory" >&2
         stack_trace >&2
         return 1
     fi

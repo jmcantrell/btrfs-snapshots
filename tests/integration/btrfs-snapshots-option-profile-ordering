@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that multiple profiles can be selected when pruning snapshots.
+# Show that `btrfs-snapshots` processes profiles in a predictable order.
 
 set -euo pipefail
 
@@ -12,39 +12,36 @@ profile_dir=$CONFIG_DIR/profile.d
 mkdir -p "$profile_dir"
 
 profile_names=(a b c)
+subvolume_dirs=()
 snapshots=()
+stdout_lines=()
 
 for profile_name in "${profile_names[@]}"; do
     subvolume_dir=$TEMP_DIR/subvolume/$profile_name
+    subvolume_dirs+=("$subvolume_dir")
     snapshots_dir=$TEMP_DIR/snapshots/$profile_name
     snapshot=$snapshots_dir/$TIMESTAMP
     snapshots+=("$snapshot")
 
-    mkdir -p "$snapshot"
+    mkdir -p "$subvolume_dir"
+    printf "%s" "$profile_name" >"$subvolume_dir"/marker
 
     printf "%s=%s\n" \
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
         >"$profile_dir/$profile_name.conf"
-done
 
-selection=(0 2)
-options=()
-stdout_lines=()
-
-for i in "${selection[@]}"; do
-    options+=(-p "${profile_names[i]}")
-    stdout_lines+=("$(printf "$TEXT_BTRFS_DELETE" "${snapshots[i]}")")
+    snapshot=$snapshots_dir/$TIMESTAMP
+    stdout_lines+=("$snapshot")
+    mkdir -p "$snapshot"
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 
+# Ensure default profile selection is processed in order.
 assert_stdout "$stdout" assert_success \
-    btrfs-snapshots "${options[@]}" prune
+    btrfs-snapshots list
 
-for i in "${selection[@]}"; do
-    assert_no_directory "${snapshots[i]}"
-done
-
-# Make sure the non-selected profile kept its snapshot.
-assert_directory "${snapshots[1]}"
+# Ensure out-of-order profile selection is processed in order.
+assert_stdout "$stdout" assert_success \
+    btrfs-snapshots -p c -p b -p a list

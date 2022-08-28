@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Show that `limit` correctly gets and sets a limit value.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+assert_not_set LIMIT_WHATEVER
+assert_equal "$(limit whatever)" 0
+
+value=5
+limit whatever "$value"
+assert_set LIMIT_WHATEVER
+assert_equal "$LIMIT_WHATEVER" "$value"
+assert_equal "$(limit whatever)" "$value"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# A fake implementation of the btrfs command.
+# A fake implementation of the `btrfs` command.
 
 set -euo pipefail
 

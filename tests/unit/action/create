@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that create succeeds under normal circumstances.
+# Show that `create` succeeds under normal circumstances.
 
 set -euo pipefail
 

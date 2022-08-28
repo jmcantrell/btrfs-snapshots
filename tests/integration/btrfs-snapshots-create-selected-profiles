@@ -1,27 +1,29 @@
 #!/usr/bin/env bash
 
-# Show that `btrfs-snapshots` recognizes multiple profile options.
+# Show that `btrfs-snapshots` creates snapshots for requested profiles.
 
 set -euo pipefail
 
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-profile_names=(a b c d e)
 profile_dir=$CONFIG_DIR/profile.d
 
 mkdir -p "$profile_dir"
 
+profile_names=(a b c)
 subvolume_dirs=()
-snapshots_dirs=()
+snapshots=()
 
 for profile_name in "${profile_names[@]}"; do
     subvolume_dir=$TEMP_DIR/subvolume/$profile_name
     subvolume_dirs+=("$subvolume_dir")
     snapshots_dir=$TEMP_DIR/snapshots/$profile_name
-    snapshots_dirs+=("$snapshots_dir")
+    snapshot=$snapshots_dir/$TIMESTAMP
+    snapshots+=("$snapshot")
 
     mkdir -p "$subvolume_dir"
+    printf "%s" "$profile_name" >"$subvolume_dir"/marker
 
     printf "%s=%s\n" \
         SUBVOLUME "$subvolume_dir" \
@@ -29,22 +31,21 @@ for profile_name in "${profile_names[@]}"; do
         >"$profile_dir/$profile_name.conf"
 done
 
-selected=(0 2 4)
+selected=(1 2)
+options=()
 stdout_lines=()
 
 for i in "${selected[@]}"; do
-    printf -v message \
-        "$TEXT_BTRFS_CREATE" \
-        "${subvolume_dirs[i]}" "${snapshots_dirs[i]}/$TIMESTAMP"
-
-    stdout_lines+=("$message")
+    options+=(-p "${profile_names[i]}")
+    stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE" "${subvolume_dirs[i]}" "${snapshots[i]}")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 
 assert_stdout "$stdout" assert_success \
-    btrfs-snapshots \
-    -p "${profile_names[${selected[0]}]}" \
-    --profile "${profile_names[${selected[1]}]}" \
-    --profile="${profile_names[${selected[2]}]}" \
-    create
+    btrfs-snapshots "${options[@]}" create
+
+for i in "${selected[@]}"; do
+    assert_file "${snapshots[i]}"/marker
+    assert_file_content "${snapshots[i]}"/marker "${profile_names[i]}"
+done

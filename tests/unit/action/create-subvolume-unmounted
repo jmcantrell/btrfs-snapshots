@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that create reports a missing subvolume and does nothing.
+# Show that `create` reports a missing subvolume and does nothing.
 
 set -euo pipefail
 

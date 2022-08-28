@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that the configuration directory can be overridden.
+# Show that `btrfs-snapshots` recognizes the configuration directory option.
 
 set -euo pipefail
 
@@ -31,7 +31,7 @@ assert_option() {
     assert_stdout "$stdout" assert_success \
         btrfs-snapshots "$@" create
 
-    assert_equal "$(get_snapshots "$snapshots_dir" | wc -l)" 1
+    assert_equal "$(snapshots "$snapshots_dir" | wc -l)" 1
 }
 
 assert_option -C "$alt_config_dir"

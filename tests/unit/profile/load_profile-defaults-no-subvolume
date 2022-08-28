@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that the subvolume cannot be set in the defaults configuration.
+# Show that `load_profile` ensures `SUBVOLUME` is not set in the defaults.
 
 set -euo pipefail
 

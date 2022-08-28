@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that get_snapshots will only return existing snapshots with a recognized
+# Show that `snapshots` will only return existing snapshots with a recognized
 # timestamp only at the top level directory and in chronological (natural) order.
 
 set -euo pipefail
@@ -13,7 +13,7 @@ assert_snapshots() {
     shift
 
     local actual
-    readarray -t actual < <(get_snapshots "$directory")
+    readarray -t actual < <(snapshots "$directory")
 
     local expected=("$@")
 

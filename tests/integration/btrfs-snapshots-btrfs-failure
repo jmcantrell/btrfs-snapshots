@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that btrfs errors and exit status are reported.
+# Show that `btrfs-snapshots` reports a non-zero exit status for `btrfs`.
 
 set -euo pipefail
 
@@ -22,10 +22,10 @@ printf "%s=%s\n" \
     SNAPSHOTS "$snapshots_dir" \
     >"$profile_dir/$profile_name.conf"
 
+# Fake implementation of `btrfs` that always errors.
 btrfs() {
     return 5
 }
-
 export -f btrfs
 
 for action in create prune; do

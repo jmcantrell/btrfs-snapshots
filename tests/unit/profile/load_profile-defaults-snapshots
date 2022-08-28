@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that the default snapshot directory can be set.
+# Show that `load_profile` recognizes a default `SNAPSHOTS` setting.
 
 set -euo pipefail
 

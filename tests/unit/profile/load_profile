@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that a profile can be loaded under normal circumstances.
+# Show that `load_profile` succeeds under normal circumstances.
 
 set -euo pipefail
 
@@ -23,7 +23,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     limits+=("$limit")
 
     printf "%s=%d\n" \
-        "$(get_limit_variable "$event_name")" "$limit" \
+        LIMIT_"${event_name@U}" "$limit" \
         >>"$PROFILE_FILE"
 done
 
@@ -34,5 +34,5 @@ assert_equal "$SUBVOLUME" "$subvolume_dir"
 assert_equal "$SNAPSHOTS" "$snapshots_dir"
 
 for i in "${!EVENT_NAMES[@]}"; do
-    assert_equal "$(get_limit "${EVENT_NAMES[i]}")" "${limits[i]}"
+    assert_equal "$(limit "${EVENT_NAMES[i]}")" "${limits[i]}"
 done

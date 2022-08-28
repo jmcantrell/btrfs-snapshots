@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that invalid options are reported.
+# Show that `btrfs-snapshots` complains about invalid options.
 
 set -euo pipefail
 

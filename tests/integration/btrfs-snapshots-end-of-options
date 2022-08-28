@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that the end of options marker is recognized.
+# Show that `btrfs-snapshots` recognizes the end of options marker.
 
 set -euo pipefail
 

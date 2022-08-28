@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that is_timestamp recognizes the correct timestamp format.
+# Show that `is_timestamp` recognizes the correct timestamp format.
 
 set -euo pipefail
 

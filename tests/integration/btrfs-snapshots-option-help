@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that help can be requested at the command line.
+# Show that `btrfs-snapshots` displays help when requested.
 
 set -euo pipefail
 

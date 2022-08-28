@@ -1,4 +1,4 @@
-get_timestamp() {
+timestamp() {
     date --utc "$@" +"$TIMESTAMP_FORMAT"
 }
 

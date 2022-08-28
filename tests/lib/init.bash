@@ -2,7 +2,7 @@
 # Also a convenient starting point for all event types.
 export TIMESTAMP=2001-01-01T00:00:00Z
 
-TEMP_DIR=$(mktemp -d -t "${0##*/}.XXXXXXXXX")
+TEMP_DIR=$(mktemp -d -t "${0##*/}.XXXXXXXXXX")
 export TEMP_DIR
 
 export CONFIG_DIR=$TEMP_DIR/etc

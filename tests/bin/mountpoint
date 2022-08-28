@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# A fake implementation of mountpoint.
+# A fake implementation of `mountpoint`.
 
 set -euo pipefail
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that when an error occurs, nothing else will be done.
+# Show that `btrfs-snapshots` takes no further action when an error occurs.
 
 set -euo pipefail
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Show that the configuration directory option requires an argument.
+# Show that `btrfs-snapshots` complains about the configuration directory
+# option missing an argument.
 
 set -euo pipefail
 

@@ -5,7 +5,7 @@ load_profile() {
 
     local event_name
     for event_name in "${EVENT_NAMES[@]}"; do
-        set_limit "$event_name"
+        limit "$event_name" 0
     done
 
     local defaults_file=$CONFIG_DIR/defaults.conf
