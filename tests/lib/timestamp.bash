@@ -16,7 +16,7 @@ timestamp_sequence_event() {
     local count=$3
 
     local increment
-    case $event_name in
+    case ${event_name@L} in
     minutely) increment="1 minute" ;;
     hourly) increment="1 hour" ;;
     daily) increment="1 day" ;;

@@ -2,13 +2,13 @@
 
 # Show that loading a profile can only succeed when certain variables are set.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_NAME=foo
-profile_file=$TEMP_DIR/$PROFILE_NAME
+export PROFILE_FILE=$TEMP_DIR/foo.conf
+
 variables=(SUBVOLUME SNAPSHOTS)
 profile_lines=()
 
@@ -17,34 +17,32 @@ profile_lines=()
 # - variable is empty
 # - variable is set to a relative path
 
-export PROFILE_FILE=$profile_file
-
 for ((i = 0; i < ${#variables[@]}; i++)); do
     variable=${variables[i]}
 
-    printf "%s\n" "${profile_lines[@]}" >"$profile_file"
+    printf "%s\n" "${profile_lines[@]}" >"$PROFILE_FILE"
 
     printf -v stderr \
         "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
-        "$PROFILE_NAME" "$variable"
+        "$PROFILE_FILE" "$variable"
 
-    assert_failure assert_stderr "$stderr" \
+    assert_stderr "$stderr" assert_failure \
         load_profile
 
     profile_lines+=("$variable=")
-    printf "%s\n" "${profile_lines[@]}" >"$profile_file"
+    printf "%s\n" "${profile_lines[@]}" >"$PROFILE_FILE"
 
-    assert_failure assert_stderr "$stderr" \
+    assert_stderr "$stderr" assert_failure \
         load_profile
 
     profile_lines[-1]=$variable=./relative/path
-    printf "%s\n" "${profile_lines[@]}" >"$profile_file"
+    printf "%s\n" "${profile_lines[@]}" >"$PROFILE_FILE"
 
     printf -v stderr \
         "$TEXT_PROFILE_PATH_NOT_ABSOLUTE\n" \
-        "$PROFILE_NAME" "$variable"
+        "$PROFILE_FILE" "$variable"
 
-    assert_failure assert_stderr "$stderr" \
+    assert_stderr "$stderr" assert_failure \
         load_profile
 
     profile_lines[-1]=$variable=$TEMP_DIR

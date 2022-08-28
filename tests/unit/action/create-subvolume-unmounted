@@ -2,20 +2,20 @@
 
 # Show that create reports a missing subvolume and does nothing.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
+export PROFILE_FILE=$CONFIG_DIR/profile.d/foo.conf
 export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
-export PROFILE_NAME=foo
 
 printf -v stderr \
     "$TEXT_PROFILE_SUBVOLUME_MISSING\n" \
-    "$PROFILE_NAME" "$SUBVOLUME"
+    "$PROFILE_FILE" "$SUBVOLUME"
 
-assert_success assert_stderr "$stderr" \
+assert_stderr "$stderr" assert_success \
     create
 
 assert_equal "$(list | wc -l)" 0

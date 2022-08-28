@@ -11,7 +11,7 @@ get_limit() {
 set_limit() {
     local variable
     variable=$(get_limit_variable "$1")
-    eval "$variable=${2:-0}"
+    export "$variable=${2:-0}"
 }
 
 is_limit_enabled() {

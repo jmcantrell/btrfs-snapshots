@@ -2,14 +2,14 @@
 
 # Show that snapshots will be listed in chronological order.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 export SNAPSHOTS=$TEMP_DIR
 
-assert_success assert_no_output \
+assert_no_output assert_success \
     list
 
 stdout_lines=()
@@ -22,5 +22,5 @@ done < <(timestamp_sequence "$TIMESTAMP" "1 hour" 10)
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 
-assert_success assert_stdout "$stdout" \
+assert_stdout "$stdout" assert_success \
     list

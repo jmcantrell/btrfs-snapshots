@@ -2,16 +2,15 @@
 
 # Show that a multiple profiles cannot use the same snapshot location.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 profile_names=(foo bar baz)
 
 for i in "${!profile_names[@]}"; do
-    export PROFILE_NAME=${profile_names[i]}
-    export PROFILE_FILE=$TEMP_DIR/$PROFILE_NAME.conf
+    export PROFILE_FILE=$TEMP_DIR/${profile_names[i]}.conf
 
     printf "%s=%s\n" \
         SUBVOLUME "$TEMP_DIR" \
@@ -20,14 +19,14 @@ for i in "${!profile_names[@]}"; do
 
     if ((i == 0)); then
         # The snapshot locations are first come, first serve.
-        assert_success assert_no_output \
+        assert_no_output assert_success \
             load_profile
     else
         printf -v stderr \
             "$TEXT_PROFILE_SNAPSHOTS_NOT_UNIQUE\n" \
-            "$PROFILE_NAME"
+            "$PROFILE_FILE"
 
-        assert_failure assert_stderr "$stderr" \
+        assert_stderr "$stderr" assert_failure \
             load_profile
     fi
 done

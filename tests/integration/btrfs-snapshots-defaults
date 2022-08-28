@@ -2,10 +2,10 @@
 
 # Show that default options can be specified in a configuration file.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 profile_name=foo
 profile_dir=$CONFIG_DIR/profile.d
@@ -23,7 +23,9 @@ for event_name in "${EVENT_NAMES[@]}"; do
     mkdir -p "$subvolume_dir" "$profile_dir"
 
     # There are no limits defined in the profile, so it should assume these.
-    printf "%s=%s\n" SUBVOLUME "$subvolume_dir" >"$profile_file"
+    printf "%s=%s\n" \
+        SUBVOLUME "$subvolume_dir" \
+        >"$profile_file"
 
     limit=$((RANDOM % 5 + 1))
     limit_variable=$(get_limit_variable "$event_name")
@@ -43,7 +45,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     expected_count=$(get_snapshots "$snapshots_dir" | wc -l)
 
     # There should be no output, because nothing will be pruned.
-    assert_success assert_no_output \
+    assert_no_output assert_success \
         btrfs-snapshots -p "$profile_name" prune
 
     # If the default limits were not seen, the snapshot count will be zero.

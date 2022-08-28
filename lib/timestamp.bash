@@ -1,7 +1,3 @@
-export EVENT_NAMES=(minutely hourly daily weekly monthly quarterly yearly)
-export TIMESTAMP_FORMAT="%Y-%m-%dT%H:%M:%SZ"
-export TIMESTAMP_PATTERN="^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z"
-
 get_timestamp() {
     date --utc "$@" +"$TIMESTAMP_FORMAT"
 }
@@ -25,7 +21,7 @@ is_same_event() {
     local timestamp1=$2
     local timestamp2=$3
 
-    case $event_name in
+    case ${event_name@L} in
     yearly) parts=(Y) ;;           # year
     quarterly) parts=(Y q) ;;      # year quarter
     monthly) parts=(Y m) ;;        # year month

@@ -2,6 +2,7 @@ assert_set() {
     local variable=$1
     if [[ ! -v $variable ]]; then
         printf "$TEXT_ASSERT_SET\n" "$variable" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -12,6 +13,7 @@ assert_equal() {
 
     if [[ $actual != "$expected" ]]; then
         printf "$TEXT_ASSERT_EQUAL\n" "$actual" "$expected" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -19,6 +21,7 @@ assert_equal() {
 assert_success() {
     if ! "$@"; then
         printf "$TEXT_ASSERT_SUCCESS\n" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -26,6 +29,7 @@ assert_success() {
 assert_failure() {
     if "$@"; then
         printf "$TEXT_ASSERT_FAILURE\n" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -75,6 +79,7 @@ assert_output() {
 
     if ((${#different[@]} > 0)); then
         printf "$TEXT_ASSERT_OUTPUT\n" "${different[*]}" >&2
+        stack_trace >&2
         return 1
     fi
 
@@ -85,6 +90,7 @@ assert_file() {
     local file=$1
     if [[ ! -f $file ]]; then
         printf "$TEXT_ASSERT_FILE_EXISTS\n" "$file" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -93,6 +99,7 @@ assert_no_file() {
     local file=$1
     if [[ -f $file ]]; then
         printf "$TEXT_ASSERT_FILE_NOT_EXISTS\n" "$file" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -101,6 +108,7 @@ assert_directory() {
     local directory=$1
     if [[ ! -d $directory ]]; then
         printf "$TEXT_ASSERT_DIRECTORY_EXISTS\n" "$directory" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -109,6 +117,7 @@ assert_no_directory() {
     local directory=$1
     if [[ -d $directory ]]; then
         printf "$TEXT_ASSERT_DIRECTORY_NOT_EXISTS\n" "$directory" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -117,6 +126,7 @@ assert_exists() {
     local path=$1
     if [[ ! -e $path ]]; then
         printf "$TEXT_ASSERT_PATH_EXISTS\n" "$path" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -125,6 +135,7 @@ assert_not_exists() {
     local path=$1
     if [[ -e $path ]]; then
         printf "$TEXT_ASSERT_PATH_NOT_EXISTS\n" "$path" >&2
+        stack_trace >&2
         return 1
     fi
 }
@@ -139,24 +150,7 @@ assert_file_content() {
 
     if ! diff -u "$file" "$expected_file"; then
         printf "$TEXT_ASSERT_FILE_CONTENTS" >&2
+        stack_trace >&2
         return 1
-    fi
-}
-
-assert_arrays_equal() {
-    local -n array1=$1
-    local -n array2=$2
-
-    if ((${#array1[@]} != ${#array2[@]})); then
-        printf "$TEXT_ASSERT_ARRAY_LENGTHS_EQUAL\n" "${#array1[@]}" "${#array2[@]}" >&2
-        return 1
-    else
-        local i
-        for ((i = 0; i < ${#array1[@]}; i++)); do
-            if [[ ${array1[i]} != "${array2[i]}" ]]; then
-                printf "$TEXT_ASSERT_ARRAY_ITEMS_EQUAL\n" "$i" "${array1[i]}" "${array2[i]}" >&2
-                return 1
-            fi
-        done
     fi
 }

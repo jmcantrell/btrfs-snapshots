@@ -2,13 +2,12 @@
 
 # Show that errors while loading the defaults file will be reported.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_NAME=foo
-export PROFILE_FILE=$CONFIG_DIR/$PROFILE_NAME.conf
+export PROFILE_FILE=$CONFIG_DIR/foo.conf
 
 defaults_file=$CONFIG_DIR/defaults.conf
 
@@ -19,11 +18,11 @@ printf "%s=%s\n" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$PROFILE_FILE"
 
-printf "%s\n" "return 1" >"$defaults_file"
+printf "return 1\n" >"$defaults_file"
 
 printf -v stderr \
     "$TEXT_SOURCE_FAILED\n" \
     "$defaults_file"
 
-assert_failure assert_stderr "$stderr" \
+assert_stderr "$stderr" assert_failure \
     load_profile

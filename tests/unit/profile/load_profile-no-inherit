@@ -2,13 +2,12 @@
 
 # Show that a profile does not inherit settings from a previously loaded one.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_NAME=foo
-export PROFILE_FILE=$TEMP_DIR/$PROFILE_NAME.conf
+export PROFILE_FILE=$TEMP_DIR/foo.conf
 
 touch "$PROFILE_FILE"
 
@@ -19,13 +18,15 @@ for variable in SUBVOLUME SNAPSHOTS; do
 
     printf -v stderr \
         "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
-        "$PROFILE_NAME" "$variable"
+        "$PROFILE_FILE" "$variable"
 
-    assert_failure assert_stderr "$stderr" \
+    assert_stderr "$stderr" assert_failure \
         load_profile
 
     # Skip over this error for the next test.
-    printf "%s=%s\n" "$variable" "$TEMP_DIR" >>"$PROFILE_FILE"
+    printf "%s=%s\n" \
+        "$variable" "$TEMP_DIR" \
+        >>"$PROFILE_FILE"
 done
 
 # Try to trick the function into accepting inheritable values.
@@ -34,7 +35,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
 done
 
 # At this point, the profile is valid, but there are no limits set.
-assert_success assert_no_output \
+assert_no_output assert_success \
     load_profile
 
 # Ensure non-inheritance of limit values.

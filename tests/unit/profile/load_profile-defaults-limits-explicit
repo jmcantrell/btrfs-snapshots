@@ -2,13 +2,12 @@
 
 # Show that default limit values can be set.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_NAME=foo
-export PROFILE_FILE=$CONFIG_DIR/$PROFILE_NAME.conf
+export PROFILE_FILE=$CONFIG_DIR/foo.conf
 
 mkdir -p "$CONFIG_DIR"
 
@@ -24,12 +23,11 @@ for event_name in "${EVENT_NAMES[@]}"; do
     limits+=("$limit")
 
     printf "%s=%d\n" \
-        "$(get_limit_variable "$event_name")" \
-        "$limit" \
+        "$(get_limit_variable "$event_name")" "$limit" \
         >>"$CONFIG_DIR"/defaults.conf
 done
 
-assert_success assert_no_output \
+assert_no_output assert_success \
     load_profile
 
 # Ensure the profile will be using the previously set defaults.

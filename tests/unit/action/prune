@@ -2,14 +2,13 @@
 
 # Show that prune will preserve the correct snapshots.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
-export PROFILE_NAME=foo
 
 limit=3
 
@@ -42,7 +41,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     printf -v stdout "$TEXT_BTRFS_DELETE\n" "${fillers[@]}"
 
-    assert_success assert_stdout "$stdout" \
+    assert_stdout "$stdout" assert_success \
         prune
 
     assert_equal "$(list | wc -l)" "$limit"

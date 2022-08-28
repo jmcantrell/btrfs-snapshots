@@ -2,26 +2,30 @@
 
 # Show that the subvolume cannot be set in the defaults configuration.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_NAME=foo
 profile_dir=$CONFIG_DIR/profile.d
 
-export PROFILE_FILE=$profile_dir/$PROFILE_NAME.conf
+export PROFILE_FILE=$profile_dir/foo.conf
 
 mkdir -p "$profile_dir"
 
 # Create a profile that does not have the subvolume set.
-printf "%s=%s\n" SNAPSHOTS "$TEMP_DIR" >"$PROFILE_FILE"
+printf "%s=%s\n" \
+    SNAPSHOTS "$TEMP_DIR" \
+    >"$PROFILE_FILE"
 
 # If there's no protection, this value will get used.
-printf "%s=%s\n" SUBVOLUME "$TEMP_DIR" >"$CONFIG_DIR"/defaults.conf
+printf "%s=%s\n" \
+    SUBVOLUME "$TEMP_DIR" \
+    >"$CONFIG_DIR"/defaults.conf
 
-printf -v stderr "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
-    "$PROFILE_NAME" SUBVOLUME
+printf -v stderr \
+    "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
+    "$PROFILE_FILE" SUBVOLUME
 
-assert_failure assert_stderr "$stderr" \
+assert_stderr "$stderr" assert_failure \
     load_profile

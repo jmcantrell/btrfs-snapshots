@@ -1,46 +1,35 @@
 #!/usr/bin/env bash
 
-# A fake implementation of the btrfs functionality used in the tests.
-# Simulates the same messages. Operates on regular directories instead.
+# A fake implementation of the btrfs command.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 btrfs_subvolume() {
     local cmd=$1
     shift
 
     case $cmd in
-    snapshot) btrfs_subvolume_snapshot "$@" ;;
-    delete) btrfs_subvolume_delete "$@" ;;
+    snapshot | delete) "${FUNCNAME[0]}_$cmd" "$@" ;;
     *)
-        printf "Unexpected btrfs subvolume command: %s\n" "$cmd" >&2
+        printf "$TEXT_BTRFS_COMMAND_UNEXPECTED\n" "subvolume $cmd" >&2
         exit 1
         ;;
     esac
 }
 
 btrfs_subvolume_snapshot() {
-    local options=$1
-    local subvolume=$2
-    local snapshot=$3
+    while [[ -v 1 && $1 == -* ]]; do
+        shift
+    done
 
-    if [[ $options != -r ]]; then
-        printf "Btrfs command should be using -r to create a read-only snapshot\n" >&2
-        exit 1
-    fi
+    local subvolume=$1
+    local snapshot=$2
 
-    if [[ ! -d $subvolume ]]; then
-        printf "Subvolume path should be a directory\n" >&2
-        exit 1
-    fi
-
-    if [[ -e $snapshot ]]; then
-        printf "Snapshot path should not already exist\n" >&2
-        exit 1
-    fi
+    assert_directory "$subvolume"
+    assert_not_exists "$snapshot"
 
     printf "$TEXT_BTRFS_CREATE\n" "$subvolume" "$snapshot"
 
@@ -50,23 +39,20 @@ btrfs_subvolume_snapshot() {
 btrfs_subvolume_delete() {
     local snapshot=$1
 
-    if [[ ! -d $snapshot ]]; then
-        printf "Snapshot path should be a directory\n" >&2
-        exit 1
-    fi
+    assert_directory "$snapshot"
 
     printf "$TEXT_BTRFS_DELETE\n" "$snapshot"
 
-    rm -rf "$snapshot"
+    rm -r "$snapshot"
 }
 
 cmd=$1
 shift
 
 case $cmd in
-subvolume) btrfs_subvolume "$@" ;;
+subvolume) btrfs_"$cmd" "$@" ;;
 *)
-    printf "Unexpected btrfs command: %s\n" "$cmd" >&2
+    printf "$TEXT_BTRFS_COMMAND_UNEXPECTED\n" "$cmd" >&2
     exit 1
     ;;
 esac

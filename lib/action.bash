@@ -3,8 +3,8 @@ list() {
 }
 
 create() {
-    if ! is_mounted "$SUBVOLUME"; then
-        printf "$TEXT_PROFILE_SUBVOLUME_MISSING\n" "$PROFILE_NAME" "$SUBVOLUME" >&2
+    if ! mountpoint -q "$SUBVOLUME"; then
+        printf "$TEXT_PROFILE_SUBVOLUME_MISSING\n" "$PROFILE_FILE" "$SUBVOLUME" >&2
         return 0
     fi
 
@@ -12,6 +12,7 @@ create() {
     TIMESTAMP=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(get_timestamp)}
 
     mkdir -p "$SNAPSHOTS"
+
     btrfs subvolume snapshot -r "$SUBVOLUME" "$SNAPSHOTS/$TIMESTAMP" || {
         printf "$TEXT_BTRFS_FAILED\n" "$?" >&2
         return 1
@@ -64,9 +65,7 @@ prune() {
             keep=1
         done
 
-        if ((keep)); then
-            continue
-        fi
+        ((keep)) && continue
 
         btrfs subvolume delete "$snapshot" || {
             printf "$TEXT_BTRFS_FAILED\n" "$?" >&2

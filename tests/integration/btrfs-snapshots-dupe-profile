@@ -3,13 +3,14 @@
 # Show that requesting the same profile at the command line multiple times will
 # only load the profile (and subsequently, perform whatever action) once.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 profile_name=foo
 profile_dir=$CONFIG_DIR/profile.d
+profile_file=$profile_dir/$profile_name.conf
 subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots
 
@@ -18,11 +19,13 @@ mkdir -p "$profile_dir"
 printf "%s=%s\n" \
     SUBVOLUME "$subvolume_dir" \
     SNAPSHOTS "$snapshots_dir" \
-    >"$profile_dir/$profile_name.conf"
+    >"$profile_file"
 
 # Notice that there is only one message expected.
-printf -v stderr "$TEXT_PROFILE_SUBVOLUME_MISSING\n" "$profile_name" "$subvolume_dir"
+printf -v stderr \
+    "$TEXT_PROFILE_SUBVOLUME_MISSING\n" \
+    "$profile_file" "$subvolume_dir"
 
 # Notice that the same profile is requested twice.
-assert_success assert_stderr "$stderr" \
+assert_stderr "$stderr" assert_success \
     btrfs-snapshots -p "$profile_name" -p "$profile_name" create

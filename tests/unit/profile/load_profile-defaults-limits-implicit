@@ -2,20 +2,19 @@
 
 # Show that the default limit value is zero.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_NAME=foo
-export PROFILE_FILE=$TEMP_DIR/$PROFILE_NAME.conf
+export PROFILE_FILE=$TEMP_DIR/foo.conf
 
 printf "%s=%s\n" \
     SUBVOLUME "$TEMP_DIR" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$PROFILE_FILE"
 
-assert_success assert_no_output \
+assert_no_output assert_success \
     load_profile
 
 # Ensure the base default is zero.

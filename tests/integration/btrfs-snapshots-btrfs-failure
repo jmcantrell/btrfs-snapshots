@@ -2,10 +2,10 @@
 
 # Show that btrfs errors and exit status are reported.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 profile_name=foo
 profile_dir=$CONFIG_DIR/profile.d
@@ -35,6 +35,6 @@ for action in create prune; do
     )
     printf -v stderr "%s\n" "${stderr_lines[@]}"
 
-    assert_failure assert_stderr "$stderr" \
+    assert_stderr "$stderr" assert_failure \
         btrfs-snapshots -p "$profile_name" "$action"
 done

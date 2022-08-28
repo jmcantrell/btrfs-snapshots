@@ -80,10 +80,10 @@ TESTS_VERBOSE=1 ./scripts/test
 
 ## Hacking
 
-There's a fake version of `btrfs` in `./tests/bin` that allows running
-`./bin/btrfs-snapshots` without any danger to the host system. Instead
-of creating and deleting snapshots, it simply copies and removes
-directories.
+There are fake versions of `btrfs` and `mountpoint` in `./tests/bin`
+that allow running `./bin/btrfs-snapshots` without any danger to the
+host system. They simply pretend that an existing directory is a
+mounted btrfs subvolume.
 
 There are a few environment variables that should be present if you
 want to play with the code without installing it. They will tell the
@@ -98,7 +98,7 @@ cp .envrc.example .envrc
 direnv allow
 ```
 
-That will allow you to run the command from within the repository, but
+This will allow you to run commands from within the repository, but
 you'll probably want to create some configuration files in
 `$BTRFS_SNAPSHOTS_CONFIG_DIR`, based on the examples in `./config`.
 

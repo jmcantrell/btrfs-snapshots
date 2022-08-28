@@ -108,10 +108,10 @@ Running the prune action will delete snapshots, leaving the tree looking like th
     └── 2021-12-31T12:00:00Z
 .EE
 .IP
-Because the hourly limit was set to "3", a total of only three snapshot could be
-kept. The algorithm found the most recent three unique events' snapshots up to
-the limit value, but only keeping the first snapshot (chronologically) for each
-distinct hour.
+Because the hourly limit was set to "3", a total of only three snapshots could
+be kept. The algorithm found the most recent three unique events' snapshots up
+to the limit value, but only keeping the first snapshot (chronologically) for
+each distinct hour.
 .IP
 Both snapshots occurring earlier than 10am were deleted because they were part
 of the fourth unique event, falling outside of the limit for that event type.

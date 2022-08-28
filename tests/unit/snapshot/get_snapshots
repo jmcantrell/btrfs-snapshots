@@ -3,10 +3,10 @@
 # Show that get_snapshots will only return existing snapshots with a recognized
 # timestamp only at the top level directory and in chronological (natural) order.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 assert_snapshots() {
     local directory=$1

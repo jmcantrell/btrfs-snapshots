@@ -2,10 +2,10 @@
 
 # Show that timestamp_compare can determine timestamp ordering.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 # There's only one second of difference.
 later=$(get_timestamp --date="$TIMESTAMP + 1 second")

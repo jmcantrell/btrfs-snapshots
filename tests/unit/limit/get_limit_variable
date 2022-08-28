@@ -2,9 +2,9 @@
 
 # Show that get_limit_variable constructs the correct variable name.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
-assert_equal "$(get_limit_variable whatever)" "LIMIT_WHATEVER"
+assert_equal "$(get_limit_variable whatever)" LIMIT_WHATEVER

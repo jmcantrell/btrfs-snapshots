@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# A fake implementation of mountpoint.
+
+set -euo pipefail
+
+while [[ -v 1 && $1 == -* ]]; do
+    shift
+done
+
+# Pretend that an existing directory is a mount point.
+[[ -d $1 ]]

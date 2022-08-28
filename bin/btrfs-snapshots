@@ -8,7 +8,9 @@ name=${0##*/}
 export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$name}
 export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$name}
 
-. "$LIB_DIR"/init.sh
+unset name
+
+. "$LIB_DIR"/init.bash
 
 profile_names=()
 
@@ -68,7 +70,6 @@ while [[ -v 1 ]]; do
 done
 
 action=${1:-list}
-[[ -v 1 ]] && shift
 
 case $action in
 create | prune | list) ;;
@@ -84,29 +85,28 @@ declare -a profile_files
 
 if ((${#profile_names[@]} > 0)); then
     profile_files=()
-    for profile_name in "${profile_names[@]}"; do
-        profile_files+=("$profile_dir/$profile_name.conf")
-    done
+
+    while IFS= read -r -d '' profile_name; do
+        profile_file=$profile_dir/$profile_name.conf
+
+        if [[ ! -f $profile_file ]]; then
+            printf "$TEXT_PROFILE_MISSING\n" "$profile_file" >&2
+            exit 1
+        fi
+
+        profile_files+=("$profile_file")
+    done < <(sort -zu < <(printf "%s\0" "${profile_names[@]}"))
 else
     profile_files=("$profile_dir"/*.conf)
 fi
 
-declare -A profiles_seen=()
+unset profile_{name{,s},file,dir}
 
 for PROFILE_FILE in "${profile_files[@]}"; do
     export PROFILE_FILE
 
-    PROFILE_NAME=${PROFILE_FILE##*/}
-    export PROFILE_NAME=${PROFILE_NAME%.conf}
-
-    if [[ -v profiles_seen[$PROFILE_FILE] ]]; then
-        continue
-    fi
-
-    profiles_seen[$PROFILE_FILE]=1
-
     if ! load_profile; then
-        printf "$TEXT_PROFILE_LOAD_FAILED\n" "$PROFILE_NAME" >&2
+        printf "$TEXT_PROFILE_LOAD_FAILED\n" "$PROFILE_FILE" >&2
         exit 1
     fi
 

@@ -2,10 +2,10 @@
 
 # Show that get_timestamp only returns valid timestamps.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
 # It should return a date in the correct format.
 assert_success is_timestamp "$(get_timestamp)"

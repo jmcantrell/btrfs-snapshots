@@ -5,7 +5,7 @@ set -euo pipefail
 export PATH=$PWD/tests/bin:$PWD/bin:$PATH
 
 # Shortened variables for convenience when writing tests.
-# See `./tests/lib/init.sh` for CONFIG_DIR and more details.
+# See `./tests/lib/init.bash` for CONFIG_DIR and more details.
 export LIB_DIR=$PWD/lib
 export TESTS_LIB_DIR=$PWD/tests/lib
 
@@ -25,4 +25,4 @@ run_test() {
 export -f run_test
 
 find ./tests/{unit,integration} -type f -executable "$@" -print0 |
-    parallel -j0 -0 run_test
+    parallel --jobs=0 --null run_test

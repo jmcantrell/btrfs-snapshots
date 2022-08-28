@@ -1,5 +1,4 @@
-TEMP_DIR=$(mktemp -d -t "${0##*/}.XXXXXXXXX")
-trap clean_temp INT TERM EXIT
+trap clean_temp EXIT
 
 reset_temp() {
     clean_temp

@@ -2,12 +2,14 @@
 
 # Show that the end of options marker is recognized.
 
-set -eu
+set -euo pipefail
 
-. "$LIB_DIR"/init.sh
-. "$TESTS_LIB_DIR"/init.sh
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
 
-printf -v stderr "$TEXT_ACTION_INVALID\n" -h
+printf -v stderr \
+    "$TEXT_ACTION_INVALID\n" \
+    -h
 
-assert_failure assert_stderr "$stderr" \
+assert_stderr "$stderr" assert_failure \
     btrfs-snapshots -- -h
