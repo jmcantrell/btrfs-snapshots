@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -euo pipefail
 
 pkg_name=btrfs-snapshots
 src_dir=$PWD

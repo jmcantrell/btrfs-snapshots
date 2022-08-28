@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -euo pipefail
 shopt -s nullglob
 
 name=${0##*/}
