@@ -8,12 +8,11 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 profile_name=foo
-profile_dir=$CONFIG_DIR/profile.d
-profile_file=$profile_dir/$profile_name.conf
+profile_file=$PROFILES_DIR/$profile_name.conf
 subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots
 
-mkdir -p "$profile_dir"
+mkdir -p "$PROFILES_DIR"
 
 printf "%s=%s\n" \
     SUBVOLUME "$subvolume_dir" \

@@ -1,4 +1,4 @@
-timestamp_sequence() {
+timestamp_seq() {
     local timestamp=$1
     local increment=$2
     local count=$3
@@ -10,7 +10,7 @@ timestamp_sequence() {
     done
 }
 
-timestamp_sequence_event() {
+timestamp_seq_event() {
     local timestamp=$1
     local event_name=$2
     local count=$3
@@ -26,5 +26,5 @@ timestamp_sequence_event() {
     yearly) increment="1 year" ;;
     esac
 
-    timestamp_sequence "$timestamp" "$increment" "$count"
+    timestamp_seq "$timestamp" "$increment" "$count"
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that `timestamp_compare` can determine timestamp ordering.
+# Show that `timestamp_cmp` can determine timestamp ordering.
 
 set -euo pipefail
 
@@ -11,11 +11,11 @@ set -euo pipefail
 later=$(timestamp --date="$TIMESTAMP + 1 second")
 
 # A "less than" result should return -1.
-assert_equal "$(timestamp_compare "$TIMESTAMP" "$later")" -1
+assert_equal "$(timestamp_cmp "$TIMESTAMP" "$later")" -1
 
 # A "greater than" result should return 1
-assert_equal "$(timestamp_compare "$later" "$TIMESTAMP")" 1
+assert_equal "$(timestamp_cmp "$later" "$TIMESTAMP")" 1
 
 # An "equal to" result should return 0
-assert_equal "$(timestamp_compare "$later" "$later")" 0
-assert_equal "$(timestamp_compare "$TIMESTAMP" "$TIMESTAMP")" 0
+assert_equal "$(timestamp_cmp "$later" "$later")" 0
+assert_equal "$(timestamp_cmp "$TIMESTAMP" "$TIMESTAMP")" 0

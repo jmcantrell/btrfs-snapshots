@@ -7,17 +7,20 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_FILE=$TEMP_DIR/foo.conf
+profile_file=$PROFILES_DIR/foo.conf
+
+mkdir -p "$(dirname "$profile_file")"
 
 printf "%s=%s\n" \
     SUBVOLUME "$TEMP_DIR" \
     SNAPSHOTS "$TEMP_DIR" \
-    >"$PROFILE_FILE"
+    >"$profile_file"
 
 assert_no_output assert_success \
-    load_profile
+    load_profile "$profile_file"
 
 # Ensure the base default is zero.
 for event_name in "${EVENT_NAMES[@]}"; do
-    assert_equal "$(limit "$event_name")" 0
+    variable=LIMIT_${event_name@U}
+    assert_equal "${!variable}" 0
 done

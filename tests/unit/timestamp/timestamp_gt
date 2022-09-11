@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Show that `timestamp_gt` only returns success when the first timestamp occurs
+# later than the second timestamp.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+assert_no_output assert_failure \
+    timestamp_gt "$TIMESTAMP" "$TIMESTAMP"
+
+later=$(timestamp --date="$TIMESTAMP + 1 second")
+
+assert_no_output assert_success \
+    timestamp_gt "$later" "$TIMESTAMP"
+
+assert_no_output assert_failure \
+    timestamp_gt "$TIMESTAMP" "$later"

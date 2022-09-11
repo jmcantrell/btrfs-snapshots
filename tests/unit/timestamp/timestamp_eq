@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Show that `timestamp_eq` only returns success when timestamps are equal.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+assert_no_output assert_success \
+    timestamp_eq "$TIMESTAMP" "$TIMESTAMP"
+
+other_timestamps=(
+    "$(timestamp --date="$TIMESTAMP - 1 second")"
+    "$(timestamp --date="$TIMESTAMP + 1 second")"
+)
+
+for other_timestamp in "${other_timestamps[@]}"; do
+    assert_no_output assert_failure \
+        timestamp_eq "$TIMESTAMP" "$other_timestamp"
+
+    assert_no_output assert_failure \
+        timestamp_eq "$other_timestamp" "$TIMESTAMP"
+done

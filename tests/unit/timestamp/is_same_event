@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 
 # Show that `is_same_event` can recognize timestamps occurring within the same event.
+#
+# For the purposes of this project, the term "event" is defined as the set of
+# all timestamps that share the same timestamp parts.
+#
+# In other words, an hourly event is the set of all timestamps that share the
+# same year, month, day, and hour.
+#
+# For example, the following timestamps are part of the same hourly event
+# because they happen during the same hour:
+#
+#   2001-01-02T12:00:00Z
+#   2001-01-02T12:34:56Z
+#   2001-01-02T12:59:59Z
+#
+# However, the same event would not contain the following timestamps:
+#
+#   2001-01-02T11:59:59Z
+#   2001-01-02T13:00:00Z
 
 set -euo pipefail
 
@@ -34,18 +52,28 @@ for event_name in "${EVENT_NAMES[@]}"; do
         ;;
     esac
 
+    # Ensure a tiny step before the event window is considered a different event.
+    assert_no_output assert_failure \
+        is_same_event "$event_name" \
+        "$TIMESTAMP" "$(timestamp -d "$TIMESTAMP - 1 second")"
+
     # Ensure every $increment of $event_name is in the same event window.
     while read -r event_step; do
         assert_no_output assert_success \
             is_same_event "$event_name" \
             "$TIMESTAMP" "$event_step"
-    done < <(timestamp_sequence "$TIMESTAMP" "$increment" "$count")
+    done < <(timestamp_seq "$TIMESTAMP" "$increment" "$count")
 
-    # Ensure a tiny step outside of the event window is considered a different event.
+    # Ensure a tiny step after the event window is considered a different event.
     assert_no_output assert_failure \
         is_same_event "$event_name" \
         "$TIMESTAMP" "$(timestamp -d "$event_step + 1 second")"
 done
+
+# Ensure a tiny step before the event window is considered a different event.
+assert_no_output assert_failure \
+    is_same_event quarterly \
+    "$TIMESTAMP" "$(timestamp -d "$TIMESTAMP - 1 second")"
 
 # Ensure every month of a quarter is in the same event window.
 while read -r quarter_start; do
@@ -53,13 +81,13 @@ while read -r quarter_start; do
         assert_no_output assert_success \
             is_same_event quarterly \
             "$quarter_start" "$quarter_step"
-    done < <(timestamp_sequence "$quarter_start" "1 month" 3)
+    done < <(timestamp_seq "$quarter_start" "1 month" 3)
 
-    # Ensure a tiny step outside of the event window is considered a different event.
+    # Ensure a tiny step after the event window is considered a different event.
     assert_no_output assert_failure \
         is_same_event quarterly \
         "$TIMESTAMP" "$(timestamp -d "$quarter_step + 1 second")"
-done < <(timestamp_sequence "$TIMESTAMP" "3 months" 4)
+done < <(timestamp_seq "$TIMESTAMP" "3 months" 4)
 
 # Ensure different years with the same quarter number do not appear as the same event.
 assert_no_output assert_failure \
@@ -69,19 +97,24 @@ assert_no_output assert_failure \
 # Start on Monday of the first week.
 iso_year_start=2000-01-03T00:00:00Z
 
+# Ensure a tiny step before the event window is considered a different event.
+assert_no_output assert_failure \
+    is_same_event weekly \
+    "$TIMESTAMP" "$(timestamp -d "$TIMESTAMP - 1 second")"
+
 # Ensure every day of a week is in the same event window.
 while read -r week_start; do
     while read -r week_step; do
         assert_no_output assert_success \
             is_same_event weekly \
             "$week_start" "$week_step"
-    done < <(timestamp_sequence "$week_start" "1 day" 7)
+    done < <(timestamp_seq "$week_start" "1 day" 7)
 
-    # Ensure a tiny step outside of the event window is considered a different event.
+    # Ensure a tiny step after the event window is considered a different event.
     assert_no_output assert_failure \
         is_same_event weekly \
         "$iso_year_start" "$(timestamp --date="$week_step + 1 second")"
-done < <(timestamp_sequence "$iso_year_start" "1 week" 52)
+done < <(timestamp_seq "$iso_year_start" "1 week" 52)
 
 # Ensure adjacent years with the same week number appear as the same event.
 assert_no_output assert_success \

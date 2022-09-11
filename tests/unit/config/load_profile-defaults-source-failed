@@ -7,22 +7,20 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_FILE=$CONFIG_DIR/foo.conf
+profile_file=$PROFILES_DIR/foo.conf
 
-defaults_file=$CONFIG_DIR/defaults.conf
-
-mkdir -p "$CONFIG_DIR"
+mkdir -p "$(dirname "$profile_file")"
 
 printf "%s=%s\n" \
     SUBVOLUME "$TEMP_DIR" \
     SNAPSHOTS "$TEMP_DIR" \
-    >"$PROFILE_FILE"
+    >"$profile_file"
 
-printf "return 1\n" >"$defaults_file"
+printf "return 1\n" >"$DEFAULTS_FILE"
 
 printf -v stderr \
     "$TEXT_SOURCE_FAILED\n" \
-    "$defaults_file"
+    "$DEFAULTS_FILE"
 
 assert_stderr "$stderr" assert_failure \
-    load_profile
+    load_profile "$profile_file"

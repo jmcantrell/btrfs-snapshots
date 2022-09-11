@@ -1,8 +1,11 @@
+is_snapshot() {
+    [[ -d $1 ]] && is_timestamp "${1##*/}"
+}
+
 snapshots() {
-    local directory=$1
-    for snapshot in "$directory"/*; do
-        if [[ -d $snapshot ]] && is_timestamp "${snapshot##*/}"; then
-            printf "%s\n" "$snapshot"
+    for path in "$1"/*; do
+        if is_snapshot "$path"; then
+            printf "%s\0" "$path"
         fi
     done
 }

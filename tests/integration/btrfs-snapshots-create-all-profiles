@@ -7,9 +7,7 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-profile_dir=$CONFIG_DIR/profile.d
-
-mkdir -p "$profile_dir"
+mkdir -p "$PROFILES_DIR"
 
 profile_names=(a b c)
 snapshots=()
@@ -28,7 +26,7 @@ for i in "${!profile_names[@]}"; do
     printf "%s=%s\n" \
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
-        >"$profile_dir/$profile_name.conf"
+        >"$PROFILES_DIR/$profile_name.conf"
 
     stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE" "$subvolume_dir" "$snapshot")")
 done

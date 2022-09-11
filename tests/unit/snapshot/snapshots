@@ -8,53 +8,25 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-assert_snapshots() {
-    local directory=$1
-    shift
+# Add some invalid paths (that should not be returned):
+timestamp=2000-01-01T00:00:00Z
+mkdir -p "$TEMP_DIR"/foo/bar/baz    # deeply nested and incorrectly named directory
+mkdir -p "$TEMP_DIR/foo/$timestamp" # nested and correctly named directory
+touch "$TEMP_DIR/$timestamp"        # shallow and correctly named file
 
-    local actual
-    readarray -t actual < <(snapshots "$directory")
-
-    local expected=("$@")
-
-    assert_equal "${#actual[@]}" "${#expected[@]}"
-
-    local i
-    for ((i = 0; i < ${#actual[@]}; i++)); do
-        assert_equal "${actual[i]}" "${expected[i]}"
-    done
-}
-
-# Does not complain about non-exsistent directories.
-assert_snapshots /path/to/nowhere
-
-# Does not return anything for an empty directory.
-assert_snapshots "$TEMP_DIR"
-
-# Does not recognize regular files.
-reset_temp
-touch "$TEMP_DIR"/test_file
-assert_snapshots "$TEMP_DIR"
-
-# Does not recognize non-timestamped directories.
-reset_temp
-mkdir -p "$TEMP_DIR"/test_dir
-assert_snapshots "$TEMP_DIR"
-
-# Does not recognized timestamped regular files.
-reset_temp
-touch "$TEMP_DIR/$TIMESTAMP"
-assert_snapshots "$TEMP_DIR"
-
-# Returns all found snapshots in chronological order.
-reset_temp
+# Add some valid snapshot paths:
 while read -r timestamp_step; do
     snapshot=$TEMP_DIR/$timestamp_step
     expected+=("$snapshot")
     mkdir -p "$snapshot"
-done < <(timestamp_sequence "$TIMESTAMP" hour 24)
-assert_snapshots "$TEMP_DIR" "${expected[@]}"
+done < <(timestamp_seq "$TIMESTAMP" hour 24)
 
-# Does not look more than one level deep.
-mkdir -p "$TEMP_DIR/$TIMESTAMP/$TIMESTAMP"
-assert_snapshots "$TEMP_DIR" "${expected[@]}"
+readarray -t -d '' actual < <(snapshots "$TEMP_DIR")
+
+# Ensure the correct number of snapshots are returned.
+assert_equal "${#actual[@]}" "${#expected[@]}"
+
+# Ensure the correct snapshot paths are returned.
+for ((i = 0; i < ${#actual[@]}; i++)); do
+    assert_equal "${actual[i]}" "${expected[i]}"
+done

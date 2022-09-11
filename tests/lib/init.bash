@@ -6,6 +6,8 @@ TEMP_DIR=$(mktemp -d -t "${0##*/}.XXXXXXXXXX")
 export TEMP_DIR
 
 export CONFIG_DIR=$TEMP_DIR/etc
+export PROFILES_DIR=$CONFIG_DIR/profile.d
+export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
 export BTRFS_SNAPSHOTS_CONFIG_DIR=$CONFIG_DIR
 export BTRFS_SNAPSHOTS_LIB_DIR=$LIB_DIR

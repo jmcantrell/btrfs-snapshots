@@ -1,5 +1,6 @@
 assert_set() {
     local variable=$1
+
     if [[ ! -v $variable ]]; then
         printf "$TEXT_ASSERT_SET\n" "$variable" >&2
         stack_trace >&2
@@ -9,6 +10,7 @@ assert_set() {
 
 assert_not_set() {
     local variable=$1
+
     if [[ -v $variable ]]; then
         printf "$TEXT_ASSERT_NOT_SET\n" "$variable" "${!variable}" >&2
         stack_trace >&2
@@ -61,12 +63,14 @@ assert_no_output() {
 assert_stdout() {
     local expected=$1
     shift
+
     assert_output "$expected" "" "$@"
 }
 
 assert_stderr() {
     local expected=$1
     shift
+
     assert_output "" "$expected" "$@"
 }
 
@@ -108,6 +112,7 @@ assert_output() {
 
 assert_exists() {
     local path=$1
+
     if [[ ! -e $path ]]; then
         printf "$TEXT_ASSERT_PATH_EXISTS\n" "$path" >&2
         stack_trace >&2
@@ -117,6 +122,7 @@ assert_exists() {
 
 assert_not_exists() {
     local path=$1
+
     if [[ -e $path ]]; then
         printf "$TEXT_ASSERT_PATH_NOT_EXISTS\n" "$path" >&2
         stack_trace >&2
@@ -126,6 +132,7 @@ assert_not_exists() {
 
 assert_file() {
     local file=$1
+
     if [[ ! -f $file ]]; then
         printf "$TEXT_ASSERT_FILE_EXISTS\n" "$file" >&2
         stack_trace >&2
@@ -135,6 +142,7 @@ assert_file() {
 
 assert_no_file() {
     local file=$1
+
     if [[ -f $file ]]; then
         printf "$TEXT_ASSERT_FILE_NOT_EXISTS\n" "$file" >&2
         stack_trace >&2
@@ -159,6 +167,7 @@ assert_file_content() {
 
 assert_directory() {
     local directory=$1
+
     if [[ ! -d $directory ]]; then
         printf "$TEXT_ASSERT_DIRECTORY_EXISTS\n" "$directory" >&2
         stack_trace >&2
@@ -168,6 +177,7 @@ assert_directory() {
 
 assert_no_directory() {
     local directory=$1
+
     if [[ -d $directory ]]; then
         printf "$TEXT_ASSERT_DIRECTORY_NOT_EXISTS\n" "$directory" >&2
         stack_trace >&2

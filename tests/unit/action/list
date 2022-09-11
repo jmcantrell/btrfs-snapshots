@@ -18,7 +18,7 @@ while read -r timestamp_step; do
     snapshot=$TEMP_DIR/$timestamp_step
     stdout_lines+=("$snapshot")
     mkdir -p "$snapshot"
-done < <(timestamp_sequence "$TIMESTAMP" "1 hour" 10)
+done < <(timestamp_seq "$TIMESTAMP" "1 hour" 10)
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 

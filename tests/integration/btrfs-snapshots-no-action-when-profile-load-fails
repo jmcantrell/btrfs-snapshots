@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Show that `btrfs-snapshots` complains and takes no action if any profile
+# fails to load.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+mkdir -p "$PROFILES_DIR"
+
+# Add a valid profile that would be acted on first under normal circumstances.
+# If this profile were processed, there would output to stdout.
+printf "%s=%s\n" \
+    SUBVOLUME "$TEMP_DIR" \
+    SNAPSHOTS "$TEMP_DIR" \
+    >"$PROFILES_DIR"/a.conf
+
+profile_file=$PROFILES_DIR/b.conf
+
+# Add a profile that causes the load to fail.
+printf "return 1\n" >"$profile_file"
+
+stderr_lines=(
+    "$(printf "$TEXT_SOURCE_FAILED" "$profile_file")"
+    "$(printf "$TEXT_PROFILE_LOAD_FAILED" "$profile_file")"
+)
+
+printf -v stderr "%s\n" "${stderr_lines[@]}"
+
+assert_stderr "$stderr" assert_failure \
+    btrfs-snapshots -p b create
+
+# Ensure nothing for the valid profile was created.
+assert_no_directory "$TEMP_DIR/$TIMESTAMP"

@@ -8,9 +8,8 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 profile_names=(a b c d e)
-profile_dir=$CONFIG_DIR/profile.d
 
-mkdir -p "$profile_dir"
+mkdir -p "$PROFILES_DIR"
 
 subvolume_dirs=()
 snapshots_dirs=()
@@ -26,7 +25,7 @@ for profile_name in "${profile_names[@]}"; do
     printf "%s=%s\n" \
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
-        >"$profile_dir/$profile_name.conf"
+        >"$PROFILES_DIR/$profile_name.conf"
 done
 
 selected=(0 2 4)

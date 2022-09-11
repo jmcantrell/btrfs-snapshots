@@ -7,14 +7,14 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_FILE=$CONFIG_DIR/foo.conf
+profile_file=$PROFILES_DIR/foo.conf
 
-mkdir -p "$CONFIG_DIR"
+mkdir -p "$(dirname "$profile_file")"
 
 printf "%s=%s\n" \
     SUBVOLUME "$TEMP_DIR" \
     SNAPSHOTS "$TEMP_DIR" \
-    >"$PROFILE_FILE"
+    >"$profile_file"
 
 # Create random defaults for every limit.
 limits=()
@@ -24,13 +24,14 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     printf "%s=%d\n" \
         LIMIT_"${event_name@U}" "$limit" \
-        >>"$CONFIG_DIR"/defaults.conf
+        >>"$DEFAULTS_FILE"
 done
 
 assert_no_output assert_success \
-    load_profile
+    load_profile "$profile_file"
 
 # Ensure the profile will be using the previously set defaults.
 for i in "${!EVENT_NAMES[@]}"; do
-    assert_equal "$(limit "${EVENT_NAMES[i]}")" "${limits[i]}"
+    variable=LIMIT_${EVENT_NAMES[i]@U}
+    assert_equal "${!variable}" "${limits[i]}"
 done

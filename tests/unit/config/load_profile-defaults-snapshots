@@ -7,33 +7,19 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-defaults_file=$CONFIG_DIR/defaults.conf
-profile_name=foo
+profile_file=$PROFILES_DIR/foo.conf
 
-export PROFILE_FILE=$CONFIG_DIR/$profile_name.conf
-
-mkdir -p "$CONFIG_DIR"
+mkdir -p "$(dirname "$profile_file")"
 
 printf "%s=%s\n" \
     SUBVOLUME "$TEMP_DIR" \
-    >"$PROFILE_FILE"
-
-printf "%s=%s\n" \
-    SNAPSHOTS "$TEMP_DIR" \
-    >"$defaults_file"
-
-printf -v stderr \
-    "$TEXT_DEFAULTS_SNAPSHOTS_MISSING_PLACEHOLDER\n" \
-    "$defaults_file"
-
-assert_stderr "$stderr" assert_failure \
-    load_profile
+    >"$profile_file"
 
 printf "%s=%s\n" \
     SNAPSHOTS "$TEMP_DIR/%s" \
-    >"$defaults_file"
+    >"$DEFAULTS_FILE"
 
 assert_no_output assert_success \
-    load_profile
+    load_profile "$profile_file"
 
-assert_equal "$SNAPSHOTS" "$TEMP_DIR/$profile_name"
+assert_equal "$SNAPSHOTS" "$TEMP_DIR"/foo

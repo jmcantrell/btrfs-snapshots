@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# Show that `load_profile` does not leak previously loaded settings.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+profile_file=$PROFILES_DIR/foo.conf
+
+mkdir -p "$(dirname "$profile_file")"
+touch "$profile_file"
+
+# Ensure path variables do not leak.
+for variable in SUBVOLUME SNAPSHOTS; do
+    # Try to trick the function into accepting leaked value.
+    export "$variable=$TEMP_DIR"
+
+    printf -v stderr \
+        "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
+        "$profile_file" "$variable"
+
+    assert_stderr "$stderr" assert_failure \
+        load_profile "$profile_file"
+
+    # Skip over this error for the next test.
+    printf "%s=%s\n" \
+        "$variable" "$TEMP_DIR" \
+        >>"$profile_file"
+done
+
+# Try to trick the function into accepting leaked values.
+for event_name in "${EVENT_NAMES[@]}"; do
+    export "LIMIT_${event_name@U}=1"
+done
+
+# At this point, the profile is valid, but does not include limits.
+assert_no_output assert_success \
+    load_profile "$profile_file"
+
+# Ensure existence of, but non-inheritance of limit values.
+for event_name in "${EVENT_NAMES[@]}"; do
+    variable=LIMIT_${event_name@U}
+    assert_equal "${!variable}" 0
+done

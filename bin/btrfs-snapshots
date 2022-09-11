@@ -80,29 +80,43 @@ create | prune | list) ;;
 esac
 
 export PROFILES_DIR=$CONFIG_DIR/profile.d
+export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
 declare -a profile_files
 
 if ((${#profile_names[@]} > 0)); then
-    readarray -t -d '' profile_files < <(sort -zu < <(printf "$PROFILES_DIR/%s.conf\0" "${profile_names[@]}"))
+    profile_files=()
+    while IFS= read -r -d '' profile_file; do
+        if [[ ! -f $profile_file ]]; then
+            printf "$TEXT_PROFILE_MISSING\n" "$profile_file" >&2
+            exit 1
+        fi
+        profile_files+=("$profile_file")
+    done < <(sort -zu < <(printf "$PROFILES_DIR/%s.conf\0" "${profile_names[@]}"))
 else
     profile_files=("$PROFILES_DIR"/*.conf)
 fi
 
+declare -A snapshots_seen
+
+for profile_file in "$PROFILES_DIR"/*.conf; do
+    if ! load_profile "$profile_file"; then
+        printf "$TEXT_PROFILE_LOAD_FAILED\n" "$profile_file" >&2
+        exit 1
+    fi
+
+    if [[ -v snapshots_seen[$SNAPSHOTS] ]]; then
+        printf "$TEXT_PROFILE_SNAPSHOTS_NOT_UNIQUE\n" "$SNAPSHOTS" >&2
+        exit 1
+    fi
+
+    snapshots_seen[$SNAPSHOTS]=1
+done
+
 unset profile_names
 
-for PROFILE_FILE in "${profile_files[@]}"; do
-    export PROFILE_FILE
-
-    if [[ ! -f $PROFILE_FILE ]]; then
-        printf "$TEXT_PROFILE_MISSING\n" "$PROFILE_FILE" >&2
-        exit 1
-    fi
-
-    if ! load_profile; then
-        printf "$TEXT_PROFILE_LOAD_FAILED\n" "$PROFILE_FILE" >&2
-        exit 1
-    fi
+for profile_file in "${profile_files[@]}"; do
+    load_profile "$profile_file"
 
     if ! "$action"; then
         printf "$TEXT_ACTION_FAILED\n" "$action" >&2

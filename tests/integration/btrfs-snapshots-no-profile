@@ -11,9 +11,9 @@ profile_name=bogus
 
 printf -v stderr \
     "$TEXT_PROFILE_MISSING\n" \
-    "$CONFIG_DIR/profile.d/$profile_name.conf"
+    "$PROFILES_DIR/$profile_name.conf"
 
-for action in create prune; do
+for action in create prune list; do
     assert_stderr "$stderr" assert_failure \
         btrfs-snapshots -p "$profile_name" "$action"
 done

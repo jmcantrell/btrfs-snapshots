@@ -1,5 +1,8 @@
 list() {
-    snapshots "$SNAPSHOTS"
+    local snapshot
+    while IFS= read -r -d '' snapshot; do
+        printf "%q\n" "$snapshot"
+    done < <(snapshots "$SNAPSHOTS")
 }
 
 create() {
@@ -9,25 +12,27 @@ create() {
     fi
 
     # Allow ability to override the running timestamp, simplifying testing.
-    TIMESTAMP=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(timestamp)}
+    local timestamp
+    timestamp=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(timestamp)}
 
     mkdir -p "$SNAPSHOTS"
 
-    btrfs subvolume snapshot -r "$SUBVOLUME" "$SNAPSHOTS/$TIMESTAMP" || {
+    btrfs subvolume snapshot -r "$SUBVOLUME" "$SNAPSHOTS/$timestamp" || {
         printf "$TEXT_BTRFS_FAILED\n" "$?" >&2
         return 1
     }
 }
 
 prune() {
-    local event_name counts=() limits=()
+    local variable event_name counts=() limits=()
     for event_name in "${EVENT_NAMES[@]}"; do
         counts+=(0)
-        limits+=("$(limit "$event_name")")
+        variable=LIMIT_${event_name@U}
+        limits+=("${!variable:-0}")
     done
 
     local snapshots
-    readarray -t snapshots < <(snapshots "$SNAPSHOTS" | sort -r)
+    readarray -t -d '' snapshots < <(sort -zr < <(snapshots "$SNAPSHOTS"))
 
     local snapshot_index
     for ((snapshot_index = 0; snapshot_index < ${#snapshots[@]}; snapshot_index++)); do
@@ -57,7 +62,7 @@ prune() {
 
                 # If this pair of timestamps occurred during the same event, and the
                 # given one happened later than the other one, it didn't occur first.
-                if (($(timestamp_compare "$timestamp" "$other_timestamp") == 1)); then
+                if timestamp_gt "$timestamp" "$other_timestamp"; then
                     continue 2
                 fi
             done

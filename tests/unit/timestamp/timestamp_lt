@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Show that `timestamp_lt` only returns success when the first timestamp occurs
+# earlier than the second timestamp.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+assert_no_output assert_failure \
+    timestamp_lt "$TIMESTAMP" "$TIMESTAMP"
+
+earlier=$(timestamp --date="$TIMESTAMP - 1 second")
+
+assert_no_output assert_success \
+    timestamp_lt "$earlier" "$TIMESTAMP"
+
+assert_no_output assert_failure \
+    timestamp_lt "$TIMESTAMP" "$earlier"

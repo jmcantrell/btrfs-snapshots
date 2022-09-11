@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Show that `is_snapshot` only identifies properly timestamped directories.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+# Ensure non-existent paths do not match.
+assert_no_output assert_failure \
+    is_snapshot /path/does/not/exist
+
+# Ensure non-existent, but correctly named, paths do not match.
+assert_no_output assert_failure \
+    is_snapshot /path/to/snapshot/"$TIMESTAMP"
+
+snapshot=$TEMP_DIR/$TIMESTAMP
+
+touch "$snapshot"
+
+# Ensure correctly named paths that aren't directories do not match.
+assert_no_output assert_failure \
+    is_snapshot "$snapshot"
+
+rm "$snapshot"
+
+mkdir -p "$snapshot"
+
+# Ensure correctly named directories match.
+assert_no_output assert_success \
+    is_snapshot "$snapshot"

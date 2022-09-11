@@ -36,7 +36,7 @@ is_same_event() {
     [[ $(date -ud "$timestamp1" +"$format") == $(date -ud "$timestamp2" +"$format") ]]
 }
 
-timestamp_compare() {
+timestamp_cmp() {
     local s1 s2
     s1=$(date --utc --date="$1" +%s)
     s2=$(date --utc --date="$2" +%s)
@@ -51,4 +51,32 @@ timestamp_compare() {
     fi
 
     printf "%s\n" "$result"
+}
+
+timestamp_eq() {
+    (($(timestamp_cmp "$@") == 0))
+}
+
+timestamp_neq() {
+    (($(timestamp_cmp "$@") != 0))
+}
+
+timestamp_lt() {
+    (($(timestamp_cmp "$@") == -1))
+}
+
+timestamp_lte() {
+    local cmp
+    cmp=$(timestamp_cmp "$@")
+    ((cmp == -1 || cmp == 0))
+}
+
+timestamp_gt() {
+    (($(timestamp_cmp "$@") == 1))
+}
+
+timestamp_gte() {
+    local cmp
+    cmp=$(timestamp_cmp "$@")
+    ((cmp == 1 || cmp == 0))
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Show that `load_profile` ensures `SUBVOLUME` is not set in the defaults.
+# Show that `load_profile` rejects a default `SNAPSHOTS` setting without a
+# placeholder.
 
 set -euo pipefail
 
@@ -11,19 +12,17 @@ profile_file=$PROFILES_DIR/foo.conf
 
 mkdir -p "$(dirname "$profile_file")"
 
-# Create a profile that does not have the subvolume set.
-printf "%s=%s\n" \
-    SNAPSHOTS "$TEMP_DIR" \
-    >"$profile_file"
-
-# If there's no protection, this value will get used.
 printf "%s=%s\n" \
     SUBVOLUME "$TEMP_DIR" \
+    >"$profile_file"
+
+printf "%s=%s\n" \
+    SNAPSHOTS "$TEMP_DIR" \
     >"$DEFAULTS_FILE"
 
 printf -v stderr \
-    "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
-    "$profile_file" SUBVOLUME
+    "$TEXT_DEFAULTS_SNAPSHOTS_MISSING_PLACEHOLDER\n" \
+    "$DEFAULTS_FILE" "$TEMP_DIR"
 
 assert_stderr "$stderr" assert_failure \
     load_profile "$profile_file"

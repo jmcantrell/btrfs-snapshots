@@ -7,9 +7,7 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-profile_dir=$CONFIG_DIR/profile.d
-
-mkdir -p "$profile_dir"
+mkdir -p "$PROFILES_DIR"
 
 profile_names=(a b c)
 snapshots=()
@@ -22,10 +20,11 @@ for profile_name in "${profile_names[@]}"; do
 
     mkdir -p "$snapshot"
 
+    # No limits are set, so every snapshot should be pruned.
     printf "%s=%s\n" \
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
-        >"$profile_dir/$profile_name.conf"
+        >"$PROFILES_DIR/$profile_name.conf"
 done
 
 stdout_lines=()

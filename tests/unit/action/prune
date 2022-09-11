@@ -15,7 +15,7 @@ limit=3
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
 
-    limit "$event_name" "$limit"
+    export "LIMIT_${event_name@U}=$limit"
 
     keepers=()
     fillers=()
@@ -36,10 +36,12 @@ for event_name in "${EVENT_NAMES[@]}"; do
             if [[ $snapshot != "$keeper" ]]; then
                 fillers+=("$snapshot")
             fi
-        done < <(timestamp_sequence "$event_start" "1 second" "$limit" | tac)
-    done < <(timestamp_sequence_event "$TIMESTAMP" "$event_name" "$limit" | tac)
+        done < <(timestamp_seq "$event_start" "1 second" "$limit" | tac)
+    done < <(timestamp_seq_event "$TIMESTAMP" "$event_name" "$limit" | tac)
 
-    printf -v stdout "$TEXT_BTRFS_DELETE\n" "${fillers[@]}"
+    printf -v stdout \
+        "$TEXT_BTRFS_DELETE\n" \
+        "${fillers[@]}"
 
     assert_stdout "$stdout" assert_success \
         prune

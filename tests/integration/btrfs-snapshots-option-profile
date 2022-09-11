@@ -8,7 +8,6 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 profile_name=foo
-profile_dir=$CONFIG_DIR/profile.d
 
 assert_option() {
     subvolume_dir=$TEMP_DIR/subvolume
@@ -17,12 +16,12 @@ assert_option() {
 
     reset_temp
 
-    mkdir -p "$profile_dir" "$subvolume_dir"
+    mkdir -p "$PROFILES_DIR" "$subvolume_dir"
 
     printf "%s=%s\n" \
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
-        >"$profile_dir/$profile_name.conf"
+        >"$PROFILES_DIR/$profile_name.conf"
 
     printf -v stdout \
         "$TEXT_BTRFS_CREATE\n" \
@@ -31,7 +30,7 @@ assert_option() {
     assert_stdout "$stdout" assert_success \
         btrfs-snapshots "$@" create
 
-    assert_equal "$(snapshots "$snapshots_dir" | wc -l)" 1
+    assert_equal "$(SNAPSHOTS=$snapshots_dir list | wc -l)" 1
 }
 
 assert_option -p "$profile_name"

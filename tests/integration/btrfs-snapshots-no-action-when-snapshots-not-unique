@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Show that `btrfs-snapshots` complains and takes no action if more than one
+# profile uses the same value for `SNAPSHOTS`.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+mkdir -p "$PROFILES_DIR"
+
+for profile_name in a b; do
+    printf "%s=%s\n" \
+        SUBVOLUME "$TEMP_DIR" \
+        SNAPSHOTS "$TEMP_DIR" \
+        >"$PROFILES_DIR/$profile_name.conf"
+done
+
+printf -v stderr \
+    "$TEXT_PROFILE_SNAPSHOTS_NOT_UNIQUE\n" \
+    "$TEMP_DIR"
+
+assert_stderr "$stderr" assert_failure \
+    btrfs-snapshots create

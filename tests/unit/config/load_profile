@@ -7,16 +7,17 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-export PROFILE_FILE=$TEMP_DIR/foo.conf
-
+profile_file=$PROFILES_DIR/foo.conf
 subvolume_dir=$TEMP_DIR/$RANDOM
 snapshots_dir=$TEMP_DIR/$RANDOM
 limits=()
 
+mkdir -p "$(dirname "$profile_file")"
+
 printf "%s=%s\n" \
     SUBVOLUME "$subvolume_dir" \
     SNAPSHOTS "$snapshots_dir" \
-    >"$PROFILE_FILE"
+    >"$profile_file"
 
 for event_name in "${EVENT_NAMES[@]}"; do
     limit=$((1 + RANDOM))
@@ -24,15 +25,16 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     printf "%s=%d\n" \
         LIMIT_"${event_name@U}" "$limit" \
-        >>"$PROFILE_FILE"
+        >>"$profile_file"
 done
 
 assert_no_output assert_success \
-    load_profile
+    load_profile "$profile_file"
 
 assert_equal "$SUBVOLUME" "$subvolume_dir"
 assert_equal "$SNAPSHOTS" "$snapshots_dir"
 
 for i in "${!EVENT_NAMES[@]}"; do
-    assert_equal "$(limit "${EVENT_NAMES[i]}")" "${limits[i]}"
+    variable=LIMIT_${EVENT_NAMES[i]@U}
+    assert_equal "${!variable}" "${limits[i]}"
 done

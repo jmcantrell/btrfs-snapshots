@@ -8,8 +8,7 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 profile_name=foo
-profile_dir=$CONFIG_DIR/profile.d
-profile_file=$profile_dir/$profile_name.conf
+profile_file=$PROFILES_DIR/$profile_name.conf
 defaults_file=$CONFIG_DIR/defaults.conf
 subvolume_dir=$TEMP_DIR/subvolume
 
@@ -20,7 +19,7 @@ snapshots_dir=$TEMP_DIR/snapshots/$profile_name
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
 
-    mkdir -p "$subvolume_dir" "$profile_dir"
+    mkdir -p "$subvolume_dir" "$PROFILES_DIR"
 
     # There are no limits defined in the profile, so it should assume these.
     printf "%s=%s\n" \
@@ -39,14 +38,14 @@ for event_name in "${EVENT_NAMES[@]}"; do
     # the following test to fail.
     while read -r event_step; do
         mkdir -p "$snapshots_dir/$event_step"
-    done < <(timestamp_sequence_event "$TIMESTAMP" "$event_name" "$limit")
+    done < <(timestamp_seq_event "$TIMESTAMP" "$event_name" "$limit")
 
-    expected_count=$(snapshots "$snapshots_dir" | wc -l)
+    expected_count=$(SNAPSHOTS=$snapshots_dir list | wc -l)
 
     # There should be no output, because nothing will be pruned.
     assert_no_output assert_success \
         btrfs-snapshots -p "$profile_name" prune
 
     # If the default limits were not seen, the snapshot count will be zero.
-    assert_equal "$(snapshots "$snapshots_dir" | wc -l)" "$expected_count"
+    assert_equal "$(SNAPSHOTS=$snapshots_dir list | wc -l)" "$expected_count"
 done
