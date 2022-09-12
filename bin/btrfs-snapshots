@@ -113,8 +113,6 @@ for profile_file in "$PROFILES_DIR"/*.conf; do
     snapshots_seen[$SNAPSHOTS]=1
 done
 
-unset profile_names
-
 for profile_file in "${profile_files[@]}"; do
     load_profile "$profile_file"
 
