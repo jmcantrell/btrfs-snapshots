@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that `load_profile` ensures `SUBVOLUME` is not set in the defaults.
+# Show that `load_profile` ensures `SUBVOLUME` is ignored in the defaults.
 
 set -euo pipefail
 
