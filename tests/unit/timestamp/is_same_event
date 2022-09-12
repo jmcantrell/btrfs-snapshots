@@ -3,7 +3,8 @@
 # Show that `is_same_event` can recognize timestamps occurring within the same event.
 #
 # For the purposes of this project, the term "event" is defined as the set of
-# all timestamps that share the same timestamp parts.
+# all timestamps that share the same timestamp parts, where the parts are
+# determined based on the type of event, e.g. yearly, monthly, daily, etc.
 #
 # In other words, an hourly event is the set of all timestamps that share the
 # same year, month, day, and hour.
@@ -17,8 +18,8 @@
 #
 # However, the same event would not contain the following timestamps:
 #
-#   2001-01-02T11:59:59Z
-#   2001-01-02T13:00:00Z
+#   2001-01-02T11:59:59Z (from the previous hourly event)
+#   2001-01-02T13:00:00Z (from the next hourly event)
 
 set -euo pipefail
 

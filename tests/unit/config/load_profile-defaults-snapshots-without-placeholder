@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Show that `load_profile` rejects a default `SNAPSHOTS` setting without a
-# placeholder.
+# Show that `load_profile` rejects a default `SNAPSHOTS` setting that does not
+# contain a placeholder.
 
 set -euo pipefail
 

@@ -7,6 +7,10 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
+# Given that another test has already shown that -h is a valid option, it
+# should be interpreted as an action if the end of options marker is
+# recognized and not an invalid option.
+
 printf -v stderr \
     "$TEXT_ACTION_INVALID\n" \
     -h
