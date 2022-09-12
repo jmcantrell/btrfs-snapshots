@@ -9,7 +9,6 @@ set -euo pipefail
 
 profile_name=foo
 profile_file=$PROFILES_DIR/$profile_name.conf
-defaults_file=$CONFIG_DIR/defaults.conf
 subvolume_dir=$TEMP_DIR/subvolume
 
 # There will be no snapshot directory defined in the profile, so it should
@@ -31,7 +30,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     printf "%s=%s\n" \
         SNAPSHOTS "$TEMP_DIR/snapshots/%s" \
         LIMIT_"${event_name@U}" "$limit" \
-        >"$defaults_file"
+        >"$DEFAULTS_FILE"
 
     # Create just enough snapshots to test the limit.
     # If the default limits are not seen, then they will all be pruned, causing
