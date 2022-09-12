@@ -42,4 +42,6 @@ load_profile() {
     done
 
     printf -v SNAPSHOTS "$SNAPSHOTS" "$PROFILE_NAME"
+
+    export SUBVOLUME SNAPSHOTS "${EVENT_NAMES[@]/#/LIMIT_}"
 }
