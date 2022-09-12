@@ -8,8 +8,6 @@ name=${0##*/}
 export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$name}
 export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$name}
 
-unset name
-
 . "$LIB_DIR"/init.bash
 
 profile_names=()
