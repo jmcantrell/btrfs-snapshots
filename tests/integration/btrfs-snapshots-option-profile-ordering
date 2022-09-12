@@ -42,4 +42,4 @@ assert_stdout "$stdout" assert_success \
 
 # Ensure out-of-order profile selection is processed in order.
 assert_stdout "$stdout" assert_success \
-    btrfs-snapshots -p c -p b -p a list
+    btrfs-snapshots --profile={c,b,a} list

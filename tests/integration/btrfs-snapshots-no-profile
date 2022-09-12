@@ -15,5 +15,5 @@ printf -v stderr \
 
 for action in create prune list; do
     assert_stderr "$stderr" assert_failure \
-        btrfs-snapshots -p "$profile_name" "$action"
+        btrfs-snapshots --profile="$profile_name" "$action"
 done

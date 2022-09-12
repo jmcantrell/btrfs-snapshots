@@ -30,7 +30,7 @@ stderr_lines=(
 printf -v stderr "%s\n" "${stderr_lines[@]}"
 
 assert_stderr "$stderr" assert_failure \
-    btrfs-snapshots -p b create
+    btrfs-snapshots --profile=b create
 
 # Ensure nothing for the valid profile was created.
 assert_no_directory "$TEMP_DIR/$TIMESTAMP"

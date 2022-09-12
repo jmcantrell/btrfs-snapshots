@@ -36,7 +36,7 @@ options=()
 stdout_lines=()
 
 for i in "${selected[@]}"; do
-    options+=(-p "${profile_names[i]}")
+    options+=(--profile="${profile_names[i]}")
     stdout_lines+=("${snapshots[i]}")
 done
 
