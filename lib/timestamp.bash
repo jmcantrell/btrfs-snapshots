@@ -33,13 +33,17 @@ is_same_event() {
 
     local format=${parts[*]/#/%}
 
-    [[ $(date -ud "$timestamp1" +"$format") == $(date -ud "$timestamp2" +"$format") ]]
+    local parts1 parts2
+    parts1=$(date --utc --date="$timestamp1" +"$format") || return 1
+    parts2=$(date --utc --date="$timestamp2" +"$format") || return 1
+
+    [[ $parts1 == "$parts2" ]]
 }
 
 timestamp_cmp() {
     local s1 s2
-    s1=$(date --utc --date="$1" +%s)
-    s2=$(date --utc --date="$2" +%s)
+    s1=$(date --utc --date="$1" +%s) || return 1
+    s2=$(date --utc --date="$2" +%s) || return 1
 
     local result
     if ((s1 < s2)); then
@@ -50,33 +54,41 @@ timestamp_cmp() {
         result="0"
     fi
 
-    printf "%s\n" "$result"
+    printf -- "$result"
 }
 
 timestamp_eq() {
-    (($(timestamp_cmp "$@") == 0))
+    local cmp
+    cmp=$(timestamp_cmp "$@") || return 1
+    ((cmp == 0))
 }
 
 timestamp_neq() {
-    (($(timestamp_cmp "$@") != 0))
+    local cmp
+    cmp=$(timestamp_cmp "$@") || return 1
+    ((cmp != 0))
 }
 
 timestamp_lt() {
-    (($(timestamp_cmp "$@") == -1))
+    local cmp
+    cmp=$(timestamp_cmp "$@") || return 1
+    ((cmp == -1))
 }
 
 timestamp_lte() {
     local cmp
-    cmp=$(timestamp_cmp "$@")
+    cmp=$(timestamp_cmp "$@") || return 1
     ((cmp == -1 || cmp == 0))
 }
 
 timestamp_gt() {
-    (($(timestamp_cmp "$@") == 1))
+    local cmp
+    cmp=$(timestamp_cmp "$@") || return 1
+    ((cmp == 1))
 }
 
 timestamp_gte() {
     local cmp
-    cmp=$(timestamp_cmp "$@")
+    cmp=$(timestamp_cmp "$@") || return 1
     ((cmp == 1 || cmp == 0))
 }
