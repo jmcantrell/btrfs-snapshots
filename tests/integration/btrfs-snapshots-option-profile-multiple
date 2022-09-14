@@ -32,11 +32,7 @@ selected=(0 2 4)
 stdout_lines=()
 
 for i in "${selected[@]}"; do
-    printf -v message \
-        "$TEXT_BTRFS_CREATE" \
-        "${subvolume_dirs[i]}" "${snapshots_dirs[i]}/$TIMESTAMP"
-
-    stdout_lines+=("$message")
+    stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE" "${subvolume_dirs[i]}" "${snapshots_dirs[i]}/$TIMESTAMP")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
