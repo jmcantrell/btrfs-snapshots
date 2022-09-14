@@ -7,15 +7,11 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-# Ensure non-existent paths do not match.
-assert_no_output assert_failure \
-    is_snapshot /path/does/not/exist
+snapshot=$TEMP_DIR/$TIMESTAMP
 
 # Ensure non-existent, but correctly named, paths do not match.
 assert_no_output assert_failure \
-    is_snapshot /path/to/snapshot/"$TIMESTAMP"
-
-snapshot=$TEMP_DIR/$TIMESTAMP
+    is_snapshot "$snapshot"
 
 touch "$snapshot"
 
