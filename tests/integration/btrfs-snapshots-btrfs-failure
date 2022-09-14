@@ -16,6 +16,7 @@ mkdir -p "$PROFILES_DIR" "$subvolume_dir"
 # Create a snapshot so there is a reason for calling btrfs during the prune.
 mkdir -p "$snapshots_dir/$TIMESTAMP"
 
+# Omit any limit settings, so everything will be pruned.
 printf "%s=%s\n" \
     SUBVOLUME "$subvolume_dir" \
     SNAPSHOTS "$snapshots_dir" \

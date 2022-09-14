@@ -1,4 +1,4 @@
-# A sensible runtime timestamp.
+# A sensible example timestamp.
 # Also a convenient starting point for all event types.
 export TIMESTAMP=2001-01-01T00:00:00Z
 
