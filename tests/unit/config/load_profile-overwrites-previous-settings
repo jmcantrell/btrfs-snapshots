@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that `load_profile` does not leak previously loaded settings.
+# Show that `load_profile` overwrites previously loaded settings.
 
 set -euo pipefail
 
@@ -12,9 +12,8 @@ profile_file=$PROFILES_DIR/foo.conf
 mkdir -p "$(dirname "$profile_file")"
 touch "$profile_file"
 
-# Ensure path variables do not leak.
 for variable in SUBVOLUME SNAPSHOTS; do
-    # Try to trick the function into accepting leaked value.
+    # Try to trick the function into accepting a previous value.
     export "$variable=$TEMP_DIR"
 
     printf -v stderr \
@@ -30,7 +29,7 @@ for variable in SUBVOLUME SNAPSHOTS; do
         >>"$profile_file"
 done
 
-# Try to trick the function into accepting leaked values.
+# Try to trick the function into accepting previous values.
 for event_name in "${EVENT_NAMES[@]}"; do
     export "LIMIT_${event_name@U}=1"
 done
