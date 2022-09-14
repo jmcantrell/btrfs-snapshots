@@ -20,13 +20,13 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     mkdir -p "$subvolume_dir" "$PROFILES_DIR"
 
-    # There are no limits defined in the profile, so it should assume these.
     printf "%s=%s\n" \
         SUBVOLUME "$subvolume_dir" \
         >"$profile_file"
 
     limit=$((RANDOM % 5 + 1))
 
+    # There are no limits defined in the profile, so it should use these.
     printf "%s=%s\n" \
         SNAPSHOTS "$TEMP_DIR/snapshots/%s" \
         LIMIT_"${event_name@U}" "$limit" \
