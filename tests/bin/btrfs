@@ -12,7 +12,7 @@ btrfs_subvolume() {
     shift
 
     case $cmd in
-    snapshot | delete) "${FUNCNAME[0]}_$cmd" "$@" ;;
+    snapshot | delete) btrfs_subvolume_"$cmd" "$@" ;;
     *)
         printf "$TEXT_BTRFS_COMMAND_UNEXPECTED\n" "subvolume $cmd" >&2
         exit 1
