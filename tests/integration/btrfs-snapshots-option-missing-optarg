@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Show that `btrfs-snapshots` complains about missing option arguments.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+assert_optarg() {
+    for option in "$@"; do
+        printf -v stderr \
+            "$TEXT_OPTION_MISSING_ARGUMENT\n" \
+            "${option%=}"
+
+        assert_stderr "$stderr" assert_failure \
+            btrfs-snapshots "$option"
+    done
+}
+
+assert_optarg -p --profile{,=}
+assert_optarg -C --config-dir{,=}
