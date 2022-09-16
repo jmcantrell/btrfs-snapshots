@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Show that `is_same_event` can recognize timestamps occurring within the same
+# monthly event.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+# Ensure a tiny step before the event window is considered a different event.
+assert_no_output assert_failure \
+    is_same_event monthly "$TIMESTAMP" "$(timestamp -d "$TIMESTAMP - 1 second")"
+
+# Ensure every day of the month is in the same event window.
+while read -r event_step; do
+    assert_no_output assert_success \
+        is_same_event monthly "$TIMESTAMP" "$event_step"
+done < <(timestamp_seq "$TIMESTAMP" "1 day" 31)
+
+# Ensure a tiny step after the event window is considered a different event.
+assert_no_output assert_failure \
+    is_same_event monthly "$TIMESTAMP" "$(timestamp -d "$event_step + 1 second")"

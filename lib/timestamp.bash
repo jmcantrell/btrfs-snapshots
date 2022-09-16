@@ -16,30 +16,6 @@ is_timestamp() {
     fi
 }
 
-is_same_event() {
-    local event_name=$1
-    local timestamp1=$2
-    local timestamp2=$3
-
-    case ${event_name@L} in
-    yearly) parts=(Y) ;;           # year
-    quarterly) parts=(Y q) ;;      # year quarter
-    monthly) parts=(Y m) ;;        # year month
-    weekly) parts=(G V) ;;         # year and week number (ISO)
-    daily) parts=(Y m d) ;;        # year month day
-    hourly) parts=(Y m d H) ;;     # year month day hour
-    minutely) parts=(Y m d H M) ;; # year month day hour minute
-    esac
-
-    local format=${parts[*]/#/%}
-
-    local parts1 parts2
-    parts1=$(date --utc --date="$timestamp1" +"$format") || return 1
-    parts2=$(date --utc --date="$timestamp2" +"$format") || return 1
-
-    [[ $parts1 == "$parts2" ]]
-}
-
 timestamp_cmp() {
     local s1 s2
     s1=$(date --utc --date="$1" +%s) || return 1

@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Show that `is_same_event` can recognize timestamps occurring within the same
+# weekly event.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+# Start on Monday of the first week so iteration is predictable.
+iso_year_start=2000-01-03T00:00:00Z
+
+# Ensure every day of each week of the year is in the same event window.
+while read -r event_start; do
+    # Ensure a tiny step before the event window is considered a different event.
+    assert_no_output assert_failure \
+        is_same_event weekly "$event_start" "$(timestamp -d "$event_start - 1 second")"
+
+    while read -r event_step; do
+        assert_no_output assert_success \
+            is_same_event weekly "$event_start" "$event_step"
+    done < <(timestamp_seq "$event_start" "1 day" 7)
+
+    # Ensure a tiny step after the event window is considered a different event.
+    assert_no_output assert_failure \
+        is_same_event weekly "$iso_year_start" "$(timestamp --date="$event_step + 1 second")"
+done < <(timestamp_seq "$iso_year_start" "1 week" 52)
+
+# Ensure adjacent years with the same week number appear as the same event.
+assert_no_output assert_success \
+    is_same_event weekly 1999-12-31T00:00:00Z 2000-01-01T23:00:00Z
+
+# Ensure non-adjacent years with the same week number do not appear as the same event.
+assert_no_output assert_failure \
+    is_same_event weekly 2000-01-03T00:00:00Z 2002-01-01T00:00:00Z
