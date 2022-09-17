@@ -13,7 +13,7 @@ create() {
 
     # Allow ability to override the running timestamp, simplifying testing.
     local timestamp
-    timestamp=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(timestamp)}
+    timestamp=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(timestamp)} || return 1
 
     mkdir -p "$SNAPSHOTS"
 
