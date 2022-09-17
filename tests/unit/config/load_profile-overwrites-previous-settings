@@ -10,6 +10,9 @@ set -euo pipefail
 profile_file=$PROFILES_DIR/foo.conf
 
 mkdir -p "$(dirname "$profile_file")"
+
+# Write a profile with no variables set. If existing variables are not
+# overwritten, there should be no errors and the value would remain set.
 touch "$profile_file"
 
 for variable in SUBVOLUME SNAPSHOTS; do

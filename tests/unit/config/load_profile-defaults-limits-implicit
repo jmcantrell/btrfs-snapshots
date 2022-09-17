@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that `load_profile` sets all limits to a default of zero.
+# Show that `load_profile` sets all limits to zero, by default.
 
 set -euo pipefail
 

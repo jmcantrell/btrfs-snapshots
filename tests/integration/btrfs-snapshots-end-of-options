@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that `btrfs-snapshots` recognizes the end of options marker.
+# Show that `btrfs-snapshots` recognizes the end-of-options marker.
 
 set -euo pipefail
 
@@ -9,6 +9,8 @@ set -euo pipefail
 
 option=-h
 
+# If the end-of-options marker is recognized, the next argument will be treated
+# as an action, and since $option is not a valid action, it should complain.
 printf -v stderr \
     "$TEXT_ACTION_INVALID\n" \
     "$option"
