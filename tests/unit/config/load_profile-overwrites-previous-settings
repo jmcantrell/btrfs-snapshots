@@ -20,8 +20,12 @@ for variable in SUBVOLUME SNAPSHOTS; do
         "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
         "$profile_file" "$variable"
 
+    # If $variable was not overwritten, this would succeed with no output.
     assert_stderr "$stderr" assert_failure \
         load_profile "$profile_file"
+
+    # If $variable was not overwritten, it would still be set.
+    assert_not_set "$variable"
 
     # Skip over this error for the next test.
     printf "%s=%s\n" \

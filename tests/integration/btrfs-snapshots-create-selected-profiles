@@ -47,3 +47,6 @@ for i in "${selected[@]}"; do
     assert_file "${snapshots[i]}"/marker
     assert_file_content "${snapshots[i]}"/marker "${profile_names[i]}"
 done
+
+# Ensure nothing was created for the non-selected profile.
+assert_not_exists "${snapshots[0]}"
