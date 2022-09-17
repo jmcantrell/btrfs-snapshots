@@ -7,7 +7,8 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-profile_file=$PROFILES_DIR/foo.conf
+profile_name=foo
+profile_file=$PROFILES_DIR/$profile_name.conf
 
 mkdir -p "$(dirname "$profile_file")"
 
@@ -22,4 +23,4 @@ printf "%s=%s\n" \
 assert_no_output assert_success \
     load_profile "$profile_file"
 
-assert_equal "$SNAPSHOTS" "$TEMP_DIR"/foo
+assert_equal "$SNAPSHOTS" "$TEMP_DIR/$profile_name"

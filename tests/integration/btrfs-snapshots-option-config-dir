@@ -7,8 +7,8 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-alt_config_dir=$TEMP_DIR/alt_config
-profiles_dir=$alt_config_dir/profile.d
+config_dir=$TEMP_DIR/alt
+profiles_dir=$config_dir/profile.d
 
 assert_option() {
     subvolume_dir=$TEMP_DIR/subvolume
@@ -34,6 +34,6 @@ assert_option() {
     assert_equal "$(SNAPSHOTS=$snapshots_dir list | wc -l)" 1
 }
 
-assert_option -C "$alt_config_dir"
-assert_option --config-dir "$alt_config_dir"
-assert_option --config-dir="$alt_config_dir"
+assert_option -C "$config_dir"
+assert_option --config-dir "$config_dir"
+assert_option --config-dir="$config_dir"

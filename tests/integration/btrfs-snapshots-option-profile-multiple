@@ -7,10 +7,9 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-profile_names=(a b c d e)
-
 mkdir -p "$PROFILES_DIR"
 
+profile_names=(a b c d e)
 subvolume_dirs=()
 snapshots_dirs=()
 
@@ -39,7 +38,7 @@ printf -v stdout "%s\n" "${stdout_lines[@]}"
 
 assert_stdout "$stdout" assert_success \
     btrfs-snapshots \
-    -p "${profile_names[${selected[0]}]}" \
-    --profile "${profile_names[${selected[1]}]}" \
+    --profile="${profile_names[${selected[0]}]}" \
+    --profile="${profile_names[${selected[1]}]}" \
     --profile="${profile_names[${selected[2]}]}" \
     create

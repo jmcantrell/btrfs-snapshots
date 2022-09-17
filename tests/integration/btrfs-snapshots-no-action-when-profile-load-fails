@@ -17,17 +17,13 @@ printf "%s=%s\n" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$PROFILES_DIR"/a.conf
 
-profile_file=$PROFILES_DIR/b.conf
-
 # Add a profile that causes the load to fail.
+profile_file=$PROFILES_DIR/b.conf
 printf "return 1\n" >"$profile_file"
 
-stderr_lines=(
-    "$(printf "$TEXT_SOURCE_FAILED" "$profile_file")"
+printf -v stderr "%s\n" \
+    "$(printf "$TEXT_SOURCE_FAILED" "$profile_file")" \
     "$(printf "$TEXT_PROFILE_LOAD_FAILED" "$profile_file")"
-)
-
-printf -v stderr "%s\n" "${stderr_lines[@]}"
 
 assert_stderr "$stderr" assert_failure \
     btrfs-snapshots --profile=b create
