@@ -24,4 +24,4 @@ printf -v stderr \
 assert_stderr "$stderr" assert_failure \
     btrfs-snapshots create
 
-assert_equal "$(SNAPSHOTS=$TEMP_DIR list | wc -l)" 0
+assert_equal "$(snapshots "$TEMP_DIR" | grep -zc .)" 0

@@ -46,7 +46,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     assert_stdout "$stdout" assert_success \
         prune
 
-    assert_equal "$(list | wc -l)" "$limit"
+    assert_equal "$(snapshots "$SNAPSHOTS" | grep -zc .)" "$limit"
 
     for keeper in "${keepers[@]}"; do
         assert_directory "$keeper"

@@ -78,7 +78,7 @@ _btrfs_snapshots() {
         readarray -t COMPREPLY < <(compgen -W '$(_parse_help "$1")' -- "$cur")
         ;;
     *)
-        readarray -t COMPREPLY < <(compgen -W "create list prune" -- "$cur")
+        readarray -t COMPREPLY < <(compgen -W "create prune" -- "$cur")
         ;;
     esac
 }

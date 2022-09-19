@@ -7,39 +7,35 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-mkdir -p "$PROFILES_DIR"
-
 profile_names=(a b c)
-subvolume_dirs=()
-snapshots=()
-stdout_lines=()
 
-for profile_name in "${profile_names[@]}"; do
-    subvolume_dir=$TEMP_DIR/subvolume/$profile_name
-    subvolume_dirs+=("$subvolume_dir")
-    snapshots_dir=$TEMP_DIR/snapshots/$profile_name
-    snapshot=$snapshots_dir/$TIMESTAMP
-    snapshots+=("$snapshot")
+assert_order() {
+    reset_temp
 
-    mkdir -p "$subvolume_dir"
-    printf "%s" "$profile_name" >"$subvolume_dir"/marker
+    local stdout_lines=()
 
-    printf "%s=%s\n" \
-        SUBVOLUME "$subvolume_dir" \
-        SNAPSHOTS "$snapshots_dir" \
-        >"$PROFILES_DIR/$profile_name.conf"
+    local profile_name
+    for profile_name in "${profile_names[@]}"; do
+        local subvolume=$TEMP_DIR/subvolume/$profile_name
+        local snapshots=$TEMP_DIR/snapshots/$profile_name
+        local snapshot=$snapshots/$TIMESTAMP
 
-    snapshot=$snapshots_dir/$TIMESTAMP
-    stdout_lines+=("$snapshot")
-    mkdir -p "$snapshot"
-done
+        mkdir -p "$PROFILES_DIR" "$subvolume"
 
-printf -v stdout "%s\n" "${stdout_lines[@]}"
+        printf "%s=%s\n" \
+            SUBVOLUME "$subvolume" \
+            SNAPSHOTS "$snapshots" \
+            >"$PROFILES_DIR/$profile_name.conf"
 
-# Ensure default profile selection is processed in order.
-assert_stdout "$stdout" assert_success \
-    btrfs-snapshots list
+        stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE\n" "$subvolume" "$snapshot")")
+    done
 
-# Ensure out-of-order profile selection is processed in order.
-assert_stdout "$stdout" assert_success \
-    btrfs-snapshots --profile={c,b,a} list
+    local stdout
+    printf -v stdout "%s\n" "${stdout_lines[@]}"
+
+    assert_stdout "$stdout" assert_success \
+        btrfs-snapshots "$@" create
+}
+
+assert_order
+assert_order --profile={c,b,a}

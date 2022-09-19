@@ -67,10 +67,15 @@ while [[ -v 1 ]]; do
     shift
 done
 
-action=${1:-list}
+if [[ ! -v 1 ]]; then
+    printf "$TEXT_ACTION_MISSING\n" >&2
+    exit 1
+fi
+
+action=$1
 
 case $action in
-create | prune | list) ;;
+create | prune) ;;
 *)
     printf "$TEXT_ACTION_INVALID\n" "$action" >&2
     exit 1

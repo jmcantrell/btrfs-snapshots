@@ -7,7 +7,7 @@ _arguments -S \
     "(- 1)"{-h,-\?,--help}"[show the help text]" \
     {-p,--profile}"[select a profile]:profile:->profile" \
     {-C,--config-dir}"[set the configuration directory]:configuration directory:_files -/" \
-    "(-)::action:(list create prune)" \
+    "(-)::action:(create prune)" \
     && return 0
 
 (( $+opt_args[-C] )) && config_dir=$opt_args[-C]

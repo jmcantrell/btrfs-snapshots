@@ -31,7 +31,7 @@ assert_option() {
     assert_stdout "$stdout" assert_success \
         btrfs-snapshots "$@" create
 
-    assert_equal "$(SNAPSHOTS=$snapshots_dir list | wc -l)" 1
+    assert_equal "$(snapshots "$snapshots_dir" | grep -zc .)" 1
 }
 
 assert_option -C "$config_dir"

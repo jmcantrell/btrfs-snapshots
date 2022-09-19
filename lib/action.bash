@@ -1,10 +1,3 @@
-list() {
-    local snapshot
-    while IFS= read -r -d '' snapshot; do
-        printf "%q\n" "$snapshot"
-    done < <(snapshots "$SNAPSHOTS")
-}
-
 create() {
     if ! mountpoint -q "$SUBVOLUME"; then
         printf "$TEXT_PROFILE_SUBVOLUME_MISSING\n" "$PROFILE_FILE" "$SUBVOLUME" >&2

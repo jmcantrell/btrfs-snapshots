@@ -13,7 +13,7 @@ printf -v stderr \
     "$TEXT_PROFILE_MISSING\n" \
     "$PROFILES_DIR/$profile_name.conf"
 
-for action in create prune list; do
+for action in create prune; do
     assert_stderr "$stderr" assert_failure \
         btrfs-snapshots --profile="$profile_name" "$action"
 done
