@@ -26,7 +26,7 @@ printf -v stderr "%s\n" \
     "$(printf "$TEXT_PROFILE_LOAD_FAILED" "$profile_file")"
 
 assert_stderr "$stderr" assert_failure \
-    btrfs-snapshots --profile=b create
+    btrfs-snapshots create
 
 # Ensure nothing for the valid profile was created.
 assert_no_directory "$TEMP_DIR/$TIMESTAMP"
