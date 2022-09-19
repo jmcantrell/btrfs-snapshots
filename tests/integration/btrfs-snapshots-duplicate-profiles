@@ -25,5 +25,10 @@ printf -v stderr \
     "$profile_file" "$subvolume_dir"
 
 # Notice that the same profile is requested twice.
+options=(
+    --profile="$profile_name"
+    --profile="$profile_name"
+)
+
 assert_stderr "$stderr" assert_success \
-    btrfs-snapshots --profile="$profile_name" --profile="$profile_name" create
+    btrfs-snapshots "${options[@]}" create

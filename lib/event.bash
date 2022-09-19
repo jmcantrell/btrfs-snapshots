@@ -2,11 +2,9 @@
 # all timestamps that share the same timestamp parts, where the parts are
 # determined based on the type of event, e.g. yearly, monthly, daily, etc.
 #
-# In other words, an hourly event is the set of all timestamps that share the
-# same year, month, day, and hour.
-#
-# For example, the following timestamps are part of the same hourly event
-# because they happen during the same hour:
+# For example, an hourly event is the set of all timestamps that share the same
+# year, month, day, and hour. The following timestamps are part of the same
+# hourly event because they happen during the same hour:
 #
 #   2001-01-02T12:00:00Z
 #   2001-01-02T12:34:56Z
@@ -23,7 +21,7 @@
 # Since weeks commonly span adjacent years, we have to employ the concept of an
 # ISO week and year number, which has the same values for every date and time
 # that occur within the same logical week, regardless of whether or not the
-# dates occur in different years.
+# dates occur in different actual years.
 
 is_same_event() {
     local event_name=$1

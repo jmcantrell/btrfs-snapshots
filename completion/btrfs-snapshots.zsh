@@ -13,6 +13,6 @@ _arguments -S \
 (( $+opt_args[-C] )) && config_dir=$opt_args[-C]
 
 if [[ $state == profile ]]; then
-    local -a profiles=($config_dir/profile.d/*.conf(N:r:t))
-    (($#profiles)) && _values 'profiles' $profiles
+    local -a profile_names=($config_dir/profile.d/*.conf(N:r:t))
+    (($#profiles_names && _values 'profiles' $profiles_names
 fi

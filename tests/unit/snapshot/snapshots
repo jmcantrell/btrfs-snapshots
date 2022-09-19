@@ -8,9 +8,10 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-# Add some invalid paths (that should not be returned):
 timestamp=2000-01-01T00:00:00Z
-mkdir -p "$TEMP_DIR"/foo/bar/baz    # deeply nested and incorrectly named directory
+
+# Add some invalid paths (that should not be returned):
+mkdir -p "$TEMP_DIR"/foo/bar/baz    # nested and incorrectly named directory
 mkdir -p "$TEMP_DIR/foo/$timestamp" # nested and correctly named directory
 touch "$TEMP_DIR/$timestamp"        # shallow and correctly named file
 

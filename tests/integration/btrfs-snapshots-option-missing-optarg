@@ -7,16 +7,19 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-assert_optarg() {
-    for option in "$@"; do
-        printf -v stderr \
-            "$TEXT_OPTION_MISSING_ARGUMENT\n" \
-            "${option%=}"
+assert_option_needs_arg() {
+    printf -v stderr \
+        "$TEXT_OPTION_MISSING_ARGUMENT\n" \
+        "${1%=}"
 
-        assert_stderr "$stderr" assert_failure \
-            btrfs-snapshots "$option"
-    done
+    assert_stderr "$stderr" assert_failure \
+        btrfs-snapshots "$1"
 }
 
-assert_optarg -p --profile{,=}
-assert_optarg -C --config-dir{,=}
+assert_option_needs_arg -p
+assert_option_needs_arg --profile
+assert_option_needs_arg --profile=
+
+assert_option_needs_arg -C
+assert_option_needs_arg --config-dir
+assert_option_needs_arg --config-dir=

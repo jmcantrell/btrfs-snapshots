@@ -7,27 +7,25 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-profile_names=(a b c)
-
 assert_order() {
     reset_temp
 
     local stdout_lines=()
 
     local profile_name
-    for profile_name in "${profile_names[@]}"; do
-        local subvolume=$TEMP_DIR/subvolume/$profile_name
-        local snapshots=$TEMP_DIR/snapshots/$profile_name
-        local snapshot=$snapshots/$TIMESTAMP
+    for profile_name in a b c; do
+        local subvolume_dir=$TEMP_DIR/subvolume/$profile_name
+        local snapshots_dir=$TEMP_DIR/snapshots/$profile_name
+        local snapshot=$snapshots_dir/$TIMESTAMP
 
-        mkdir -p "$PROFILES_DIR" "$subvolume"
+        mkdir -p "$PROFILES_DIR" "$subvolume_dir"
 
         printf "%s=%s\n" \
-            SUBVOLUME "$subvolume" \
-            SNAPSHOTS "$snapshots" \
+            SUBVOLUME "$subvolume_dir" \
+            SNAPSHOTS "$snapshots_dir" \
             >"$PROFILES_DIR/$profile_name.conf"
 
-        stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE\n" "$subvolume" "$snapshot")")
+        stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE\n" "$subvolume_dir" "$snapshot")")
     done
 
     local stdout

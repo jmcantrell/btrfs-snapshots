@@ -11,9 +11,9 @@ config_dir=$TEMP_DIR/alt
 profiles_dir=$config_dir/profile.d
 
 assert_option() {
-    subvolume_dir=$TEMP_DIR/subvolume
-    snapshots_dir=$TEMP_DIR/snapshots
-    snapshot=$snapshots_dir/$TIMESTAMP
+    local subvolume_dir=$TEMP_DIR/subvolume
+    local snapshots_dir=$TEMP_DIR/snapshots
+    local snapshot=$snapshots_dir/$TIMESTAMP
 
     reset_temp
 
@@ -24,6 +24,7 @@ assert_option() {
         SNAPSHOTS "$snapshots_dir" \
         >"$profiles_dir"/foo.conf
 
+    local stdout
     printf -v stdout \
         "$TEXT_BTRFS_CREATE\n" \
         "$subvolume_dir" "$snapshot"

@@ -16,8 +16,8 @@ printf "%s=%s\n" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$profile_file"
 
-# Create random defaults for every limit.
 limits=()
+
 for event_name in "${EVENT_NAMES[@]}"; do
     limit=$((1 + RANDOM))
     limits+=("$limit")

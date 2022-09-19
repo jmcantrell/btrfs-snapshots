@@ -4,7 +4,7 @@ create() {
         return 0
     fi
 
-    # Allow ability to override the running timestamp, simplifying testing.
+    # Allow ability to override the timestamp, simplifying testing.
     local timestamp
     timestamp=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(timestamp)} || return 1
 

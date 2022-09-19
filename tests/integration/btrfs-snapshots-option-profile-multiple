@@ -27,18 +27,16 @@ for profile_name in "${profile_names[@]}"; do
         >"$PROFILES_DIR/$profile_name.conf"
 done
 
-selected=(0 2 4)
 stdout_lines=()
+options=()
 
-for i in "${selected[@]}"; do
+# Pick a selection of profiles and predict the output.
+for i in 0 2 4; do
+    options+=(--profile="${profile_names[i]}")
     stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE" "${subvolume_dirs[i]}" "${snapshots_dirs[i]}/$TIMESTAMP")")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 
 assert_stdout "$stdout" assert_success \
-    btrfs-snapshots \
-    --profile="${profile_names[${selected[0]}]}" \
-    --profile="${profile_names[${selected[1]}]}" \
-    --profile="${profile_names[${selected[2]}]}" \
-    create
+    btrfs-snapshots "${options[@]}" create
