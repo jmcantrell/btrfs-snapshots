@@ -95,7 +95,7 @@ if ((${#profile_names[@]} > 0)); then
             exit 1
         fi
         profile_files+=("$profile_file")
-    done < <(sort -zu < <(printf "$PROFILES_DIR/%s.conf\0" "${profile_names[@]}"))
+    done < <(sort -zu < <(printf "%s/%s.conf\0" "$PROFILES_DIR" "${profile_names[@]}"))
 else
     profile_files=("$PROFILES_DIR"/*.conf)
 fi
