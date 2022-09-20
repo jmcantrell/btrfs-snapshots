@@ -21,7 +21,7 @@ for profile_name in "${profile_names[@]}"; do
     mkdir -p "$snapshot"
 
     # No limits are set, so every snapshot should be pruned.
-    printf "%s=%s\n" \
+    printf "%s=%q\n" \
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
         >"$PROFILES_DIR/$profile_name.conf"

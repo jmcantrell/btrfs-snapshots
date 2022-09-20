@@ -14,7 +14,7 @@ snapshots_dir=$TEMP_DIR/snapshots
 
 mkdir -p "$PROFILES_DIR"
 
-printf "%s=%s\n" \
+printf "%s=%q\n" \
     SUBVOLUME "$subvolume_dir" \
     SNAPSHOTS "$snapshots_dir" \
     >"$profile_file"

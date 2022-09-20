@@ -31,7 +31,7 @@ for variable in SUBVOLUME SNAPSHOTS; do
     assert_not_set "$variable"
 
     # Skip over this error for the next test.
-    printf "%s=%s\n" \
+    printf "%s=%q\n" \
         "$variable" "$TEMP_DIR" \
         >>"$profile_file"
 done

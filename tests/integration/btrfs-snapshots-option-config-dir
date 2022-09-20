@@ -19,7 +19,7 @@ assert_option() {
 
     mkdir -p "$profiles_dir" "$subvolume_dir"
 
-    printf "%s=%s\n" \
+    printf "%s=%q\n" \
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
         >"$profiles_dir"/foo.conf

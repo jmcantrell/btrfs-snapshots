@@ -30,7 +30,7 @@ timestamp_cmp() {
         result="0"
     fi
 
-    printf -- "%s" "$result"
+    printf "%s" "$result"
 }
 
 timestamp_eq() {

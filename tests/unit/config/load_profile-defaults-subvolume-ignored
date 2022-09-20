@@ -12,12 +12,12 @@ profile_file=$PROFILES_DIR/foo.conf
 mkdir -p "$(dirname "$profile_file")"
 
 # Create a profile that does not have the subvolume set.
-printf "%s=%s\n" \
+printf "%s=%q\n" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$profile_file"
 
 # If there's no protection, this value will get used.
-printf "%s=%s\n" \
+printf "%s=%q\n" \
     SUBVOLUME "$TEMP_DIR" \
     >"$DEFAULTS_FILE"
 

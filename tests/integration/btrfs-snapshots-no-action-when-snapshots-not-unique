@@ -11,7 +11,7 @@ set -euo pipefail
 mkdir -p "$PROFILES_DIR"
 
 for profile_name in a b; do
-    printf "%s=%s\n" \
+    printf "%s=%q\n" \
         SUBVOLUME "$TEMP_DIR" \
         SNAPSHOTS "$TEMP_DIR" \
         >"$PROFILES_DIR/$profile_name.conf"

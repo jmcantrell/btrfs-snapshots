@@ -12,7 +12,7 @@ mkdir -p "$PROFILES_DIR"
 
 # Add a valid profile that would be acted on first under normal circumstances.
 # If this profile were processed, there would output to stdout.
-printf "%s=%s\n" \
+printf "%s=%q\n" \
     SUBVOLUME "$TEMP_DIR" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$PROFILES_DIR"/a.conf

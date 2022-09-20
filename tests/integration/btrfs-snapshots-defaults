@@ -20,17 +20,20 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     mkdir -p "$subvolume_dir" "$PROFILES_DIR"
 
-    printf "%s=%s\n" \
+    printf "%s=%q\n" \
         SUBVOLUME "$subvolume_dir" \
         >"$profile_file"
 
     limit=$((RANDOM % 5 + 1))
 
     # There are no limits defined in the profile, so it should use these.
-    printf "%s=%s\n" \
+    printf "%s=%q\n" \
         SNAPSHOTS "$TEMP_DIR/snapshots/%s" \
-        LIMIT_"${event_name@U}" "$limit" \
         >"$DEFAULTS_FILE"
+
+    printf "%s=%d\n" \
+        LIMIT_"${event_name@U}" "$limit" \
+        >>"$DEFAULTS_FILE"
 
     # Create just enough snapshots to test the limit.
     # If the default limits are not seen, then they will all be pruned, causing

@@ -11,7 +11,7 @@ profile_file=$PROFILES_DIR/foo.conf
 
 mkdir -p "$(dirname "$profile_file")"
 
-printf "%s=%s\n" \
+printf "%s=%q\n" \
     SUBVOLUME "$TEMP_DIR" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$profile_file"
