@@ -16,7 +16,7 @@ while [[ -v 1 ]]; do
     case $1 in
     -h | -\? | --help)
         printf "$TEXT_USAGE\n"
-        exit
+        exit 0
         ;;
 
     -C | --config-dir)
