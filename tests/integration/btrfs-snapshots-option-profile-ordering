@@ -35,5 +35,8 @@ assert_order() {
         btrfs-snapshots "$@" create
 }
 
+# Ensure the profile order when all are selected implicitly.
 assert_order
+
+# Ensure the profile order when they are requested in a different order.
 assert_order --profile={c,b,a}
