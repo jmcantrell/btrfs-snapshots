@@ -67,7 +67,7 @@ while [[ -v 1 ]]; do
     shift
 done
 
-if [[ ! -v 1 ]]; then
+if [[ ! -v 1 || -z $1 ]]; then
     printf "$TEXT_ACTION_MISSING\n" >&2
     exit 1
 fi
