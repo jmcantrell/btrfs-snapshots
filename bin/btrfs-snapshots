@@ -91,10 +91,12 @@ if ((${#profile_names[@]} > 0)); then
     profile_files=()
     while IFS= read -r -d '' profile_name; do
         profile_file=$PROFILES_DIR/$profile_name.conf
+
         if [[ ! -f $profile_file ]]; then
             printf "$TEXT_PROFILE_MISSING\n" "$profile_file" >&2
             exit 1
         fi
+
         profile_files+=("$profile_file")
     done < <(sort -zu < <(printf "%s\0" "${profile_names[@]}"))
 else
