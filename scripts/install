@@ -2,16 +2,16 @@
 
 set -euo pipefail
 
-pkg_name=btrfs-snapshots
+name=btrfs-snapshots
 src_dir=$PWD
-dst_dir=${PREFIX:-/usr/local}
+dst_dir=${DESTDIR:-}${PREFIX:-/usr/local}
 
 mkdir -p "$dst_dir"
 cd "$dst_dir"
 
 install -m755 -Dt ./bin "$src_dir"/bin/*
 
-install -m644 -Dt ./lib/"$pkg_name" "$src_dir"/lib/*
+install -m644 -Dt ./lib/"$name" "$src_dir"/lib/*
 
 for file in "$src_dir"/man/*; do
     filename=$(basename "$file")
@@ -21,9 +21,9 @@ done
 
 install -m644 -Dt ./lib/systemd/system "$src_dir"/systemd/*
 
-install -m644 -Dt ./share/doc/"$pkg_name"/config "$src_dir"/config/*
+install -m644 -Dt ./share/doc/"$name"/config "$src_dir"/config/*
 
-install -m644 -Dt ./share/doc/"$pkg_name" "$src_dir"/{README,LICENSE}.md
+install -m644 -Dt ./share/doc/"$name" "$src_dir"/{README,LICENSE}.md
 
 for file in "$src_dir"/completion/*.zsh; do
     name=$(basename "$file" .zsh)
