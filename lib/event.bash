@@ -28,7 +28,7 @@ is_same_event() {
     local timestamp1=$2
     local timestamp2=$3
 
-    case ${event_name@L} in
+    case ${event_name,,} in
     yearly) parts=(Y) ;;           # year
     quarterly) parts=(Y q) ;;      # year quarter
     monthly) parts=(Y m) ;;        # year month

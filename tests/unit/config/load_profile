@@ -25,7 +25,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     limits+=("$limit")
 
     printf "%s=%d\n" \
-        LIMIT_"${event_name@U}" "$limit" \
+        LIMIT_"${event_name^^}" "$limit" \
         >>"$profile_file"
 done
 
@@ -36,6 +36,6 @@ assert_equal "$SUBVOLUME" "$subvolume_dir"
 assert_equal "$SNAPSHOTS" "$snapshots_dir"
 
 for i in "${!EVENT_NAMES[@]}"; do
-    variable=LIMIT_${EVENT_NAMES[i]@U}
+    variable=LIMIT_${EVENT_NAMES[i]^^}
     assert_equal "${!variable}" "${limits[i]}"
 done

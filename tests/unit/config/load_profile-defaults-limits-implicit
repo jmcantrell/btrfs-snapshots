@@ -21,6 +21,6 @@ assert_no_output assert_success \
 
 # Ensure the base default is zero.
 for event_name in "${EVENT_NAMES[@]}"; do
-    variable=LIMIT_${event_name@U}
+    variable=LIMIT_${event_name^^}
     assert_equal "${!variable}" 0
 done

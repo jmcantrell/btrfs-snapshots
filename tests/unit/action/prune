@@ -15,7 +15,7 @@ limit=3
 for event_name in "${EVENT_NAMES[@]}"; do
     reset_temp
 
-    export "LIMIT_${event_name@U}=$limit"
+    export "LIMIT_${event_name^^}=$limit"
 
     keepers=()
     fillers=()

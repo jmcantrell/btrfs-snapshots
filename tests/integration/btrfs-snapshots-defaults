@@ -32,7 +32,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
         >"$DEFAULTS_FILE"
 
     printf "%s=%d\n" \
-        LIMIT_"${event_name@U}" "$limit" \
+        LIMIT_"${event_name^^}" "$limit" \
         >>"$DEFAULTS_FILE"
 
     # Create just enough snapshots to test the limit.
@@ -46,7 +46,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     # There should be no output, because nothing will be pruned.
     assert_no_output assert_success \
-        btrfs-snapshots --profile="$profile_name" prune
+        btrfs-snapshots -p "$profile_name" prune
 
     # If the default limits were not seen, the snapshot count will be zero.
     assert_equal "$(snapshots "$snapshots_dir" | grep -zc .)" "$expected_count"

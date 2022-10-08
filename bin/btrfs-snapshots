@@ -12,62 +12,27 @@ export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$name}
 
 profile_names=()
 
-while [[ -v 1 ]]; do
-    case $1 in
-    -h | -\? | --help)
+while getopts ":C:p:h" option; do
+    case $option in
+    C) CONFIG_DIR=$OPTARG ;;
+    p) profile_names+=("$OPTARG") ;;
+    h)
         printf "$TEXT_USAGE\n"
         exit 0
         ;;
-
-    -C | --config-dir)
-        if [[ ! -v 2 ]]; then
-            printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "$1" >&2
-            exit 1
-        fi
-        CONFIG_DIR=$2
-        shift
-        ;;
-    --config-dir=)
-        printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "${1%%=*}" >&2
+    :)
+        printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "$OPTARG" >&2
         exit 1
         ;;
-    --config-dir=?*)
-        CONFIG_DIR=${1##*=}
-        ;;
-
-    -p | --profile)
-        if [[ ! -v 2 ]]; then
-            printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "$1" >&2
-            exit 1
-        fi
-        profile_names+=("$2")
-        shift
-        ;;
-    --profile=)
-        printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "${1%%=*}" >&2
+    *)
+        printf "$TEXT_OPTION_INVALID\n" "$OPTARG" >&2
         exit 1
         ;;
-    --profile=?*)
-        profile_names+=("${1##*=}")
-        ;;
-
-    --)
-        shift
-        break
-        ;;
-
-    -?*)
-        printf "$TEXT_OPTION_INVALID\n" "$1" >&2
-        exit 1
-        ;;
-
-    *) break ;;
     esac
-
-    shift
 done
+shift $((OPTIND - 1))
 
-if [[ ! -v 1 || -z $1 ]]; then
+if [[ -z ${1:-} ]]; then
     printf "$TEXT_ACTION_MISSING\n" >&2
     exit 1
 fi

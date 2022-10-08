@@ -38,7 +38,7 @@ done
 
 # Try to trick the function into accepting previous values.
 for event_name in "${EVENT_NAMES[@]}"; do
-    export "LIMIT_${event_name@U}=1"
+    export "LIMIT_${event_name^^}=1"
 done
 
 # At this point, the profile is valid, but does not include limits.
@@ -47,6 +47,6 @@ assert_no_output assert_success \
 
 # Ensure existence of, but non-inheritance of limit values.
 for event_name in "${EVENT_NAMES[@]}"; do
-    variable=LIMIT_${event_name@U}
+    variable=LIMIT_${event_name^^}
     assert_equal "${!variable}" 0
 done

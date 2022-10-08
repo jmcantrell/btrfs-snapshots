@@ -4,9 +4,9 @@ Usage:
     btrfs-snapshots [OPTIONS] ACTION
 
 Options:
-    -h, -?, --help                show this help text
-    -p, --profile=NAME            profile to perform action on
-    -C, --config-dir=DIRECTORY    directory to use for configuration
+    -h              show this help text and exit
+    -p NAME         perform action on profile NAME
+    -C DIRECTORY    use DIRECTORY for configuration
 
 Arguments:
     ACTION    action to perform on selected profiles
@@ -17,8 +17,8 @@ Actions:
 
 If no profiles are specified with -p/--profile, then every profile is selected."
 
-export TEXT_OPTION_INVALID="Invalid option: %s"
-export TEXT_OPTION_MISSING_ARGUMENT="Option requires an argument: %s"
+export TEXT_OPTION_INVALID="Invalid option: -%s"
+export TEXT_OPTION_MISSING_ARGUMENT="Option requires an argument: -%s"
 export TEXT_ACTION_MISSING="The first argument must be an action"
 export TEXT_ACTION_INVALID="Invalid action: %s"
 export TEXT_ACTION_FAILED="Unable to perform action: %s"

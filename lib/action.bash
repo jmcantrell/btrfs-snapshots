@@ -20,7 +20,7 @@ prune() {
     local variable event_name counts=() limits=()
     for event_name in "${EVENT_NAMES[@]}"; do
         counts+=(0)
-        variable=LIMIT_${event_name@U}
+        variable=LIMIT_${event_name^^}
         limits+=("${!variable:-0}")
     done
 

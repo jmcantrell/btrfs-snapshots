@@ -8,31 +8,24 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 profile_name=foo
+subvolume_dir=$TEMP_DIR/subvolume
+snapshots_dir=$TEMP_DIR/snapshots
+snapshot=$snapshots_dir/$TIMESTAMP
 
-assert_option() {
-    subvolume_dir=$TEMP_DIR/subvolume
-    snapshots_dir=$TEMP_DIR/snapshots
-    snapshot=$snapshots_dir/$TIMESTAMP
+reset_temp
 
-    reset_temp
+mkdir -p "$PROFILES_DIR" "$subvolume_dir"
 
-    mkdir -p "$PROFILES_DIR" "$subvolume_dir"
+printf "%s=%q\n" \
+    SUBVOLUME "$subvolume_dir" \
+    SNAPSHOTS "$snapshots_dir" \
+    >"$PROFILES_DIR/$profile_name.conf"
 
-    printf "%s=%q\n" \
-        SUBVOLUME "$subvolume_dir" \
-        SNAPSHOTS "$snapshots_dir" \
-        >"$PROFILES_DIR/$profile_name.conf"
+printf -v stdout \
+    "$TEXT_BTRFS_CREATE\n" \
+    "$subvolume_dir" "$snapshot"
 
-    printf -v stdout \
-        "$TEXT_BTRFS_CREATE\n" \
-        "$subvolume_dir" "$snapshot"
+assert_stdout "$stdout" assert_success \
+    btrfs-snapshots -p "$profile_name" create
 
-    assert_stdout "$stdout" assert_success \
-        btrfs-snapshots "$@" create
-
-    assert_equal "$(snapshots "$snapshots_dir" | grep -zc .)" 1
-}
-
-assert_option -p "$profile_name"
-assert_option --profile "$profile_name"
-assert_option --profile="$profile_name"
+assert_equal "$(snapshots "$snapshots_dir" | grep -zc .)" 1

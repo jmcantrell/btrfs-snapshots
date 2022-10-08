@@ -10,16 +10,11 @@ set -euo pipefail
 assert_option_needs_arg() {
     printf -v stderr \
         "$TEXT_OPTION_MISSING_ARGUMENT\n" \
-        "${1%=}"
+        "$1"
 
     assert_stderr "$stderr" assert_failure \
-        btrfs-snapshots "$1"
+        btrfs-snapshots -"$1"
 }
 
-assert_option_needs_arg -p
-assert_option_needs_arg --profile
-assert_option_needs_arg --profile=
-
-assert_option_needs_arg -C
-assert_option_needs_arg --config-dir
-assert_option_needs_arg --config-dir=
+assert_option_needs_arg p
+assert_option_needs_arg C

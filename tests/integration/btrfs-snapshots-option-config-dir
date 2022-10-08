@@ -9,32 +9,24 @@ set -euo pipefail
 
 config_dir=$TEMP_DIR/alt
 profiles_dir=$config_dir/profile.d
+subvolume_dir=$TEMP_DIR/subvolume
+snapshots_dir=$TEMP_DIR/snapshots
+snapshot=$snapshots_dir/$TIMESTAMP
 
-assert_option() {
-    local subvolume_dir=$TEMP_DIR/subvolume
-    local snapshots_dir=$TEMP_DIR/snapshots
-    local snapshot=$snapshots_dir/$TIMESTAMP
+reset_temp
 
-    reset_temp
+mkdir -p "$profiles_dir" "$subvolume_dir"
 
-    mkdir -p "$profiles_dir" "$subvolume_dir"
+printf "%s=%q\n" \
+    SUBVOLUME "$subvolume_dir" \
+    SNAPSHOTS "$snapshots_dir" \
+    >"$profiles_dir"/foo.conf
 
-    printf "%s=%q\n" \
-        SUBVOLUME "$subvolume_dir" \
-        SNAPSHOTS "$snapshots_dir" \
-        >"$profiles_dir"/foo.conf
+printf -v stdout \
+    "$TEXT_BTRFS_CREATE\n" \
+    "$subvolume_dir" "$snapshot"
 
-    local stdout
-    printf -v stdout \
-        "$TEXT_BTRFS_CREATE\n" \
-        "$subvolume_dir" "$snapshot"
+assert_stdout "$stdout" assert_success \
+    btrfs-snapshots -C "$config_dir" create
 
-    assert_stdout "$stdout" assert_success \
-        btrfs-snapshots "$@" create
-
-    assert_equal "$(snapshots "$snapshots_dir" | grep -zc .)" 1
-}
-
-assert_option -C "$config_dir"
-assert_option --config-dir "$config_dir"
-assert_option --config-dir="$config_dir"
+assert_equal "$(snapshots "$snapshots_dir" | grep -zc .)" 1

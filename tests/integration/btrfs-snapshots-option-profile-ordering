@@ -39,4 +39,4 @@ assert_order() {
 assert_order
 
 # Ensure the profile order when they are requested in a different order.
-assert_order --profile={c,b,a}
+assert_order -p c -p b -p a

@@ -34,7 +34,7 @@ options=()
 stdout_lines=()
 
 for i in "${selected[@]}"; do
-    options+=(--profile="${profile_names[i]}")
+    options+=(-p "${profile_names[i]}")
     stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE" "${subvolume_dirs[i]}" "${snapshots[i]}")")
 done
 

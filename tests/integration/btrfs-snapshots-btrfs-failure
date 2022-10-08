@@ -34,5 +34,5 @@ for action in create prune; do
         "$(printf "$TEXT_ACTION_FAILED" "$action")"
 
     assert_stderr "$stderr" assert_failure \
-        btrfs-snapshots --profile="$profile_name" "$action"
+        btrfs-snapshots -p "$profile_name" "$action"
 done

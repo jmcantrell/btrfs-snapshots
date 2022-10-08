@@ -8,7 +8,7 @@ load_profile() {
 
     local variable event_name
     for event_name in "${EVENT_NAMES[@]}"; do
-        export "LIMIT_${event_name@U}=0"
+        export "LIMIT_${event_name^^}=0"
     done
 
     if [[ -f $DEFAULTS_FILE ]] && ! . "$DEFAULTS_FILE"; then

@@ -21,7 +21,7 @@ btrfs_subvolume() {
 }
 
 btrfs_subvolume_snapshot() {
-    while [[ -v 1 && $1 == -* ]]; do
+    while [[ ${1:-} == -* ]]; do
         shift
     done
 

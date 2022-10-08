@@ -7,11 +7,7 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-option=-x
-
-printf -v stderr \
-    "$TEXT_OPTION_INVALID\n" \
-    "$option"
+printf -v stderr "$TEXT_OPTION_INVALID\n" x
 
 assert_stderr "$stderr" assert_failure \
-    btrfs-snapshots "$option"
+    btrfs-snapshots -x
