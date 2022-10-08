@@ -15,7 +15,7 @@ Actions:
     create    create a new snapshot in the configured location
     prune     delete snapshots that fall outside of defined limits
 
-If no profiles are specified with -p/--profile, then every profile is selected."
+If no profiles are specified with -p, then every profile is selected."
 
 export TEXT_OPTION_INVALID="Invalid option: -%s"
 export TEXT_OPTION_MISSING_ARGUMENT="Option requires an argument: -%s"
