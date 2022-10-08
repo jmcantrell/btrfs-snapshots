@@ -9,11 +9,11 @@ Options:
     -C DIRECTORY    use DIRECTORY for configuration
 
 Arguments:
-    ACTION    action to perform on selected profiles
+    ACTION          action to perform on selected profiles
 
 Actions:
-    create    create a new snapshot in the configured location
-    prune     delete snapshots that fall outside of defined limits
+    create          create a new snapshot in the configured location
+    prune           delete snapshots that fall outside of defined limits
 
 If no profiles are specified with -p, then every profile is selected."
 
