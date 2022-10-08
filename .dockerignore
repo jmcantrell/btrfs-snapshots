@@ -1,0 +1,7 @@
+.dockerignore
+.envrc
+.git/
+.github/
+.gitignore
+.mine/
+Dockerfile
