@@ -14,5 +14,5 @@ _arguments -S \
 
 if [[ $state == profile ]]; then
     local -a profile_names=($config_dir/profile.d/*.conf(N:r:t))
-    (($#profiles_names && _values 'profiles' $profiles_names
+    (($#profile_names)) && _values 'profiles' $profile_names
 fi
