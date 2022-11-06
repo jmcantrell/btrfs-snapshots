@@ -61,11 +61,11 @@ _btrfs_snapshots() {
     local profiles_dir=$config_dir/profile.d
 
     case $prev in
-    -C | --config-dir)
+    -C)
         _filedir -d
         return
         ;;
-    -p | --profile)
+    -p)
         local -a profile_names
         readarray -t profile_names < <(__shallow_basenames "$profiles_dir" ".conf")
         readarray -t COMPREPLY < <(compgen -W "${profile_names[*]}" -- "$cur")
