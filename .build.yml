@@ -1,0 +1,12 @@
+---
+image: archlinux
+packages:
+  - parallel
+sources:
+  - https://git.sr.ht/~jmcantrell/btrfs-snapshots
+environment:
+  TESTS_VERBOSE: 1
+tasks:
+  - test: |
+      cd btrfs-snapshots
+      ./scripts/test
