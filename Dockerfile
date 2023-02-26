@@ -1,8 +1,5 @@
-FROM docker.io/ubuntu:latest
-RUN apt-get update -y
-RUN apt-get install -y parallel
-
-ENV TESTS_VERBOSE 1
+FROM docker.io/archlinux:latest
+RUN pacman -Sy --noconfirm parallel diffutils
 
 WORKDIR /usr/src/app
 
