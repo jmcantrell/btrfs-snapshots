@@ -1,7 +1,8 @@
+.build.yml
+.builds/
 .dockerignore
 .envrc
 .git/
-.github/
 .gitignore
 .mine/
 Dockerfile
