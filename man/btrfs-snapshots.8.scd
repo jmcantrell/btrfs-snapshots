@@ -32,13 +32,13 @@ debatably painless:
 
 # OPTIONS
 
-*-h*, *-?*, *--help*
+*-h*
 	Display the help message and exit.
 
-*-p*, *--profile*=_NAME_
+*-p* _NAME_
 	Select a profile to perform ACTION on.  Can be specified multiple times.
 
-*-C*, *--config-dir*=_DIRECTORY_
+*-C* _DIRECTORY_
 	Look for configuration files in _DIRECTORY_ instead of
 	_/usr/local/etc/btrfs-snapshots_.
 
