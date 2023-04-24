@@ -13,10 +13,12 @@ install -m755 -Dt ./bin "$src_dir"/bin/*
 
 install -m644 -Dt ./lib/"$name" "$src_dir"/lib/*
 
-for file in "$src_dir"/man/*; do
-    filename=$(basename "$file")
-    section=${filename##*.}
-    install -m644 -DT "$file" ./share/man/man"$section"/"$filename"
+for input in "$src_dir"/man/*.scd; do
+    base=$(basename "$file" .scd)
+    output=$src_dir/man/$base
+    scdoc <"$input" >"$output"
+    section=${base##*.}
+    install -m644 -DT "$output" ./share/man/man"$section"/"$base"
 done
 
 install -m644 -Dt ./lib/systemd/system "$src_dir"/systemd/*
