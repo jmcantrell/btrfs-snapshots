@@ -22,17 +22,17 @@ caveats) that will apply to every profile.
 None of these files exist by default, and configuration is left to the
 administrator. Example files with the available settings are at:
 
-	- /usr/local/share/doc/btrfs-snapshots/config/defaults.conf
-	- /usr/local/share/doc/btrfs-snapshots/config/profile.conf
+- /usr/local/share/doc/btrfs-snapshots/config/defaults.conf
+- /usr/local/share/doc/btrfs-snapshots/config/profile.conf
 
 # OPTIONS
 
 Both the defaults configuration file and every profile configuration file can
 have the same settings, with a few enforced caveats.
 
-- The SUBVOLUME setting is only recognized in the profile configuration and it is required.
-- The SNAPSHOTS setting, if it appears in the defaults configuration file, must contain a %s placeholder so it can be differentiated for each subvolume.
-- If the SNAPSHOTS setting is not defined in the defaults configuration file, it must be defined in every profile, and must be unique.
+- The *SUBVOLUME* setting is only recognized in the profile configuration and it is required.
+- The *SNAPSHOTS* setting, if it appears in the defaults configuration file, must contain a %s placeholder so it can be differentiated for each subvolume.
+- If the *SNAPSHOTS* setting is not defined in the defaults configuration file, it must be defined in every profile, and must be unique.
 
 ## SUBVOLUME
 
@@ -77,7 +77,7 @@ Example: *SNAPSHOTS*="/path/to/snapshots"
 
 ## LIMIT_<EVENT>
 
-Where EVENT can be one of the following: MINUTELY, HOURLY, DAILY, WEEKLY,
+Where <EVENT> can be one of the following: MINUTELY, HOURLY, DAILY, WEEKLY,
 MONTHLY, QUARTERLY, or YEARLY.
 
 This option defines a limit on the number of the snapshots taken during an EVENT
