@@ -23,6 +23,8 @@
 # that occur within the same logical week, regardless of whether or not the
 # dates occur in different actual years.
 
+export EVENT_NAMES=(minutely hourly daily weekly monthly quarterly yearly)
+
 is_same_event() {
     local event_name=$1
     local timestamp1=$2

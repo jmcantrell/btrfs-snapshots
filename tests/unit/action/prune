@@ -13,7 +13,8 @@ export SNAPSHOTS=$TEMP_DIR/snapshots
 limit=3
 
 for event_name in "${EVENT_NAMES[@]}"; do
-    reset_temp
+    rm -rf "$TEMP_DIR"
+    mkdir -p "$TEMP_DIR"
 
     export "LIMIT_${event_name^^}=$limit"
 
@@ -40,7 +41,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     done < <(timestamp_seq_event "$TIMESTAMP" "$event_name" "$limit" | tac)
 
     printf -v stdout \
-        "$TEXT_BTRFS_DELETE\n" \
+        "fake btrfs subvolume delete %s\n" \
         "${fillers[@]}"
 
     assert_stdout "$stdout" assert_success \

@@ -30,7 +30,7 @@ done
 stdout_lines=()
 
 for i in "${!profile_names[@]}"; do
-    stdout_lines+=("$(printf "$TEXT_BTRFS_DELETE" "${snapshots[i]}")")
+    stdout_lines+=("fake btrfs subvolume delete ${snapshots[i]}")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"

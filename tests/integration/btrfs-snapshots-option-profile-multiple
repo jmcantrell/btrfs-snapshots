@@ -33,7 +33,7 @@ options=()
 # Pick a selection of profiles and predict the output.
 for i in 0 2 4; do
     options+=(-p "${profile_names[i]}")
-    stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE" "${subvolume_dirs[i]}" "${snapshots_dirs[i]}/$TIMESTAMP")")
+    stdout_lines+=("fake btrfs subvolume snapshot ${subvolume_dirs[i]} ${snapshots_dirs[i]}/$TIMESTAMP")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"

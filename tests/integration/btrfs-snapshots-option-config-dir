@@ -13,8 +13,6 @@ subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots
 snapshot=$snapshots_dir/$TIMESTAMP
 
-reset_temp
-
 mkdir -p "$profiles_dir" "$subvolume_dir"
 
 printf "%s=%q\n" \
@@ -23,7 +21,7 @@ printf "%s=%q\n" \
     >"$profiles_dir"/foo.conf
 
 printf -v stdout \
-    "$TEXT_BTRFS_CREATE\n" \
+    "fake btrfs subvolume snapshot %s %s\n" \
     "$subvolume_dir" "$snapshot"
 
 assert_stdout "$stdout" assert_success \

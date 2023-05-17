@@ -55,27 +55,16 @@ man 5 btrfs-snapshots
 
 ## Testing
 
-The following packages are needed to run tests:
-
-- diffutils
-- parallel
-
 To run the included tests:
 
 ```sh
 ./scripts/test
 ```
 
-To only run some tests (passes arguments to `find`):
+To see the available options:
 
 ```sh
-./scripts/test -path "*/unit/*"
-```
-
-To see which tests are being run:
-
-```sh
-TESTS_VERBOSE=1 ./scripts/test
+./scripts/test -h
 ```
 
 [snapper]: http://snapper.io/

@@ -8,7 +8,8 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 assert_order() {
-    reset_temp
+    rm -rf "$TEMP_DIR"
+    mkdir -p "$TEMP_DIR"
 
     local stdout_lines=()
 
@@ -25,7 +26,7 @@ assert_order() {
             SNAPSHOTS "$snapshots_dir" \
             >"$PROFILES_DIR/$profile_name.conf"
 
-        stdout_lines+=("$(printf "$TEXT_BTRFS_CREATE\n" "$subvolume_dir" "$snapshot")")
+        stdout_lines+=("fake btrfs subvolume snapshot $subvolume_dir $snapshot")
     done
 
     local stdout

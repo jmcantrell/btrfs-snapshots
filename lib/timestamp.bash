@@ -1,3 +1,6 @@
+export TIMESTAMP_FORMAT="%Y-%m-%dT%H:%M:%SZ"
+export TIMESTAMP_PATTERN="^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z"
+
 timestamp() {
     date --utc "$@" +"$TIMESTAMP_FORMAT"
 }

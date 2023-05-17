@@ -16,7 +16,8 @@ subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots/$profile_name
 
 for event_name in "${EVENT_NAMES[@]}"; do
-    reset_temp
+    rm -rf "$TEMP_DIR"
+    mkdir -p "$TEMP_DIR"
 
     mkdir -p "$subvolume_dir" "$PROFILES_DIR"
 

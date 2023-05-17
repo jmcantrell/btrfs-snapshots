@@ -16,7 +16,7 @@ mkdir -p "$SUBVOLUME"
 touch "$SUBVOLUME"/marker
 
 printf -v stdout \
-    "$TEXT_BTRFS_CREATE\n" \
+    "fake btrfs subvolume snapshot %s %s\n" \
     "$SUBVOLUME" "$snapshot"
 
 assert_stdout "$stdout" assert_success \

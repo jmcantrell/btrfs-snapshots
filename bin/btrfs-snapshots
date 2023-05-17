@@ -3,10 +3,10 @@
 set -euo pipefail
 shopt -s nullglob
 
-name=${0##*/}
+self_name=${0##*/}
 
-export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$name}
-export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$name}
+export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$self_name}
+export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
 
 . "$LIB_DIR"/init.bash
 
@@ -51,17 +51,14 @@ export PROFILES_DIR=$CONFIG_DIR/profile.d
 export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
 declare -a profile_files
-
 if ((${#profile_names[@]} > 0)); then
     profile_files=()
     while IFS= read -r -d '' profile_name; do
         profile_file=$PROFILES_DIR/$profile_name.conf
-
         if [[ ! -f $profile_file ]]; then
             printf "$TEXT_PROFILE_MISSING\n" "$profile_file" >&2
-            exit 1
+            exit 2
         fi
-
         profile_files+=("$profile_file")
     done < <(sort -zu < <(printf "%s\0" "${profile_names[@]}"))
 else
