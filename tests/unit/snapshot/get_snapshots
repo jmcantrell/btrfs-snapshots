@@ -22,7 +22,8 @@ while read -r timestamp_step; do
     mkdir -p "$snapshot"
 done < <(timestamp_seq "$TIMESTAMP" hour 24)
 
-readarray -t -d '' actual < <(snapshots "$TEMP_DIR")
+declare -a actual
+readarray -t actual < <(get_snapshots "$TEMP_DIR")
 
 # Ensure the correct number of snapshots are returned.
 assert_equal "${#actual[@]}" "${#expected[@]}"

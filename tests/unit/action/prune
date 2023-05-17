@@ -12,6 +12,8 @@ export SNAPSHOTS=$TEMP_DIR/snapshots
 
 limit=3
 
+declare -a snapshots
+
 for event_name in "${EVENT_NAMES[@]}"; do
     rm -rf "$TEMP_DIR"
     mkdir -p "$TEMP_DIR"
@@ -47,7 +49,9 @@ for event_name in "${EVENT_NAMES[@]}"; do
     assert_stdout "$stdout" assert_success \
         prune
 
-    assert_equal "$(snapshots "$SNAPSHOTS" | grep -zc .)" "$limit"
+    readarray -t snapshots < <(get_snapshots "$SNAPSHOTS")
+
+    assert_equal "${#snapshots[@]}" "$limit"
 
     for keeper in "${keepers[@]}"; do
         assert_directory "$keeper"

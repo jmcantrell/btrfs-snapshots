@@ -26,4 +26,4 @@ printf -v stdout \
 assert_stdout "$stdout" assert_success \
     btrfs-snapshots -p "$profile_name" create
 
-assert_equal "$(snapshots "$snapshots_dir" | grep -zc .)" 1
+assert_equal "$(get_snapshots "$snapshots_dir" | grep -zc .)" 1

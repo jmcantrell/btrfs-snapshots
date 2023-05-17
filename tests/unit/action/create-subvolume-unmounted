@@ -18,4 +18,7 @@ printf -v stderr \
 assert_stderr "$stderr" assert_success \
     create
 
-assert_equal "$(snapshots "$SNAPSHOTS" | grep -zc .)" 0
+declare -a snapshots
+readarray -t snapshots < <(get_snapshots "$SNAPSHOTS")
+
+assert_equal "${#snapshots[@]}" 0

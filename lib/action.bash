@@ -24,8 +24,11 @@ prune() {
         limits+=("${!variable:-0}")
     done
 
-    local snapshots
-    readarray -t -d '' snapshots < <(sort -zr < <(snapshots "$SNAPSHOTS"))
+    local reply
+    reply=$(get_snapshots "$SNAPSHOTS" | sort -r) || return
+
+    local -a snapshots
+    readarray -t snapshots <<<"$reply"
 
     local snapshot_index
     for ((snapshot_index = 0; snapshot_index < ${#snapshots[@]}; snapshot_index++)); do
