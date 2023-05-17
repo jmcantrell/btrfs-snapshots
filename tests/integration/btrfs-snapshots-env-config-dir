@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Show that `btrfs-snapshots` recognizes the configuration directory
+# environment variable.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+config_dir=$TEMP_DIR/alt
+profiles_dir=$config_dir/profile.d
+subvolume_dir=$TEMP_DIR/subvolume
+snapshots_dir=$TEMP_DIR/snapshots
+snapshot=$snapshots_dir/$TIMESTAMP
+
+mkdir -p "$profiles_dir" "$subvolume_dir"
+
+printf "%s=%q\n" \
+    SUBVOLUME "$subvolume_dir" \
+    SNAPSHOTS "$snapshots_dir" \
+    >"$profiles_dir"/foo.conf
+
+printf -v stdout \
+    "fake btrfs subvolume snapshot %s %s\n" \
+    "$subvolume_dir" "$snapshot"
+
+export BTRFS_SNAPSHOTS_CONFIG_DIR=$config_dir
+
+assert_stdout "$stdout" assert_success \
+    btrfs-snapshots create
+
+assert_equal "$(snapshots "$snapshots_dir" | grep -zc .)" 1
