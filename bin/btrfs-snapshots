@@ -5,8 +5,34 @@ shopt -s nullglob
 
 self_name=${0##*/}
 
-export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$self_name}
-export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
+LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$self_name}
+CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
+
+usage="Manage timestamped collections of btrfs snapshots.
+
+Usage:
+    $self_name [OPTIONS] ACTION
+
+Options:
+    -h              show this help text and exit
+    -p NAME         perform action on profile NAME
+    -C DIRECTORY    use DIRECTORY for configuration
+
+Arguments:
+    ACTION          action to perform on selected profiles
+
+Actions:
+    create          create a new snapshot in the configured location
+    prune           delete snapshots that fall outside of defined limits
+
+Environment:
+    ${self_name^^}_CONFIG_DIR[=${CONFIG_DIR@Q}]
+
+If no profiles are specified with -p, then every profile is selected.
+
+See also:
+    $self_name(5), $self_name(8)
+"
 
 . "$LIB_DIR"/init.bash
 
@@ -17,32 +43,33 @@ while getopts ":C:p:h" option; do
     C) CONFIG_DIR=$OPTARG ;;
     p) profile_names+=("$OPTARG") ;;
     h)
-        printf "$TEXT_USAGE\n"
+        printf "$usage\n"
         exit 0
         ;;
     :)
-        printf "$TEXT_OPTION_MISSING_ARGUMENT\n" "$OPTARG" >&2
+        printf "option missing argument: -%s\n" "$OPTARG" >&2
         exit 1
         ;;
     *)
-        printf "$TEXT_OPTION_INVALID\n" "$OPTARG" >&2
+        printf "invalid option: -%s\n" "$OPTARG" >&2
         exit 1
         ;;
     esac
 done
 shift $((OPTIND - 1))
 
-if [[ -z ${1:-} ]]; then
-    printf "$TEXT_ACTION_MISSING\n" >&2
-    exit 1
-fi
+export LIB_DIR CONFIG_DIR
 
+if [[ ! -v 1 || -z $1 ]]; then
+    printf "the first argument must be an action\n" >&2
+    exit 2
+fi
 action=$1
 
 case $action in
 create | prune) ;;
 *)
-    printf "$TEXT_ACTION_INVALID\n" "$action" >&2
+    printf "invalid action: %s\n" "$action" >&2
     exit 1
     ;;
 esac
@@ -56,7 +83,7 @@ if ((${#profile_names[@]} > 0)); then
     while IFS= read -r -d '' profile_name; do
         profile_file=$PROFILES_DIR/$profile_name.conf
         if [[ ! -f $profile_file ]]; then
-            printf "$TEXT_PROFILE_MISSING\n" "$profile_file" >&2
+            printf "profile does not exist: %q\n" "$profile_file" >&2
             exit 2
         fi
         profile_files+=("$profile_file")
@@ -69,13 +96,13 @@ declare -A snapshots_seen
 
 for profile_file in "$PROFILES_DIR"/*.conf; do
     if ! load_profile "$profile_file"; then
-        printf "$TEXT_PROFILE_LOAD_FAILED\n" "$profile_file" >&2
-        exit 1
+        printf "unable to load profile: %q\n" "$profile_file" >&2
+        exit 2
     fi
 
     if [[ -v snapshots_seen[$SNAPSHOTS] ]]; then
-        printf "$TEXT_PROFILE_SNAPSHOTS_NOT_UNIQUE\n" "$SNAPSHOTS" >&2
-        exit 1
+        printf "the same value for SNAPSHOTS is used for multiple profiles: %q\n" "$SNAPSHOTS" >&2
+        exit 2
     fi
 
     snapshots_seen[$SNAPSHOTS]=1
@@ -85,7 +112,7 @@ for profile_file in "${profile_files[@]}"; do
     load_profile "$profile_file"
 
     if ! "$action"; then
-        printf "$TEXT_ACTION_FAILED\n" "$action" >&2
+        printf "unable to perform action: %s\n" "$action" >&2
         exit 1
     fi
 done

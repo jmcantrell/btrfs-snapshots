@@ -9,7 +9,7 @@ set -euo pipefail
 
 assert_option_needs_arg() {
     printf -v stderr \
-        "$TEXT_OPTION_MISSING_ARGUMENT\n" \
+        "option missing argument: -%s\n" \
         "$1"
 
     assert_stderr "$stderr" assert_failure \

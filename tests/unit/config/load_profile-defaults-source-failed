@@ -19,7 +19,7 @@ printf "%s=%q\n" \
 printf "return 1\n" >"$DEFAULTS_FILE"
 
 printf -v stderr \
-    "$TEXT_SOURCE_FAILED\n" \
+    "unable to source file: %q\n" \
     "$DEFAULTS_FILE"
 
 assert_stderr "$stderr" assert_failure \

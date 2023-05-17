@@ -10,7 +10,7 @@ set -euo pipefail
 profile_name=bogus
 
 printf -v stderr \
-    "$TEXT_PROFILE_MISSING\n" \
+    "profile does not exist: %q\n" \
     "$PROFILES_DIR/$profile_name.conf"
 
 for action in create prune; do

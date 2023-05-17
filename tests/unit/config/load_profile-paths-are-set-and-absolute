@@ -24,7 +24,7 @@ for ((i = 0; i < ${#variables[@]}; i++)); do
     printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
     printf -v stderr \
-        "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
+        "invalid profile: %q\n- %s is not set\n" \
         "$profile_file" "$variable"
 
     # Ensure that a missing variable is reported as not set.
@@ -44,7 +44,7 @@ for ((i = 0; i < ${#variables[@]}; i++)); do
     printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
     printf -v stderr \
-        "$TEXT_PROFILE_PATH_NOT_ABSOLUTE\n" \
+        "invalid profile: %q\n- %s must be an absolute path: %q\n" \
         "$profile_file" "$variable" ./relative/path
 
     # Ensure that a relative path is reported as not absolute.

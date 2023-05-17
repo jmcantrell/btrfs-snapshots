@@ -22,6 +22,12 @@ profile)
     fi
 
     local -a profile_names=($config_dir/profile.d/*.conf(N:r:t))
-    (($#profile_names)) && _values 'profiles' $profile_names
+    if (($#profile_names)); then
+        _values 'profiles' $profile_names && return
+    else
+        _message 'no profiles'
+    fi
     ;;
 esac
+
+return 1

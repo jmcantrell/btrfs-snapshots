@@ -18,7 +18,7 @@ for profile_name in a b; do
 done
 
 printf -v stderr \
-    "$TEXT_PROFILE_SNAPSHOTS_NOT_UNIQUE\n" \
+    "the same value for SNAPSHOTS is used for multiple profiles: %q\n" \
     "$TEMP_DIR"
 
 assert_stderr "$stderr" assert_failure \

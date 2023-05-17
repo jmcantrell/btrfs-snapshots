@@ -21,7 +21,7 @@ printf "%s=%q\n" \
 
 # Notice that there is only one message expected.
 printf -v stderr \
-    "$TEXT_PROFILE_SUBVOLUME_MISSING\n" \
+    "skipping profile: %q\n- Subvolume is not available: %q\n" \
     "$profile_file" "$subvolume_dir"
 
 # Notice that the same profile is requested twice.

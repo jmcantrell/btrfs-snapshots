@@ -12,7 +12,7 @@ export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
 
 printf -v stderr \
-    "$TEXT_PROFILE_SUBVOLUME_MISSING\n" \
+    "skipping profile: %q\n- Subvolume is not available: %q\n" \
     "$PROFILE_FILE" "$SUBVOLUME"
 
 assert_stderr "$stderr" assert_success \

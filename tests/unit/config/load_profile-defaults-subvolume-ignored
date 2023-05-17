@@ -22,7 +22,7 @@ printf "%s=%q\n" \
     >"$DEFAULTS_FILE"
 
 printf -v stderr \
-    "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
+    "invalid profile: %q\n- %s is not set\n" \
     "$profile_file" SUBVOLUME
 
 assert_stderr "$stderr" assert_failure \

@@ -7,7 +7,7 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-printf -v stderr "$TEXT_ACTION_MISSING\n"
+printf -v stderr "the first argument must be an action\n"
 
 assert_stderr "$stderr" assert_failure \
     btrfs-snapshots

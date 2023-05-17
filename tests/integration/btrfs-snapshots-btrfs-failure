@@ -30,8 +30,8 @@ export -f btrfs
 
 for action in create prune; do
     printf -v stderr "%s\n" \
-        "$(printf "$TEXT_BTRFS_FAILED" 5)" \
-        "$(printf "$TEXT_ACTION_FAILED" "$action")"
+        "the btrfs command exited with non-zero status code: 5" \
+        "unable to perform action: $action"
 
     assert_stderr "$stderr" assert_failure \
         btrfs-snapshots -p "$profile_name" "$action"

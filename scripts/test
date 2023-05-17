@@ -6,7 +6,7 @@ self_name=${0##*/}
 
 ROOT_DIR=$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")
 
-USAGE="Run tests.
+usage="Run tests.
 
 If parallel is installed, it will be used to run tests concurrently.
 
@@ -36,8 +36,6 @@ run_test() {
         printf "running test: %q\n" "$test_file"
     fi
 
-    export PATH=$ROOT_DIR/tests/bin:$PATH
-
     if ! "$test_file"; then
         printf "test failed: %q\n" "$test_file" >&2
         exit 1
@@ -55,7 +53,7 @@ while getopts "ivh" option; do
         find_option="ipath"
         ;;
     h)
-        printf "%s\n" "$USAGE"
+        printf "%s\n" "$usage"
         exit 0
         ;;
     esac
@@ -74,27 +72,18 @@ elif (($# > 0)); then
     find_options+=(-"$find_option" "*$1*")
 fi
 
-if command -v parallel >/dev/null; then
-    executor=(parallel --shuf --jobs=0 --null)
-else
-    executor=(xargs -r -n1 --null)
-fi
-
 export -f run_test
 
 export ROOT_DIR
-export TEST_VERBOSE
-export TEST_RUNNER_NAME=${ROOT_DIR##*/}-$self_name
 
 export LIB_DIR=$ROOT_DIR/lib
+export PATH=$ROOT_DIR/bin:$PATH
+
+export TEST_VERBOSE
+export TEST_RUNNER_NAME=${ROOT_DIR##*/}-$self_name
 export TESTS_LIB_DIR=$ROOT_DIR/tests/lib
-export PATH=$ROOT_DIR/tests/bin:$ROOT_DIR/bin:$PATH
+export PATH=$ROOT_DIR/tests/bin:$PATH
 
 find "$ROOT_DIR"/tests/{unit,integration} \
     -type f -executable "${find_options[@]}" -print0 |
-    "${executor[@]}" run_test
-
-export -f run_test
-
-find tests/{unit,integration} -type f -executable "$@" -print0 |
     parallel --shuf --jobs=0 --null run_test

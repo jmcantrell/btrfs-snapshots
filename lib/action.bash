@@ -1,6 +1,6 @@
 create() {
     if ! mountpoint -q "$SUBVOLUME"; then
-        printf "$TEXT_PROFILE_SUBVOLUME_MISSING\n" "$PROFILE_FILE" "$SUBVOLUME" >&2
+        printf "skipping profile: %q\n- Subvolume is not available: %q\n" "$PROFILE_FILE" "$SUBVOLUME" >&2
         return 0
     fi
 
@@ -11,7 +11,7 @@ create() {
     mkdir -p "$SNAPSHOTS"
 
     btrfs subvolume snapshot -r "$SUBVOLUME" "$SNAPSHOTS/$timestamp" || {
-        printf "$TEXT_BTRFS_FAILED\n" "$?" >&2
+        printf "the btrfs command exited with non-zero status code: %s\n" "$?" >&2
         return 1
     }
 }
@@ -66,7 +66,7 @@ prune() {
         ((keep)) && continue
 
         btrfs subvolume delete "$snapshot" || {
-            printf "$TEXT_BTRFS_FAILED\n" "$?" >&2
+            printf "the btrfs command exited with non-zero status code: %s\n" "$?" >&2
             return 1
         }
     done

@@ -12,7 +12,7 @@ option=-h
 # If the end-of-options marker is recognized, the next argument will be treated
 # as an action, and since $option is not a valid action, it should complain.
 printf -v stderr \
-    "$TEXT_ACTION_INVALID\n" \
+    "invalid action: %s\n" \
     "$option"
 
 assert_stderr "$stderr" assert_failure \

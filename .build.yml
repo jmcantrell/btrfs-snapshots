@@ -2,6 +2,7 @@
 image: archlinux
 packages:
   - parallel
+  - diffutils
 sources:
   - https://git.sr.ht/~jmcantrell/btrfs-snapshots
 tasks:

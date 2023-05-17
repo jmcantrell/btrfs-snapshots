@@ -21,7 +21,7 @@ printf "%s=%q\n" \
     >"$DEFAULTS_FILE"
 
 printf -v stderr \
-    "$TEXT_DEFAULTS_SNAPSHOTS_MISSING_PLACEHOLDER\n" \
+    "invalid defaults: %q\n- SNAPSHOTS is missing the %%s placeholder\n" \
     "$DEFAULTS_FILE" "$TEMP_DIR"
 
 assert_stderr "$stderr" assert_failure \

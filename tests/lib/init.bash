@@ -1,11 +1,12 @@
-export CONFIG_DIR=$TEMP_DIR/etc
+export CONFIG_DIR=$TEMP_DIR/config
 export PROFILES_DIR=$CONFIG_DIR/profile.d
 export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
-export TIMESTAMP=2001-01-01T00:00:00Z
 export BTRFS_SNAPSHOTS_LIB_DIR=$LIB_DIR
 export BTRFS_SNAPSHOTS_CONFIG_DIR=$CONFIG_DIR
+
+export TIMESTAMP=2001-01-01T00:00:00Z
 export BTRFS_SNAPSHOTS_TIMESTAMP=$TIMESTAMP
 
-. "$ROOT_DIR"/tests/lib/assert.bash
-. "$ROOT_DIR"/tests/lib/timestamp.bash
+. "$TESTS_LIB_DIR"/assert.bash
+. "$TESTS_LIB_DIR"/timestamp.bash

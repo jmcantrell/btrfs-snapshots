@@ -20,7 +20,7 @@ for variable in SUBVOLUME SNAPSHOTS; do
     export "$variable=$TEMP_DIR"
 
     printf -v stderr \
-        "$TEXT_PROFILE_VARIABLE_NOT_SET\n" \
+        "invalid profile: %q\n- %s is not set\n" \
         "$profile_file" "$variable"
 
     # If $variable was not overwritten, this would succeed with no output.

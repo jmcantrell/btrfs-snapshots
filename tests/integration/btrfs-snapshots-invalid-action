@@ -10,7 +10,7 @@ set -euo pipefail
 action=bogus
 
 printf -v stderr \
-    "$TEXT_ACTION_INVALID\n" \
+    "invalid action: %s\n" \
     "$action"
 
 assert_stderr "$stderr" assert_failure \
