@@ -20,9 +20,7 @@ printf "%s=%q\n" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$DEFAULTS_FILE"
 
-printf -v stderr \
-    "invalid defaults: %q\n- SNAPSHOTS is missing the %%s placeholder\n" \
-    "$DEFAULTS_FILE" "$TEMP_DIR"
+stderr="default SNAPSHOTS is missing the %s placeholder: $TEMP_DIR"
 
-assert_stderr "$stderr" assert_failure \
+assert_failure assert_stderr_match "$stderr" \
     load_profile "$profile_file"

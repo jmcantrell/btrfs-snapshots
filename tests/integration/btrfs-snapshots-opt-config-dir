@@ -24,7 +24,7 @@ printf -v stdout \
     "fake btrfs subvolume snapshot %s %s\n" \
     "$subvolume_dir" "$snapshot"
 
-assert_stdout "$stdout" assert_success \
+assert_success assert_stdout "$stdout" \
     btrfs-snapshots -C "$config_dir" create
 
 assert_equal "$(get_snapshots "$snapshots_dir" | grep -zc .)" 1

@@ -8,13 +8,13 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-assert_no_output assert_failure \
+assert_failure assert_no_output \
     timestamp_gt "$TIMESTAMP" "$TIMESTAMP"
 
 later=$(timestamp --date="$TIMESTAMP + 1 second")
 
-assert_no_output assert_success \
+assert_success assert_no_output \
     timestamp_gt "$later" "$TIMESTAMP"
 
-assert_no_output assert_failure \
+assert_failure assert_no_output \
     timestamp_gt "$TIMESTAMP" "$later"

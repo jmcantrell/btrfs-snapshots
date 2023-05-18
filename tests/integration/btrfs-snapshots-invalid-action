@@ -9,9 +9,7 @@ set -euo pipefail
 
 action=bogus
 
-printf -v stderr \
-    "invalid action: %s\n" \
-    "$action"
+stderr="invalid action: $action"
 
-assert_stderr "$stderr" assert_failure \
+assert_failure assert_stderr_match "$stderr" \
     btrfs-snapshots "$action"

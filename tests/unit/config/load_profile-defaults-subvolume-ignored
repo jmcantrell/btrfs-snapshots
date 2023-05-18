@@ -21,9 +21,7 @@ printf "%s=%q\n" \
     SUBVOLUME "$TEMP_DIR" \
     >"$DEFAULTS_FILE"
 
-printf -v stderr \
-    "invalid profile: %q\n- %s is not set\n" \
-    "$profile_file" SUBVOLUME
+stderr="variable is not set: SUBVOLUME"
 
-assert_stderr "$stderr" assert_failure \
+assert_failure assert_stderr_match "$stderr" \
     load_profile "$profile_file"

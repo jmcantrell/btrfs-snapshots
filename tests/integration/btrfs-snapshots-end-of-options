@@ -11,9 +11,7 @@ option=-h
 
 # If the end-of-options marker is recognized, the next argument will be treated
 # as an action, and since $option is not a valid action, it should complain.
-printf -v stderr \
-    "invalid action: %s\n" \
-    "$option"
+stderr="invalid action: $option"
 
-assert_stderr "$stderr" assert_failure \
+assert_failure assert_stderr_match "$stderr" \
     btrfs-snapshots -- "$option"

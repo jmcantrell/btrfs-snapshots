@@ -29,7 +29,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
         >>"$profile_file"
 done
 
-assert_no_output assert_success \
+assert_success assert_no_output \
     load_profile "$profile_file"
 
 assert_equal "$SUBVOLUME" "$subvolume_dir"

@@ -18,9 +18,7 @@ printf "%s=%q\n" \
 
 printf "return 1\n" >"$DEFAULTS_FILE"
 
-printf -v stderr \
-    "unable to source file: %q\n" \
-    "$DEFAULTS_FILE"
+stderr="unable to source file: $DEFAULTS_FILE"
 
-assert_stderr "$stderr" assert_failure \
+assert_failure assert_stderr_match "$stderr" \
     load_profile "$profile_file"

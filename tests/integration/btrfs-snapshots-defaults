@@ -46,7 +46,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
     expected_count=$(get_snapshots "$snapshots_dir" | grep -zc .)
 
     # There should be no output, because nothing will be pruned.
-    assert_no_output assert_success \
+    assert_success assert_no_output \
         btrfs-snapshots -p "$profile_name" prune
 
     # If the default limits were not seen, the snapshot count will be zero.

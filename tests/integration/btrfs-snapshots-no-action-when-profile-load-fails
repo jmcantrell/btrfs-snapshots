@@ -21,11 +21,7 @@ printf "%s=%q\n" \
 profile_file=$PROFILES_DIR/b.conf
 printf "return 1\n" >"$profile_file"
 
-printf -v stderr "%s\n" \
-    "unable to source file: $profile_file" \
-    "unable to load profile: $profile_file"
-
-assert_stderr "$stderr" assert_failure \
+assert_failure assert_stderr_match "unable to source file: $profile_file" \
     btrfs-snapshots create
 
 # Ensure nothing for the valid profile was created.

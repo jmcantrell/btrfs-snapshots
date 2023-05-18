@@ -12,31 +12,31 @@ load_profile() {
     done
 
     if [[ -f $DEFAULTS_FILE ]] && ! . "$DEFAULTS_FILE"; then
-        printf "unable to source file: %q\n" "$DEFAULTS_FILE" >&2
+        printf "%s: unable to source file: %q\n" "$0" "$DEFAULTS_FILE" >&2
         return 1
     fi
 
     unset SUBVOLUME
 
     if [[ -v SNAPSHOTS && $SNAPSHOTS != *%s* ]]; then
-        printf "invalid defaults: %q\n- SNAPSHOTS is missing the %%s placeholder\n" "$DEFAULTS_FILE" "$SNAPSHOTS" >&2
+        printf "%s: default SNAPSHOTS is missing the %%s placeholder: %q\n" "$0" "$SNAPSHOTS" >&2
         return 1
     fi
 
     if ! . "$PROFILE_FILE"; then
-        printf "unable to source file: %q\n" "$PROFILE_FILE" >&2
+        printf "%s: unable to source file: %q\n" "$0" "$PROFILE_FILE" >&2
         return 1
     fi
 
     local variable
     for variable in SUBVOLUME SNAPSHOTS; do
         if [[ ! -v $variable || -z ${!variable} ]]; then
-            printf "invalid profile: %q\n- %s is not set\n" "$PROFILE_FILE" "$variable" >&2
+            printf "%s: variable is not set: %s\n" "$0" "$variable" >&2
             return 1
         fi
 
         if [[ ${!variable} != /* ]]; then
-            printf "invalid profile: %q\n- %s must be an absolute path: %q\n" "$PROFILE_FILE" "$variable" "${!variable}" >&2
+            printf "%s: %s is not an absolute path: %q\n" "$0" "$variable" "${!variable}" >&2
             return 1
         fi
     done

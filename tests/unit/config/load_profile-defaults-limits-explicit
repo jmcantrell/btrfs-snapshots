@@ -27,7 +27,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
         >>"$DEFAULTS_FILE"
 done
 
-assert_no_output assert_success \
+assert_success assert_no_output \
     load_profile "$profile_file"
 
 # Ensure the profile will be using the previously set defaults.

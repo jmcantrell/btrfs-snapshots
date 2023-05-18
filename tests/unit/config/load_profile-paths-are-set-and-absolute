@@ -23,12 +23,10 @@ for ((i = 0; i < ${#variables[@]}; i++)); do
     # Write the file without the variable.
     printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
-    printf -v stderr \
-        "invalid profile: %q\n- %s is not set\n" \
-        "$profile_file" "$variable"
+    stderr="variable is not set: $variable"
 
     # Ensure that a missing variable is reported as not set.
-    assert_stderr "$stderr" assert_failure \
+    assert_failure assert_stderr_match "$stderr" \
         load_profile "$profile_file"
 
     # Write the file with the variable's value empty.
@@ -36,19 +34,19 @@ for ((i = 0; i < ${#variables[@]}; i++)); do
     printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
     # Ensure that an empty value is also reported as not set.
-    assert_stderr "$stderr" assert_failure \
+    assert_failure assert_stderr_match "$stderr" \
         load_profile "$profile_file"
 
+    path=./relative/path
+
     # Write the file with the variables's value as a relative path.
-    profile_lines[-1]=$variable=./relative/path
+    profile_lines[-1]=$variable=$path
     printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
-    printf -v stderr \
-        "invalid profile: %q\n- %s must be an absolute path: %q\n" \
-        "$profile_file" "$variable" ./relative/path
+    stderr="$variable is not an absolute path: $path"
 
     # Ensure that a relative path is reported as not absolute.
-    assert_stderr "$stderr" assert_failure \
+    assert_failure assert_stderr_match "$stderr" \
         load_profile "$profile_file"
 
     # Set the variable's value to something valid, so it will be written on the

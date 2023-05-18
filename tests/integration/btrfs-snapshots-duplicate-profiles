@@ -19,11 +19,9 @@ printf "%s=%q\n" \
     SNAPSHOTS "$snapshots_dir" \
     >"$profile_file"
 
-# Notice that there is only one message expected.
-printf -v stderr \
-    "skipping profile: %q\n- Subvolume is not available: %q\n" \
-    "$profile_file" "$subvolume_dir"
-
 # Notice that the same profile is requested twice.
-assert_stderr "$stderr" assert_success \
-    btrfs-snapshots -p "$profile_name" -p "$profile_name" create
+readarray -t lines < <(btrfs-snapshots -p "$profile_name" -p "$profile_name" create 2>&1)
+
+# Notice that there is only one message expected.
+assert_equal ${#lines[@]} 1
+assert_match "${lines[0]}" "subvolume is not available: $subvolume_dir"

@@ -16,7 +16,7 @@ printf "%s=%q\n" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$profile_file"
 
-assert_no_output assert_success \
+assert_success assert_no_output \
     load_profile "$profile_file"
 
 # Ensure the base default is zero.

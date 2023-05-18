@@ -11,19 +11,19 @@ set -euo pipefail
 # Ensure every month of each quarter of the year is in the same event window.
 while read -r event_start; do
     # Ensure a tiny step before the event window is considered a different event.
-    assert_no_output assert_failure \
+    assert_failure assert_no_output \
         is_same_event quarterly "$event_start" "$(timestamp -d "$event_start - 1 second")"
 
     while read -r event_step; do
-        assert_no_output assert_success \
+        assert_success assert_no_output \
             is_same_event quarterly "$event_start" "$event_step"
     done < <(timestamp_seq "$event_start" "1 month" 3)
 
     # Ensure a tiny step after the event window is considered a different event.
-    assert_no_output assert_failure \
+    assert_failure assert_no_output \
         is_same_event quarterly "$TIMESTAMP" "$(timestamp -d "$event_step + 1 second")"
 done < <(timestamp_seq "$TIMESTAMP" "3 months" 4)
 
 # Ensure different years with the same quarter number do not appear as the same event.
-assert_no_output assert_failure \
+assert_failure assert_no_output \
     is_same_event quarterly 2000-01-01T00:00:00Z 2001-01-01T00:00:00Z

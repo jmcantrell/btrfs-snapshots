@@ -27,7 +27,7 @@ printf -v stdout \
 
 export BTRFS_SNAPSHOTS_CONFIG_DIR=$config_dir
 
-assert_stdout "$stdout" assert_success \
+assert_success assert_stdout "$stdout" \
     btrfs-snapshots create
 
 assert_equal "$(get_snapshots "$snapshots_dir" | grep -zc .)" 1

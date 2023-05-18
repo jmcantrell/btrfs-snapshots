@@ -19,7 +19,7 @@ printf -v stdout \
     "fake btrfs subvolume snapshot %s %s\n" \
     "$SUBVOLUME" "$snapshot"
 
-assert_stdout "$stdout" assert_success \
+assert_success assert_stdout "$stdout" \
     create
 
 assert_directory "$snapshot"

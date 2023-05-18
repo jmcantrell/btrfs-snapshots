@@ -17,11 +17,9 @@ for profile_name in a b; do
         >"$PROFILES_DIR/$profile_name.conf"
 done
 
-printf -v stderr \
-    "the same value for SNAPSHOTS is used for multiple profiles: %q\n" \
-    "$TEMP_DIR"
+stderr="the same value for SNAPSHOTS is used for multiple profiles: $TEMP_DIR"
 
-assert_stderr "$stderr" assert_failure \
+assert_failure assert_stderr_match "$stderr" \
     btrfs-snapshots create
 
 assert_equal "$(get_snapshots "$TEMP_DIR" | grep -zc .)" 0

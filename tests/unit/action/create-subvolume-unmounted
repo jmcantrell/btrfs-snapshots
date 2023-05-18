@@ -11,11 +11,9 @@ export PROFILE_FILE=unused
 export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
 
-printf -v stderr \
-    "skipping profile: %q\n- Subvolume is not available: %q\n" \
-    "$PROFILE_FILE" "$SUBVOLUME"
+stderr="subvolume is not available: $SUBVOLUME"
 
-assert_stderr "$stderr" assert_success \
+assert_success assert_stderr_match "$stderr" \
     create
 
 declare -a snapshots

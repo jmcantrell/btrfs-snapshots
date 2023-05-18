@@ -12,8 +12,8 @@ assert_no_output assert_failure \
 
 other_timestamp=$(timestamp --date="$TIMESTAMP + 1 second")
 
-assert_no_output assert_success \
+assert_success assert_no_output \
     timestamp_neq "$TIMESTAMP" "$other_timestamp"
 
-assert_no_output assert_success \
+assert_success assert_no_output \
     timestamp_neq "$other_timestamp" "$TIMESTAMP"

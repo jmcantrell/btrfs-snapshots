@@ -7,7 +7,7 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-assert_no_output assert_success \
+assert_success assert_no_output \
     timestamp_eq "$TIMESTAMP" "$TIMESTAMP"
 
 other_timestamps=(

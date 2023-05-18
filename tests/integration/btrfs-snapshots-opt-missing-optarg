@@ -8,11 +8,8 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 assert_option_needs_arg() {
-    printf -v stderr \
-        "option missing argument: -%s\n" \
-        "$1"
-
-    assert_stderr "$stderr" assert_failure \
+    stderr="option missing argument: -$1"
+    assert_failure assert_stderr_match "$stderr" \
         btrfs-snapshots -"$1"
 }
 

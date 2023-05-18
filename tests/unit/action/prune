@@ -46,7 +46,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
         "fake btrfs subvolume delete %s\n" \
         "${fillers[@]}"
 
-    assert_stdout "$stdout" assert_success \
+    assert_success assert_stdout "$stdout" \
         prune
 
     readarray -t snapshots < <(get_snapshots "$SNAPSHOTS")

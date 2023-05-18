@@ -38,5 +38,5 @@ done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 
-assert_stdout "$stdout" assert_success \
+assert_success assert_stdout "$stdout" \
     btrfs-snapshots "${options[@]}" create

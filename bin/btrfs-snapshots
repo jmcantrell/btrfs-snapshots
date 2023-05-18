@@ -47,11 +47,11 @@ while getopts ":C:p:h" option; do
         exit 0
         ;;
     :)
-        printf "option missing argument: -%s\n" "$OPTARG" >&2
+        printf "%s: option missing argument: -%s\n" "$0" "$OPTARG" >&2
         exit 1
         ;;
     *)
-        printf "invalid option: -%s\n" "$OPTARG" >&2
+        printf "%s: invalid option: -%s\n" "$0" "$OPTARG" >&2
         exit 1
         ;;
     esac
@@ -61,7 +61,7 @@ shift $((OPTIND - 1))
 export LIB_DIR CONFIG_DIR
 
 if [[ ! -v 1 || -z $1 ]]; then
-    printf "the first argument must be an action\n" >&2
+    printf "%s: the first argument must be an action\n" "$0" >&2
     exit 2
 fi
 action=$1
@@ -69,7 +69,7 @@ action=$1
 case $action in
 create | prune) ;;
 *)
-    printf "invalid action: %s\n" "$action" >&2
+    printf "%s: invalid action: %s\n" "$0" "$action" >&2
     exit 1
     ;;
 esac
@@ -83,7 +83,7 @@ if ((${#profile_names[@]} > 0)); then
     while IFS= read -r -d '' profile_name; do
         profile_file=$PROFILES_DIR/$profile_name.conf
         if [[ ! -f $profile_file ]]; then
-            printf "profile does not exist: %q\n" "$profile_file" >&2
+            printf "%s: profile does not exist: %q\n" "$0" "$profile_file" >&2
             exit 2
         fi
         profile_files+=("$profile_file")
@@ -96,12 +96,12 @@ declare -A snapshots_seen
 
 for profile_file in "$PROFILES_DIR"/*.conf; do
     if ! load_profile "$profile_file"; then
-        printf "unable to load profile: %q\n" "$profile_file" >&2
+        printf "%s: unable to load profile: %q\n" "$0" "$profile_file" >&2
         exit 2
     fi
 
     if [[ -v snapshots_seen[$SNAPSHOTS] ]]; then
-        printf "the same value for SNAPSHOTS is used for multiple profiles: %q\n" "$SNAPSHOTS" >&2
+        printf "%s: the same value for SNAPSHOTS is used for multiple profiles: %q\n" "$0" "$SNAPSHOTS" >&2
         exit 2
     fi
 
@@ -112,7 +112,7 @@ for profile_file in "${profile_files[@]}"; do
     load_profile "$profile_file"
 
     if ! "$action"; then
-        printf "unable to perform action: %s\n" "$action" >&2
+        printf "%s: unable to perform action '%s' for profile: %q\n" "$0" "$action" "$profile_file" >&2
         exit 1
     fi
 done

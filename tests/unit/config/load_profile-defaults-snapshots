@@ -20,7 +20,7 @@ printf "%s=%q\n" \
     SNAPSHOTS "$TEMP_DIR/%s" \
     >"$DEFAULTS_FILE"
 
-assert_no_output assert_success \
+assert_success assert_no_output \
     load_profile "$profile_file"
 
 assert_equal "$SNAPSHOTS" "$TEMP_DIR/$profile_name"

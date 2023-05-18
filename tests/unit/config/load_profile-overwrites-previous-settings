@@ -19,12 +19,10 @@ for variable in SUBVOLUME SNAPSHOTS; do
     # Try to trick the function into accepting a previous value.
     export "$variable=$TEMP_DIR"
 
-    printf -v stderr \
-        "invalid profile: %q\n- %s is not set\n" \
-        "$profile_file" "$variable"
+    stderr="variable is not set: $variable"
 
     # If $variable was not overwritten, this would succeed with no output.
-    assert_stderr "$stderr" assert_failure \
+    assert_failure assert_stderr_match "$stderr" \
         load_profile "$profile_file"
 
     # If $variable was not overwritten, it would still be set.
@@ -42,7 +40,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
 done
 
 # At this point, the profile is valid, but does not include limits.
-assert_no_output assert_success \
+assert_success assert_no_output \
     load_profile "$profile_file"
 
 # Ensure existence of, but non-inheritance of limit values.
