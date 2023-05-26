@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-src_dir=$PWD
+ROOT_DIR=$PWD
 
-for input in "$src_dir"/man/*.scd; do
+for input in "$ROOT_DIR"/man/*.scd; do
     output=$(dirname "$input")/$(basename "$input" .scd)
     scdoc <"$input" >"$output"
 done
