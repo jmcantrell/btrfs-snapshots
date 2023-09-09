@@ -30,7 +30,10 @@ install -d ./share/doc/btrfs-snapshots/etc/profile.d
 install -pm 0644 "$ROOT_DIR"/etc/profile.d/*.conf "$_"
 
 install -d ./share/doc/btrfs-snapshots
-install -pm 0644 "$ROOT_DIR"/{README,LICENSE}* "$_"
+install -pm 0644 "$ROOT_DIR"/README* "$_"
+
+install -d ./share/licenses/btrfs-snapshots
+install -pm 0644 "$ROOT_DIR"/LICENSE* "$_"
 
 for file in "$ROOT_DIR"/completion/*.zsh; do
     name=$(basename "$file" .zsh)
