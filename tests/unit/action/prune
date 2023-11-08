@@ -12,8 +12,6 @@ export SNAPSHOTS=$TEMP_DIR/snapshots
 
 limit=3
 
-declare -a snapshots
-
 for event_name in "${EVENT_NAMES[@]}"; do
     rm -rf "$TEMP_DIR"
     mkdir -p "$TEMP_DIR"
@@ -47,7 +45,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
         "${fillers[@]}"
 
     assert_success assert_stdout "$stdout" \
-        prune
+        action_prune
 
     readarray -t snapshots < <(get_snapshots "$SNAPSHOTS")
 

@@ -22,8 +22,8 @@ caveats) that will apply to every profile.
 None of these files exist by default, and configuration is left to the
 administrator. Example files with the available settings are at:
 
-- /usr/local/share/doc/btrfs-snapshots/etc/defaults.conf
-- /usr/local/share/doc/btrfs-snapshots/etc/profile.d/@name.conf
+- /usr/local/share/doc/btrfs-snapshots/config/defaults.conf
+- /usr/local/share/doc/btrfs-snapshots/config/profile.conf
 
 # OPTIONS
 

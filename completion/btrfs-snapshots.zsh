@@ -7,8 +7,8 @@ _arguments -s -S -A "-*" : \
     "-p[select a profile]:profile:->profile" \
     "-C[set the configuration directory]:configuration directory:_files -/" \
     '1::action:((
-        "create:create a new snapshot"
-        "prune:delete old snapshots"
+        "create\:create a new snapshot"
+        "prune\:delete old snapshots"
     ))' \
     && return
 

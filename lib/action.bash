@@ -1,4 +1,4 @@
-create() {
+action_create() {
     if ! mountpoint -q "$SUBVOLUME"; then
         printf "%s: subvolume is not available: %q\n" "$0" "$SUBVOLUME" >&2
         return 0
@@ -16,7 +16,7 @@ create() {
     }
 }
 
-prune() {
+action_prune() {
     local variable event_name counts=() limits=()
     for event_name in "${EVENT_NAMES[@]}"; do
         counts+=(0)
@@ -27,7 +27,7 @@ prune() {
     local reply
     reply=$(get_snapshots "$SNAPSHOTS" | sort -r) || return
 
-    local -a snapshots
+    local snapshots
     readarray -t snapshots <<<"$reply"
 
     local snapshot_index

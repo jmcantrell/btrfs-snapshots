@@ -2,47 +2,35 @@
 
 set -euo pipefail
 
-ROOT_DIR=$PWD
+name=btrfs-snapshots
+src_dir=$PWD
+dst_dir=${DESTDIR:-}${PREFIX:-/usr/local}
 
-mkdir -p "${DEST_DIR:-}${PREFIX:-/usr/local}"
-cd "$_"
+mkdir -p "$dst_dir"
+cd "$dst_dir"
 
-install -d ./bin
-install -pm 0755 "$ROOT_DIR"/bin/* "$_"
+install -m755 -Dt ./bin "$src_dir"/bin/*
 
-install -d ./lib/btrfs-snapshots
-install -pm 0644 "$ROOT_DIR"/lib/*.* "$_"
+install -m644 -Dt ./lib/"$name" "$src_dir"/lib/*
 
-for file in "$ROOT_DIR"/man/*.[1-8]; do
+for file in "$src_dir"/man/*.[1-8]; do
     base=$(basename "$file")
     section=${base##*.}
-    install -d ./share/man/man"$section"
-    install -pm 0644 "$file" "$_"/"$base"
+    install -m644 -DT "$file" ./share/man/man"$section"/"$base"
 done
 
-install -d ./lib/systemd/system
-install -pm 0644 "$ROOT_DIR"/systemd/* "$_"
+install -m644 -Dt ./lib/systemd/system "$src_dir"/systemd/*
 
-install -d ./share/doc/btrfs-snapshots/etc
-install -pm 0644 "$ROOT_DIR"/etc/*.conf "$_"
+install -m644 -Dt ./share/doc/"$name"/config "$src_dir"/config/*
 
-install -d ./share/doc/btrfs-snapshots/etc/profile.d
-install -pm 0644 "$ROOT_DIR"/etc/profile.d/*.conf "$_"
+install -m644 -Dt ./share/doc/"$name" "$src_dir"/{README,LICENSE}.md
 
-install -d ./share/doc/btrfs-snapshots
-install -pm 0644 "$ROOT_DIR"/README* "$_"
-
-install -d ./share/licenses/btrfs-snapshots
-install -pm 0644 "$ROOT_DIR"/LICENSE* "$_"
-
-for file in "$ROOT_DIR"/completion/*.zsh; do
+for file in "$src_dir"/completion/*.zsh; do
     name=$(basename "$file" .zsh)
-    install -d ./share/zsh/site-functions
-    install -pm 0644 "$file" "$_"/_"$name"
+    install -m644 -DT "$file" ./share/zsh/site-functions/_"$name"
 done
 
-for file in "$ROOT_DIR"/completion/*.bash; do
+for file in "$src_dir"/completion/*.bash; do
     name=$(basename "$file" .bash)
-    install -d ./share/bash-completion/completions
-    install -pm 0644 "$file" "$_"/"$name"
+    install -m644 -DT "$file" ./share/bash-completion/completions/"$name"
 done

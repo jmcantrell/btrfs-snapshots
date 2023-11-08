@@ -4,8 +4,6 @@ set -euo pipefail
 
 self_name=${0##*/}
 
-ROOT_DIR=$PWD
-
 usage="Run tests.
 
 If parallel is installed, it will be used to run tests concurrently.
@@ -14,11 +12,10 @@ Usage:
     $self_name [OPTIONS] [PATTERN...]
 
 Options:
-    -h         show this help text and exit
+    -h    show this help text and exit
 
-    -i         match PATTERN case-insensitively
-
-    -v         print every test that's run, regardless of failures
+    -i    match PATTERN case-insensitively
+    -v    print every test that's run, regardless of failures
 
 Arguments:
     PATTERN    only test files matching PATTERN
@@ -27,12 +24,12 @@ Arguments:
 run_test() {
     local test_file=${1:?missing test file}
 
-    TEMP_DIR=$(mktemp -d -t "$TEST_RUNNER_NAME".XXXXXXXXXX)
+    TEMP_DIR=$(mktemp -d -t "$TESTS_RUNNER_NAME".XXXXXXXXXX)
     printf -v cleanup "rm -r %q" "$TEMP_DIR"
     trap '$cleanup' EXIT
     export TEMP_DIR
 
-    if ((${TEST_VERBOSE:-0})); then
+    if ((${TESTS_VERBOSE:-0})); then
         printf "running test: %q\n" "$test_file"
     fi
 
@@ -42,16 +39,22 @@ run_test() {
     fi
 }
 
-TEST_VERBOSE=0
+export -f run_test
+
+export ROOT_DIR=$PWD
+export LIB_DIR=$ROOT_DIR/lib
+export TESTS_LIB_DIR=$ROOT_DIR/tests/lib
+
+PATH=$ROOT_DIR/bin:$ROOT_DIR/tests/bin:$PATH
+
+export TESTS_VERBOSE=0
+export TESTS_RUNNER_NAME=${ROOT_DIR##*/}-$self_name
+
 find_option="path"
 while getopts "ivh" option; do
     case $option in
-    v)
-        TEST_VERBOSE=1
-        ;;
-    i)
-        find_option="ipath"
-        ;;
+    v) TESTS_VERBOSE=1 ;;
+    i) find_option="ipath" ;;
     h)
         printf "%s\n" "$usage"
         exit 0
@@ -60,7 +63,7 @@ while getopts "ivh" option; do
 done
 shift $((OPTIND - 1))
 
-declare -a find_options=()
+find_options=()
 if (($# > 1)); then
     find_options+=("\\(")
     for pattern in "$@"; do
@@ -71,18 +74,6 @@ if (($# > 1)); then
 elif (($# > 0)); then
     find_options+=(-"$find_option" "*$1*")
 fi
-
-export -f run_test
-
-export ROOT_DIR
-
-export LIB_DIR=$ROOT_DIR/lib
-export PATH=$ROOT_DIR/bin:$PATH
-
-export TEST_VERBOSE
-export TEST_RUNNER_NAME=${ROOT_DIR##*/}-$self_name
-export TESTS_LIB_DIR=$ROOT_DIR/tests/lib
-export PATH=$ROOT_DIR/tests/bin:$PATH
 
 find "$ROOT_DIR"/tests/{unit,integration} \
     -type f -executable "${find_options[@]}" -print0 |
