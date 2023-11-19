@@ -4,7 +4,7 @@ set -euo pipefail
 
 name=btrfs-snapshots
 src_dir=$PWD
-dst_dir=${DESTDIR:-}${PREFIX:-/usr/local}
+dst_dir=${DEST_DIR:-}${PREFIX:-/usr/local}
 
 mkdir -p "$dst_dir"
 cd "$dst_dir"
