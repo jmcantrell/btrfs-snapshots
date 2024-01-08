@@ -57,6 +57,7 @@ while getopts ":C:p:h" option; do
     esac
 done
 shift $((OPTIND - 1))
+unset OPTIND option
 
 if [[ ! -v 1 || -z $1 ]]; then
     printf "%s: the first argument must be an action\n" "$0" >&2
