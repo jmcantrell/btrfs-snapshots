@@ -26,10 +26,14 @@
 export EVENT_NAMES=(minutely hourly daily weekly monthly quarterly yearly)
 
 is_same_event() {
-    local event_name=$1
-    local timestamp1=$2
-    local timestamp2=$3
+    local event_name=${1:?missing event name}
 
+    local timestamps=(
+        "${2:?missing first timestamp}"
+        "${3:?missing second timestamp}"
+    )
+
+    local parts
     case ${event_name,,} in
     yearly) parts=(Y) ;;           # year
     quarterly) parts=(Y q) ;;      # year quarter
@@ -42,9 +46,10 @@ is_same_event() {
 
     local format=${parts[*]/#/%}
 
-    local parts1 parts2
-    parts1=$(date --utc --date="$timestamp1" +"$format") || return 1
-    parts2=$(date --utc --date="$timestamp2" +"$format") || return 1
+    local timestamp events=()
+    for timestamp in "${timestamps[@]}"; do
+        events+=("$(date --utc --date="$timestamp" +"$format")") || return 1
+    done
 
-    [[ $parts1 == "$parts2" ]]
+    [[ ${events[0]} == "${events[1]}" ]]
 }
