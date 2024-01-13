@@ -20,7 +20,7 @@ printf "%s=%q\n" \
     >"$profile_file"
 
 # Notice that the same profile is requested twice.
-readarray -t lines < <(btrfs-snapshots -p "$profile_name" -p "$profile_name" create 2>&1)
+readarray -t lines < <(btrfs-snapshots create "$profile_name" "$profile_name" 2>&1)
 
 # Notice that there is only one message expected.
 assert_equal ${#lines[@]} 1

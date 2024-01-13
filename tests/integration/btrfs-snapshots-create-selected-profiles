@@ -30,18 +30,18 @@ for profile_name in "${profile_names[@]}"; do
 done
 
 selected=(1 2)
-options=()
+selected_profile_names=()
 stdout_lines=()
 
 for i in "${selected[@]}"; do
-    options+=(-p "${profile_names[i]}")
+    selected_profile_names+=("${profile_names[i]}")
     stdout_lines+=("fake btrfs subvolume snapshot ${subvolume_dirs[i]} ${snapshots[i]}")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 
 assert_success assert_stdout "$stdout" \
-    btrfs-snapshots "${options[@]}" create
+    btrfs-snapshots create "${selected_profile_names[@]}"
 
 for i in "${selected[@]}"; do
     assert_file "${snapshots[i]}"/marker

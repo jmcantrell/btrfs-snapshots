@@ -47,7 +47,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
 
     # There should be no output, because nothing will be pruned.
     assert_success assert_no_output \
-        btrfs-snapshots -p "$profile_name" prune
+        btrfs-snapshots prune "$profile_name"
 
     # If the default limits were not seen, the snapshot count will be zero.
     assert_equal "$(get_snapshots "$snapshots_dir" | grep -zc .)" "$expected_count"

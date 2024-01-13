@@ -11,16 +11,14 @@ export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
 usage="Manage timestamped collections of btrfs snapshots.
 
 Usage:
-    $self_name [OPTIONS] ACTION
+    $self_name [OPTIONS] ACTION [NAME...]
 
 Options:
     -h    show this help text and exit
 
-    -p NAME         perform action on profile NAME
-    -C DIRECTORY    use DIRECTORY for configuration
-
 Arguments:
     ACTION    action to perform on selected profiles
+    NAME      profile name to perform action on (default: all)
 
 Actions:
     create    create a new snapshot in the configured location
@@ -29,29 +27,19 @@ Actions:
 Environment:
     ${self_name^^}_CONFIG_DIR[=${CONFIG_DIR@Q}]
 
-If no profiles are specified with -p, then every profile is selected.
-
 See also:
     $self_name(5), $self_name(8)
 "
 
 . "$LIB_DIR"/init.bash
 
-profile_names=()
-while getopts ":C:p:h" option; do
+while getopts "h" option; do
     case $option in
-    C) CONFIG_DIR=$OPTARG ;;
-    p) profile_names+=("$OPTARG") ;;
     h)
         printf "%s\n" "$usage"
         exit
         ;;
-    :)
-        printf "%s: option missing argument: -%s\n" "$0" "$OPTARG" >&2
-        exit 1
-        ;;
     *)
-        printf "%s: invalid option: -%s\n" "$0" "$OPTARG" >&2
         exit 1
         ;;
     esac
@@ -59,11 +47,8 @@ done
 shift $((OPTIND - 1))
 unset OPTIND option
 
-if [[ ! -v 1 || -z $1 ]]; then
-    printf "%s: the first argument must be an action\n" "$0" >&2
-    exit 2
-fi
-action_name=$1
+action_name=${1:?missing action}
+shift
 
 if [[ ! $action_name =~ ^(create|prune)$ ]]; then
     printf "%s: invalid action: %s\n" "$0" "$action_name" >&2
@@ -73,16 +58,26 @@ fi
 export PROFILES_DIR=$CONFIG_DIR/profile.d
 export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
-if ((${#profile_names[@]} > 0)); then
+declare -A profiles_seen
+
+if (($# > 0)); then
     profile_files=()
-    while IFS= read -r -d '' profile_name; do
+
+    for profile_name in "$@"; do
+        if [[ -v profiles_seen[$profile_name] ]]; then
+            continue
+        fi
+        profiles_seen[$profile_name]=1
+
         profile_file=$PROFILES_DIR/$profile_name.conf
+
         if [[ ! -f $profile_file ]]; then
             printf "%s: profile does not exist: %q\n" "$0" "$profile_file" >&2
             exit 2
         fi
+
         profile_files+=("$profile_file")
-    done < <(sort -zu < <(printf "%s\0" "${profile_names[@]}"))
+    done
 else
     profile_files=("$PROFILES_DIR"/*.conf)
 fi

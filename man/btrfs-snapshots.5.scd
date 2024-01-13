@@ -2,12 +2,12 @@ btrfs-snapshots(5)
 
 # NAME
 
-btrfs-snapshots - btrfs-snapshots configuration files
+btrfs-snapshots - btrfs-snapshots configuration
 
 # SYNOPSIS
 
-- /usr/local/etc/btrfs-snapshots/defaults.conf
-- /usr/local/etc/btrfs-snapshots/profile.d/\*.conf
+- ${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}/defaults.conf
+- ${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}/profile.d/\*.conf
 
 # DESCRIPTION
 
@@ -27,8 +27,8 @@ administrator. Example files with the available settings are at:
 
 # OPTIONS
 
-Both the defaults configuration file and every profile configuration file can
-have the same settings, with a few enforced caveats.
+The defaults configuration file and every profile configuration file can have
+the same settings, with a few enforced caveats.
 
 - The *SUBVOLUME* setting is only recognized in the profile configuration and it is required.
 - The *SNAPSHOTS* setting, if it appears in the defaults configuration file, must contain a %s placeholder so it can be differentiated for each subvolume.
