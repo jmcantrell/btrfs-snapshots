@@ -58,31 +58,20 @@ fi
 export PROFILES_DIR=$CONFIG_DIR/profile.d
 export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
-declare -A profiles_seen
+declare -A profiles_selected=()
 
-if (($# > 0)); then
-    profile_files=()
+for profile_name in "$@"; do
+    profile_file=$PROFILES_DIR/$profile_name.conf
 
-    for profile_name in "$@"; do
-        if [[ -v profiles_seen[$profile_name] ]]; then
-            continue
-        fi
-        profiles_seen[$profile_name]=1
+    if [[ ! -f $profile_file ]]; then
+        printf "%s: profile does not exist: %q\n" "$0" "$profile_file" >&2
+        exit 2
+    fi
 
-        profile_file=$PROFILES_DIR/$profile_name.conf
+    profiles_selected[$profile_file]=1
+done
 
-        if [[ ! -f $profile_file ]]; then
-            printf "%s: profile does not exist: %q\n" "$0" "$profile_file" >&2
-            exit 2
-        fi
-
-        profile_files+=("$profile_file")
-    done
-else
-    profile_files=("$PROFILES_DIR"/*.conf)
-fi
-
-declare -A snapshots_seen
+declare -A snapshots_seen=()
 
 for profile_file in "$PROFILES_DIR"/*.conf; do
     if ! load_profile "$profile_file"; then
@@ -98,7 +87,18 @@ for profile_file in "$PROFILES_DIR"/*.conf; do
     snapshots_seen[$SNAPSHOTS]=1
 done
 
-for profile_file in "${profile_files[@]}"; do
+declare -A profiles_seen=()
+
+for profile_file in "$PROFILES_DIR"/*.conf; do
+    if ((${#profiles_selected[@]} > 0)) && [[ ! -v profiles_selected[$profile_file] ]]; then
+        continue
+    fi
+
+    if [[ -v profiles_seen[$profile_file] ]]; then
+        continue
+    fi
+    profiles_seen[$profile_file]=1
+
     load_profile "$profile_file"
 
     if ! action_"$action_name"; then
