@@ -11,10 +11,8 @@ export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
 usage="Manage timestamped collections of btrfs snapshots.
 
 Usage:
-    $self_name [OPTIONS] ACTION [NAME...]
-
-Options:
-    -h    show this help text and exit
+    $self_name --help
+    $self_name ACTION [NAME...]
 
 Arguments:
     ACTION    action to perform on selected profiles
@@ -31,21 +29,12 @@ See also:
     $self_name(5), $self_name(8)
 "
 
-. "$LIB_DIR"/init.bash
+if (($# > 0)) && [[ $1 == --help ]]; then
+    printf "%s\n" "$usage"
+    exit
+fi
 
-while getopts "h" option; do
-    case $option in
-    h)
-        printf "%s\n" "$usage"
-        exit
-        ;;
-    *)
-        exit 1
-        ;;
-    esac
-done
-shift $((OPTIND - 1))
-unset OPTIND option
+. "$LIB_DIR"/init.bash
 
 action_name=${1:?missing action}
 shift
