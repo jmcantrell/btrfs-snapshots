@@ -6,7 +6,7 @@ btrfs-snapshots - Manage timestamped collections of btrfs snapshots
 
 # SYNOPSIS
 
-btrfs-snapshots -h
+btrfs-snapshots --help
 btrfs-snapshots ACTION [NAME...]
 
 # DESCRIPTION
@@ -20,11 +20,6 @@ debatably painless:
 
 - A snapshot's base name is the ISO-8601 formatted UTC timestamp when it was taken (i.e. %Y-%m-%dT%H:%M:%SZ).
 - The snapshots for each subvolume must be in their own directory.
-
-# OPTIONS
-
-*-h*
-	Display the help message and exit.
 
 # ARGUMENTS
 
