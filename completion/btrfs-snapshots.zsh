@@ -3,7 +3,7 @@
 local curcontext=$curcontext context state state_descr line opt_args
 
 _arguments -C -s -S -A "-*" : \
-    "(- : *)-h[show the help text]" \
+    "(- : *)--help[show the help text]" \
     ':action:((
         "create\:create a new snapshot"
         "prune\:delete old snapshots"

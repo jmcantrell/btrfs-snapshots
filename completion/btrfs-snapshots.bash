@@ -3,7 +3,7 @@ _btrfs_snapshots() {
 
     local profiles_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}/profile.d
 
-    local options=(-h)
+    local options=(--help)
     local actions=(create prune)
 
     case $cur in
