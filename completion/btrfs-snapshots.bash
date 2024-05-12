@@ -1,6 +1,5 @@
 _btrfs_snapshots() {
     local cur prev words
-    _init_completion || return
 
     local profiles_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}/profile.d
 
