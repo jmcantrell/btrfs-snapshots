@@ -50,11 +50,11 @@ PATH=$ROOT_DIR/bin:$ROOT_DIR/tests/bin:$PATH
 export TESTS_VERBOSE=0
 export TESTS_RUNNER_NAME=${ROOT_DIR##*/}-$self_name
 
-find_option="path"
-while getopts "ivh" option; do
-    case $option in
+find_opt="path"
+while getopts "ivh" opt; do
+    case $opt in
     v) TESTS_VERBOSE=1 ;;
-    i) find_option="ipath" ;;
+    i) find_opt="ipath" ;;
     h)
         printf "%s\n" "$usage"
         exit 0
@@ -63,20 +63,20 @@ while getopts "ivh" option; do
     esac
 done
 shift $((OPTIND - 1))
-unset OPTIND option
+unset OPTIND opt
 
-find_options=()
+find_opts=()
 if (($# > 1)); then
-    find_options+=("\\(")
+    find_opts+=("\\(")
     for pattern in "$@"; do
-        find_options+=(-"$find_option" "*$pattern*" -o)
+        find_opts+=(-"$find_opt" "*$pattern*" -o)
     done
-    unset "find_options[-1]"
-    find_options+=("\\)")
+    unset "find_opts[-1]"
+    find_opts+=("\\)")
 elif (($# > 0)); then
-    find_options+=(-"$find_option" "*$1*")
+    find_opts+=(-"$find_opt" "*$1*")
 fi
 
 find "$ROOT_DIR"/tests/{unit,integration} \
-    -type f -executable "${find_options[@]}" -print0 |
+    -type f -executable "${find_opts[@]}" -print0 |
     parallel --shuf --jobs=0 --null run_test

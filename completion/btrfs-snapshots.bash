@@ -3,12 +3,12 @@ _btrfs_snapshots() {
 
     local profiles_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}/profile.d
 
-    local options=(--help)
+    local opts=(--help)
     local actions=(create prune)
 
     case $cur in
     -*)
-        readarray -t COMPREPLY < <(compgen -W "${options[*]}" -- "$cur")
+        readarray -t COMPREPLY < <(compgen -W "${opts[*]}" -- "$cur")
         ;;
     *)
         if ((${#words[@]} >= 3)); then
