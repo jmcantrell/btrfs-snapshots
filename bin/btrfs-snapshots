@@ -11,7 +11,7 @@ export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
 usage="Manage timestamped collections of btrfs snapshots.
 
 Usage:
-    $self_name --help
+    $self_name --help|-h
     $self_name ACTION [NAME...]
 
 Arguments:
@@ -29,7 +29,7 @@ See also:
     $self_name(5), $self_name(8)
 "
 
-if (($# > 0)) && [[ $1 == --help ]]; then
+if (($# > 0)) && [[ $1 == --help || $1 == -h ]]; then
     printf "%s\n" "$usage"
     exit
 fi
