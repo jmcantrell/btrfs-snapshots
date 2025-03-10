@@ -23,7 +23,7 @@ install -m644 -Dt ./lib/systemd/system "$src_dir"/systemd/*
 
 install -m644 -Dt ./share/doc/"$name"/config "$src_dir"/config/*
 
-install -m644 -Dt ./share/doc/"$name" "$src_dir"/{README,LICENSE}.md
+install -m644 -Dt ./share/doc/"$name" "$src_dir"/{README.md,LICENSE}
 
 for file in "$src_dir"/completion/*.zsh; do
     name=$(basename "$file" .zsh)
