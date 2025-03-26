@@ -55,6 +55,11 @@ man 5 btrfs-snapshots
 
 ## Testing
 
+The following packages are required to run tests:
+
+- diffutils
+- parallel
+
 To run the included tests:
 
 ```sh
