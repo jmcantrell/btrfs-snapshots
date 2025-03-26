@@ -14,23 +14,27 @@ capture_output() {
     local stdout_file=$1
     local stderr_file=$2
     shift 2
+
     "$@" >"$stdout_file" 2>"$stderr_file"
 }
 
 capture_stdout() {
     local stdout_file=$1
     shift
+
     capture_output "$stdout_file" /dev/stderr "$@"
 }
 
 capture_stderr() {
     local stderr_file=$1
     shift
+
     capture_output /dev/stdout "$stderr_file" "$@"
 }
 
 assert_set() {
     local variable=$1
+
     if [[ ! -v $variable ]]; then
         printf "variable should have been set: %s\n" "$variable" >&2
         stack_trace >&2
@@ -40,6 +44,7 @@ assert_set() {
 
 assert_not_set() {
     local variable=$1
+
     if [[ -v $variable ]]; then
         printf "variable should not have been set: %s=%s\n" "$variable" "${!variable}" >&2
         stack_trace >&2
@@ -50,6 +55,7 @@ assert_not_set() {
 assert_equal() {
     local actual=$1
     local expected=$2
+
     if [[ $actual != "$expected" ]]; then
         printf "values should have been equal: %s != %s\n" "$actual" "$expected" >&2
         stack_trace >&2
@@ -60,6 +66,7 @@ assert_equal() {
 assert_not_equal() {
     local actual=$1
     local expected=$2
+
     if [[ $actual == "$expected" ]]; then
         printf "values should not have been equal: %s == %s\n" "$actual" "$expected" >&2
         stack_trace >&2
@@ -90,6 +97,7 @@ assert_arrays_equal() {
 assert_match() {
     local actual=$1
     local expected_pattern=$2
+
     if [[ ! $actual =~ $expected_pattern ]]; then
         printf "values should have matched: %s != %s\n" "$actual" "$expected_pattern" >&2
         stack_trace >&2
@@ -100,6 +108,7 @@ assert_match() {
 assert_not_match() {
     local actual=$1
     local expected_pattern=$2
+
     if [[ $actual =~ $expected_pattern ]]; then
         printf "values should not have matched: %s == %s\n" "$actual" "$expected_pattern" >&2
         stack_trace >&2
@@ -110,8 +119,10 @@ assert_not_match() {
 assert_exit_status() {
     local -i expected=$1
     shift
+
     track_exit_status "$@" || true
     local -i actual=$REPLY
+
     if ((actual != expected)); then
         printf "exit status should have been %d, but was %d\n" "$expected" "$actual" >&2
         stack_trace >&2
@@ -150,12 +161,14 @@ assert_no_stderr() {
 assert_stdout() {
     local expected=$1
     shift
+
     assert_output "$expected" "" "$@"
 }
 
 assert_stderr() {
     local expected=$1
     shift
+
     assert_output "" "$expected" "$@"
 }
 
@@ -277,17 +290,20 @@ assert_output_match() {
 assert_stdout_match() {
     local expected_stdout_pattern=$1
     shift
+
     assert_output_match "$expected_stdout_pattern" "" "$@"
 }
 
 assert_stderr_match() {
     local expected_stderr_pattern=$1
     shift
+
     assert_output_match "" "$expected_stderr_pattern" "$@"
 }
 
 assert_exists() {
     local path=$1
+
     if [[ ! -e $path ]]; then
         printf "path should exist: %s\n" "$path" >&2
         stack_trace >&2
@@ -297,6 +313,7 @@ assert_exists() {
 
 assert_not_exists() {
     local path=$1
+
     if [[ -e $path ]]; then
         printf "path should not exist: %s\n" "$path" >&2
         stack_trace >&2
@@ -306,6 +323,7 @@ assert_not_exists() {
 
 assert_file() {
     local file=$1
+
     if [[ ! -f $file ]]; then
         printf "file should exist: %s\n" "$file" >&2
         stack_trace >&2
@@ -315,6 +333,7 @@ assert_file() {
 
 assert_no_file() {
     local file=$1
+
     if [[ -f $file ]]; then
         printf "file should not exist: %s\n" "$file" >&2
         stack_trace >&2
@@ -338,6 +357,7 @@ assert_file_content() {
 
 assert_directory() {
     local directory=$1
+
     if [[ ! -d $directory ]]; then
         printf "directory should exist: %s\n" "$directory" >&2
         stack_trace >&2
@@ -347,6 +367,7 @@ assert_directory() {
 
 assert_no_directory() {
     local directory=$1
+
     if [[ -d $directory ]]; then
         printf "directory should not exist: %s\n" "$directory" >&2
         stack_trace >&2
