@@ -6,8 +6,6 @@ self_name=${0##*/}
 
 usage="Run tests.
 
-If parallel is installed, it will be used to run tests concurrently.
-
 Usage:
     $self_name [OPTIONS] [PATTERN...]
 
