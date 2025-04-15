@@ -86,6 +86,7 @@ for profile_file in "$PROFILES_DIR"/*.conf; do
     if [[ -v profiles_seen[$profile_file] ]]; then
         continue
     fi
+
     profiles_seen[$profile_file]=1
 
     load_profile "$profile_file"
