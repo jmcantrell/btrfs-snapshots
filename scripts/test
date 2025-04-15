@@ -7,11 +7,10 @@ self_name=${0##*/}
 usage="Run tests.
 
 Usage:
+    $self_name --help|-h
     $self_name [OPTIONS] [PATTERN...]
 
 Options:
-    -h    show this help text and exit
-
     -i    match PATTERN case-insensitively
     -v    print every test that's run, regardless of failures
 
@@ -19,58 +18,25 @@ Arguments:
     PATTERN    only test files matching PATTERN
 "
 
-temp_dirs=()
+if (($# > 0)) && [[ $1 == --help || $1 == -h ]]; then
+    printf "%s\n" "$usage"
+    exit
+fi
 
-cleanup() {
-    rm -rf "${temp_dirs[@]}"
-}
-
-trap cleanup EXIT
-
-run_test() {
-    local test_file=${1:?missing test file}
-
-    local temp_dir
-    temp_dir=$(mktemp -d -t "$TESTS_RUNNER_NAME".XXXXXXXXXX)
-    temp_dirs+=("$temp_dir")
-
-    if ((${TESTS_VERBOSE:-0})); then
-        printf "running test: %q\n" "$test_file"
-    fi
-
-    if ! TEMP_DIR="$temp_dir" "$test_file"; then
-        printf "test failed: %q\n" "$test_file" >&2
-        exit 1
-    fi
-}
-
-export -f run_test
-
-export ROOT_DIR=$PWD
-export LIB_DIR=$ROOT_DIR/lib
-export TESTS_LIB_DIR=$ROOT_DIR/tests/lib
-
-PATH=$ROOT_DIR/bin:$ROOT_DIR/tests/bin:$PATH
-
-export TESTS_VERBOSE=0
-export TESTS_RUNNER_NAME=${ROOT_DIR##*/}-$self_name
-
+unset verbose
 find_opt="path"
+
 while getopts "ivh" opt; do
     case $opt in
-    v) TESTS_VERBOSE=1 ;;
+    v) verbose=1 ;;
     i) find_opt="ipath" ;;
-    h)
-        printf "%s\n" "$usage"
-        exit 0
-        ;;
     *) exit 2 ;;
     esac
 done
 shift $((OPTIND - 1))
-unset OPTIND opt
 
 find_opts=()
+
 if (($# > 1)); then
     find_opts+=("\\(")
     for pattern in "$@"; do
@@ -82,6 +48,5 @@ elif (($# > 0)); then
     find_opts+=(-"$find_opt" "*$1*")
 fi
 
-find "$ROOT_DIR"/tests/{unit,integration} \
-    -type f -executable "${find_opts[@]}" -print0 |
-    parallel --shuf --jobs=0 --null run_test
+find "$PWD"/tests/{unit,integration} -type f -executable "${find_opts[@]}" -print0 |
+    parallel ${verbose:+-v} --shuf --jobs=0 --null ./scripts/test1

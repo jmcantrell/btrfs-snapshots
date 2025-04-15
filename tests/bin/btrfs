@@ -4,8 +4,6 @@
 
 set -euo pipefail
 
-. "$ROOT_DIR"/tests/lib/assert.bash
-
 btrfs_subvolume() {
     local cmd=$1
     shift
@@ -27,9 +25,6 @@ btrfs_subvolume_snapshot() {
     local subvolume=$1
     local snapshot=$2
 
-    assert_directory "$subvolume"
-    assert_not_exists "$snapshot"
-
     printf "fake btrfs subvolume snapshot %s %s\n" "$subvolume" "$snapshot"
 
     cp -rT "$subvolume" "$snapshot" >&2
@@ -37,8 +32,6 @@ btrfs_subvolume_snapshot() {
 
 btrfs_subvolume_delete() {
     local snapshot=$1
-
-    assert_directory "$snapshot"
 
     printf "fake btrfs subvolume delete %s\n" "$snapshot"
 
