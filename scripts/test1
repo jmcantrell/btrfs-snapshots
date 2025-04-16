@@ -14,12 +14,7 @@ test_file=${1:?missing test file}
 test_id=${test_file##*/}
 
 TEMP_DIR=$(mktemp -d -t "$self_name-$test_id".XXXXXXXXXX)
-
-cleanup() {
-    rm -rf "$TEMP_DIR"
-}
-
-trap cleanup EXIT
+trap 'rm -rf "$TEMP_DIR"' EXIT
 
 export TEMP_DIR
 
