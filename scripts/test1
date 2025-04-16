@@ -11,9 +11,7 @@ self_name=${0##*/}
 
 test_file=${1:?missing test file}
 
-test_id=${test_file##*/}
-
-TEMP_DIR=$(mktemp -d -t "$self_name-$test_id".XXXXXXXXXX)
+TEMP_DIR=$(mktemp -d -t "$self_name".XXXXXXXXXX)
 trap 'rm -rf "$TEMP_DIR"' EXIT
 
 export TEMP_DIR
