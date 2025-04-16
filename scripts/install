@@ -4,21 +4,21 @@ set -euo pipefail
 
 name=btrfs-snapshots
 
-dest_dir=${DEST_DIR:-}${PREFIX:-/usr/local}
+dir=${DEST_DIR:-}${PREFIX:-/usr/local}
 
-install -pm755 -Dt "$dest_dir"/bin ./bin/*
+install -pm755 -Dt "$dir"/bin ./bin/*
 
-install -pm644 -Dt "$dest_dir"/lib/"$name" ./lib/*
+install -pm644 -Dt "$dir"/lib/"$name" ./lib/*
 
-install -pm644 -Dt "$dest_dir"/share/man/man5 ./man/*.5
-install -pm644 -Dt "$dest_dir"/share/man/man8 ./man/*.8
+install -pm644 -Dt "$dir"/share/man/man5 ./man/*.5
+install -pm644 -Dt "$dir"/share/man/man8 ./man/*.8
 
-install -pm644 -Dt "$dest_dir"/lib/systemd/system ./systemd/*
+install -pm644 -Dt "$dir"/lib/systemd/system ./systemd/*
 
-install -pm644 -Dt "$dest_dir"/share/doc/"$name" ./README.md
-install -pm644 -Dt "$dest_dir"/share/doc/"$name"/config ./config/*
+install -pm644 -Dt "$dir"/share/doc/"$name" ./README.md
+install -pm644 -Dt "$dir"/share/doc/"$name"/config ./config/*
 
-install -pm644 -Dt "$dest_dir"/share/licenses/"$name" ./LICENSE
+install -pm644 -Dt "$dir"/share/licenses/"$name" ./LICENSE
 
-install -pm644 -DT ./completion/"$name".zsh "$dest_dir"/share/zsh/site-functions/_"$name"
-install -pm644 -DT ./completion/"$name".bash "$dest_dir"/share/bash-completion/completions/"$name"
+install -pm644 -DT ./completion/"$name".zsh "$dir"/share/zsh/site-functions/_"$name"
+install -pm644 -DT ./completion/"$name".bash "$dir"/share/bash-completion/completions/"$name"
