@@ -17,7 +17,9 @@ action_create() {
 }
 
 action_prune() {
-    local variable event_name counts=() limits=()
+    local counts=() limits=()
+
+    local event_name variable
     for event_name in "${EVENT_NAMES[@]}"; do
         counts+=(0)
         variable=LIMIT_${event_name^^}
@@ -35,7 +37,9 @@ action_prune() {
         local snapshot=${snapshots[snapshot_index]}
         local timestamp=${snapshot##*/}
 
-        local event_index keep=0
+        local keep=0
+
+        local event_index
         for ((event_index = 0; event_index < ${#EVENT_NAMES[@]}; event_index++)); do
             # If this event type has already reached its limit, skip it.
             if ((counts[event_index] >= limits[event_index])); then

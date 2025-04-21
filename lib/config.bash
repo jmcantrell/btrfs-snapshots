@@ -2,11 +2,12 @@ load_profile() {
     export PROFILE_FILE=$1
 
     PROFILE_NAME=${PROFILE_FILE##*/}
-    export PROFILE_NAME=${PROFILE_NAME%.conf}
+    PROFILE_NAME=${PROFILE_NAME%.conf}
+    export PROFILE_NAME
 
     unset SNAPSHOTS
 
-    local variable event_name
+    local event_name
     for event_name in "${EVENT_NAMES[@]}"; do
         export "LIMIT_${event_name^^}=0"
     done
