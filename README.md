@@ -53,13 +53,6 @@ man 8 btrfs-snapshots
 man 5 btrfs-snapshots
 ```
 
-To view the man pages directly from the repository:
-
-```sh
-scdoc <./man/btrfs-snapshots.8.scd | man -l -
-scdoc <./man/btrfs-snapshots.5.scd | man -l -
-```
-
 ## Testing
 
 The following packages are required to run tests:
