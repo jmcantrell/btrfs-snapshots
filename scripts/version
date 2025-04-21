@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+shopt -s nullglob
+
+version=${1:?missing version}
+version=v${version##v}
+
+pattern="^version="
+
+for file in ./bin/*; do
+    if grep -q "$pattern" "$file"; then
+        sed -i "/$pattern/s/=.*/=$version/" "$file"
+        git add "$file"
+    fi
+done
+
+git commit -m "Bump version"
+git tag "$version"

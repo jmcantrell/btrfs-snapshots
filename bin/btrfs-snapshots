@@ -29,9 +29,16 @@ See also:
     $self_name(5), $self_name(8)
 "
 
-if (($# > 0)) && [[ $1 == --help || $1 == -h ]]; then
-    printf "%s\n" "$usage"
-    exit
+version=dummy
+
+if (($# > 0)); then
+    if [[ $1 == --help || $1 == -h ]]; then
+        printf "%s\n" "$usage"
+        exit
+    elif [[ $1 == --version ]]; then
+        printf "%s\n" "$version"
+        exit
+    fi
 fi
 
 . "$LIB_DIR"/init.bash
