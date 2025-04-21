@@ -46,7 +46,13 @@ Unstable, based on the latest commit to the main branch:
 
 ## Help
 
-Check out the man pages for detailed information about configuration and usage:
+For command line usage:
+
+```sh
+btrfs-snapshots --help
+```
+
+For detailed information:
 
 ```sh
 man 8 btrfs-snapshots
@@ -66,10 +72,10 @@ To run the included tests:
 ./scripts/test
 ```
 
-To see the available options:
+For command line usage:
 
 ```sh
-./scripts/test -h
+./scripts/test --help
 ```
 
 [snapper]: http://snapper.io/

@@ -6,7 +6,8 @@ btrfs-snapshots - Manage timestamped collections of btrfs snapshots
 
 # SYNOPSIS
 
-btrfs-snapshots --help++
+btrfs-snapshots -h|--help++
+btrfs-snapshots -v|--version++
 btrfs-snapshots ACTION [NAME...]
 
 # DESCRIPTION
