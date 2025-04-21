@@ -29,7 +29,7 @@ See also:
     $self_name(5), $self_name(8)
 "
 
-version=dummy
+version=v0.9.0
 
 if (($# > 0)); then
     if [[ $1 == --help || $1 == -h ]]; then
