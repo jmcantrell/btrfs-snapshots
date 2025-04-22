@@ -2,23 +2,25 @@
 
 set -euo pipefail
 
+root_dir=$PWD
+
 name=btrfs-snapshots
 
 dir=${DEST_DIR:-}${PREFIX:-/usr/local}
 
-install -pm755 -Dt "$dir"/bin ./bin/*
+install -pm755 -Dt "$dir"/bin "$root_dir"/bin/*
 
-install -pm644 -Dt "$dir"/lib/"$name" ./lib/*
+install -pm644 -Dt "$dir"/lib/"$name" "$root_dir"/lib/*
 
-install -pm644 -Dt "$dir"/share/man/man5 ./man/*.5
-install -pm644 -Dt "$dir"/share/man/man8 ./man/*.8
+install -pm644 -Dt "$dir"/share/man/man5 "$root_dir"/man/*.5
+install -pm644 -Dt "$dir"/share/man/man8 "$root_dir"/man/*.8
 
-install -pm644 -Dt "$dir"/lib/systemd/system ./systemd/*
+install -pm644 -Dt "$dir"/lib/systemd/system "$root_dir"/systemd/*
 
-install -pm644 -Dt "$dir"/share/doc/"$name" ./README.md
-install -pm644 -Dt "$dir"/share/doc/"$name"/config ./config/*
+install -pm644 -Dt "$dir"/share/doc/"$name" "$root_dir"/README.md
+install -pm644 -Dt "$dir"/share/doc/"$name"/config "$root_dir"/config/*
 
-install -pm644 -Dt "$dir"/share/licenses/"$name" ./LICENSE
+install -pm644 -Dt "$dir"/share/licenses/"$name" "$root_dir"/LICENSE
 
-install -pm644 -DT ./completion/"$name".zsh "$dir"/share/zsh/site-functions/_"$name"
-install -pm644 -DT ./completion/"$name".bash "$dir"/share/bash-completion/completions/"$name"
+install -pm644 -DT "$root_dir"/completion/"$name".zsh "$dir"/share/zsh/site-functions/_"$name"
+install -pm644 -DT "$root_dir"/completion/"$name".bash "$dir"/share/bash-completion/completions/"$name"

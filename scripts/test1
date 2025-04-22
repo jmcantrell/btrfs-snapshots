@@ -2,10 +2,12 @@
 
 set -euo pipefail
 
-export LIB_DIR=$PWD/lib
-export TESTS_LIB_DIR=$PWD/tests/lib
+root_dir=$PWD
 
-PATH=$PWD/bin:$PWD/tests/bin:$PATH
+export LIB_DIR=$root_dir/lib
+export TESTS_LIB_DIR=$root_dir/tests/lib
+
+PATH=$root_dir/bin:$root_dir/tests/bin:$PATH
 
 self_name=${0##*/}
 

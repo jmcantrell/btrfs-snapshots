@@ -2,11 +2,13 @@
 
 set -euo pipefail
 
+root_dir=$PWD
+
 version=${1:?missing version}
 version=v${version##v}
 
-sed -i "/^version=/s/=.*/=$version/" ./bin/*
-git add ./bin/*
+sed -i "/^version=/s/=.*/=$version/" "$root_dir"/bin/*
+git add "$root_dir"/bin/*
 
 git commit -m "Bump version"
 git tag "$version"
