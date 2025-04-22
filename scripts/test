@@ -4,8 +4,6 @@ set -euo pipefail
 
 self_name=${0##*/}
 
-root_dir=$PWD
-
 usage="Run tests.
 
 Usage:
@@ -46,5 +44,5 @@ if (($# > 0)); then
     find_opts=('(' "${find_opts[@]:1}" ')')
 fi
 
-find "$root_dir"/tests/{unit,integration} -type f -executable "${find_opts[@]}" -print0 |
-    parallel ${verbose:+-v} --shuf --jobs=0 --null "$root_dir"/scripts/test1
+find ./tests/{unit,integration} -type f -executable "${find_opts[@]}" -print0 |
+    parallel ${verbose:+-v} --shuf --jobs=0 --null ./scripts/test1
