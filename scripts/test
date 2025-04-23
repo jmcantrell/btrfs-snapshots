@@ -38,10 +38,11 @@ shift $((OPTIND - 1))
 find_opts=()
 
 if (($# > 0)); then
+    pat_opts=()
     for pattern in "$@"; do
-        find_opts+=(-o -"$find_opt" "*$pattern*")
+        pat_opts+=(-o -"$find_opt" "*$pattern*")
     done
-    find_opts=('(' "${find_opts[@]:1}" ')')
+    find_opts+=('(' "${pat_opts[@]:1}" ')')
 fi
 
 find ./tests/{unit,integration} -type f -executable "${find_opts[@]}" -print0 |
