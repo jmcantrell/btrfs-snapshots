@@ -4,36 +4,36 @@ stack_trace() {
 }
 
 track_exit_status() {
-    local -i actual=0
-    "$@" || actual=$?
-    declare -gi REPLY=$actual
+    local -i exit_status=0
+    "${@:?missing command}" || exit_status=$?
+    declare -gi REPLY=$exit_status
     return "$REPLY"
 }
 
 capture_output() {
-    local stdout_file=$1
-    local stderr_file=$2
+    local stdout_file=${1:?missing stdout file}
+    local stderr_file=${2:?missing stderr file}
     shift 2
 
     "$@" >"$stdout_file" 2>"$stderr_file"
 }
 
 capture_stdout() {
-    local stdout_file=$1
+    local stdout_file=${1:?missing stdout file}
     shift
 
     capture_output "$stdout_file" /dev/stderr "$@"
 }
 
 capture_stderr() {
-    local stderr_file=$1
+    local stderr_file=${1:?missing stderr file}
     shift
 
     capture_output /dev/stdout "$stderr_file" "$@"
 }
 
 assert_set() {
-    local variable=$1
+    local variable=${1:?missing variable name}
 
     if [[ ! -v $variable ]]; then
         printf "variable should have been set: %s\n" "$variable" >&2
@@ -43,7 +43,7 @@ assert_set() {
 }
 
 assert_not_set() {
-    local variable=$1
+    local variable=${1:?missing variable name}
 
     if [[ -v $variable ]]; then
         printf "variable should not have been set: %s=%s\n" "$variable" "${!variable}" >&2
@@ -53,8 +53,8 @@ assert_not_set() {
 }
 
 assert_equal() {
-    local actual=$1
-    local expected=$2
+    local actual=${1?missing actual value}
+    local expected=${2?missing expected value}
 
     if [[ $actual != "$expected" ]]; then
         printf "values should have been equal: %s != %s\n" "$actual" "$expected" >&2
@@ -64,8 +64,8 @@ assert_equal() {
 }
 
 assert_not_equal() {
-    local actual=$1
-    local expected=$2
+    local actual=${1?missing actual value}
+    local expected=${2?missing expected value}
 
     if [[ $actual == "$expected" ]]; then
         printf "values should not have been equal: %s == %s\n" "$actual" "$expected" >&2
@@ -75,19 +75,41 @@ assert_not_equal() {
 }
 
 assert_arrays_equal() {
-    local -n _array1=${1:?missing first array}
-    local -n _array2=${2:?missing second array}
+    local -n array1=${1:?missing first array variable}
+    local -n array2=${2:?missing second array variable}
 
-    if ((${#_array1[@]} != ${#_array2[@]})); then
-        printf "arrays differ in length: %d != %d\n" "${#_array1[@]}" "${#_array2[@]}" >&2
+    if ((${#array1[@]} != ${#array2[@]})); then
+        printf "arrays differ in length: %d != %d\n" "${#array1[@]}" "${#array2[@]}" >&2
         stack_trace >&2
         return 1
     fi
 
-    local -i i
-    for ((i = 0; i < ${#_array1[@]}; i++)); do
-        if [[ ${_array1[$i]} != "${_array2[$i]}" ]]; then
-            printf "array items for index %d should have been equal: %s != %s\n" "$i" "${_array1[$i]}" "${_array2[$i]}" >&2
+    local -i index
+    for ((index = 0; index < ${#array1[@]}; index++)); do
+        if [[ ${array1[$index]} != "${array2[$index]}" ]]; then
+            printf "array items for index %d should have been equal: %s != %s\n" "$index" "${array1[$index]}" "${array2[$index]}" >&2
+            stack_trace >&2
+            return 1
+        fi
+    done
+}
+
+assert_array_items() {
+    local -n array=${1:?missing array variable}
+    shift
+
+    if (($# != ${#array[@]})); then
+        printf "array should have had %d items, but has %d\n" "$#" "${#array[@]}" >&2
+        stack_trace >&2
+        return 1
+    fi
+
+    local -i index
+    for ((index = 0; index < ${#array[@]}; index++)); do
+        local item=$1
+        shift
+        if [[ ${array[$index]} != "$item" ]]; then
+            printf "array item for index %d should have been '%s', but was '%s'\n" "$index" "$item" "${array[$index]}" >&2
             stack_trace >&2
             return 1
         fi
@@ -95,8 +117,8 @@ assert_arrays_equal() {
 }
 
 assert_match() {
-    local actual=$1
-    local expected_pattern=$2
+    local actual=${1?missing actual value}
+    local expected_pattern=${2?missing expected pattern}
 
     if [[ ! $actual =~ $expected_pattern ]]; then
         printf "values should have matched: %s != %s\n" "$actual" "$expected_pattern" >&2
@@ -106,8 +128,8 @@ assert_match() {
 }
 
 assert_not_match() {
-    local actual=$1
-    local expected_pattern=$2
+    local actual=${1?missing actual value}
+    local expected_pattern=${2?missing expected pattern}
 
     if [[ $actual =~ $expected_pattern ]]; then
         printf "values should not have matched: %s == %s\n" "$actual" "$expected_pattern" >&2
@@ -117,12 +139,12 @@ assert_not_match() {
 }
 
 assert_exit_status() {
-    local -i expected=$1
+    local -i expected=${1:?missing expected value}
     shift
 
-    track_exit_status "$@" || true
-    local -i actual=$REPLY
+    track_exit_status "${@:?missing command}" || true
 
+    local -i actual=$REPLY
     if ((actual != expected)); then
         printf "exit status should have been %d, but was %d\n" "$expected" "$actual" >&2
         stack_trace >&2
@@ -131,7 +153,7 @@ assert_exit_status() {
 }
 
 assert_success() {
-    if ! track_exit_status "$@"; then
+    if ! track_exit_status "${@:?missing command}"; then
         printf "command should have succeeded, but it exited with status %d\n" "$REPLY" >&2
         stack_trace >&2
         return 1
@@ -139,7 +161,7 @@ assert_success() {
 }
 
 assert_failure() {
-    if track_exit_status "$@"; then
+    if track_exit_status "${@:?missing command}"; then
         printf "command should have failed\n" >&2
         stack_trace >&2
         return 1
@@ -147,34 +169,34 @@ assert_failure() {
 }
 
 assert_no_output() {
-    assert_output "" "" "$@"
+    assert_output "" "" "${@:?missing command}"
 }
 
 assert_no_stdout() {
-    assert_output_match "" ".*" "$@"
+    assert_output_match "" ".*" "${@:?missing command}"
 }
 
 assert_no_stderr() {
-    assert_output_match ".*" "" "$@"
+    assert_output_match ".*" "" "${@:?missing command}"
 }
 
 assert_stdout() {
-    local expected=$1
+    local expected=${1:?missing expected value}
     shift
 
-    assert_output "$expected" "" "$@"
+    assert_output "$expected" "" "${@:?missing command}"
 }
 
 assert_stderr() {
-    local expected=$1
+    local expected=${1?missing expected value}
     shift
 
-    assert_output "" "$expected" "$@"
+    assert_output "" "$expected" "${@:?missing command}"
 }
 
 assert_output() {
-    local expected_stdout=$1
-    local expected_stderr=$2
+    local expected_stdout=${1?missing expected stdout value}
+    local expected_stderr=${2?missing expected stderr value}
     shift 2
 
     local actual_stdout_file=$TEMP_DIR/actual-stdout
@@ -183,7 +205,10 @@ assert_output() {
     local expected_stdout_file=$TEMP_DIR/expected-stdout
     local expected_stderr_file=$TEMP_DIR/expected-stderr
 
-    track_exit_status capture_output "$actual_stdout_file" "$actual_stderr_file" "$@"
+    track_exit_status capture_output \
+        "$actual_stdout_file" "$actual_stderr_file" \
+        "${@:?missing command}"
+
     local -i exit_status=$REPLY
 
     printf "%s" "$expected_stdout" >"$expected_stdout_file"
@@ -210,14 +235,17 @@ assert_output() {
 }
 
 assert_output_glob_match() {
-    local expected_stdout_pattern=$1
-    local expected_stderr_pattern=$2
+    local expected_stdout_pattern=${1?missing expected stdout pattern}
+    local expected_stderr_pattern=${2?missing expected stderr pattern}
     shift 2
 
     local actual_stdout_file=$TEMP_DIR/actual-stdout
     local actual_stderr_file=$TEMP_DIR/actual-stderr
 
-    track_exit_status capture_output "$actual_stdout_file" "$actual_stderr_file" "$@"
+    track_exit_status capture_output \
+        "$actual_stdout_file" "$actual_stderr_file" \
+        "${@:?missing command}"
+
     local -i exit_status=$REPLY
 
     local actual_output
@@ -250,14 +278,17 @@ assert_output_glob_match() {
 }
 
 assert_output_match() {
-    local expected_stdout_pattern=$1
-    local expected_stderr_pattern=$2
+    local expected_stdout_pattern=${1?missing expected stdout pattern}
+    local expected_stderr_pattern=${2?missing expected stderr pattern}
     shift 2
 
     local actual_stdout_file=$TEMP_DIR/actual-stdout
     local actual_stderr_file=$TEMP_DIR/actual-stderr
 
-    track_exit_status capture_output "$actual_stdout_file" "$actual_stderr_file" "$@"
+    track_exit_status capture_output \
+        "$actual_stdout_file" "$actual_stderr_file" \
+        "${@:?missing command}"
+
     local -i exit_status=$REPLY
 
     local actual_output
@@ -288,21 +319,21 @@ assert_output_match() {
 }
 
 assert_stdout_match() {
-    local expected_stdout_pattern=$1
+    local expected_stdout_pattern=${1?missing expected stdout pattern}
     shift
 
     assert_output_match "$expected_stdout_pattern" "" "$@"
 }
 
 assert_stderr_match() {
-    local expected_stderr_pattern=$1
+    local expected_stderr_pattern=${1?missing expected stderr pattern}
     shift
 
     assert_output_match "" "$expected_stderr_pattern" "$@"
 }
 
 assert_exists() {
-    local path=$1
+    local path=${1:?missing path}
 
     if [[ ! -e $path ]]; then
         printf "path should exist: %s\n" "$path" >&2
@@ -312,7 +343,7 @@ assert_exists() {
 }
 
 assert_not_exists() {
-    local path=$1
+    local path=${1:?missing path}
 
     if [[ -e $path ]]; then
         printf "path should not exist: %s\n" "$path" >&2
@@ -322,7 +353,7 @@ assert_not_exists() {
 }
 
 assert_file() {
-    local file=$1
+    local file=${1:?missing file}
 
     if [[ ! -f $file ]]; then
         printf "file should exist: %s\n" "$file" >&2
@@ -332,7 +363,7 @@ assert_file() {
 }
 
 assert_no_file() {
-    local file=$1
+    local file=${1:?missing file}
 
     if [[ -f $file ]]; then
         printf "file should not exist: %s\n" "$file" >&2
@@ -342,8 +373,8 @@ assert_no_file() {
 }
 
 assert_file_content() {
-    local file=$1
-    local expected_content=$2
+    local file=${1:?missing file}
+    local expected_content=${2:?missing expected content}
 
     local expected_file=$TEMP_DIR/expected-content
     printf "%s" "$expected_content" >"$expected_file"
@@ -356,7 +387,7 @@ assert_file_content() {
 }
 
 assert_directory() {
-    local directory=$1
+    local directory=${1:?missing directory}
 
     if [[ ! -d $directory ]]; then
         printf "directory should exist: %s\n" "$directory" >&2
@@ -366,7 +397,7 @@ assert_directory() {
 }
 
 assert_no_directory() {
-    local directory=$1
+    local directory=${1:?missing directory}
 
     if [[ -d $directory ]]; then
         printf "directory should not exist: %s\n" "$directory" >&2
