@@ -20,5 +20,5 @@ install -pm644 -Dt "$dir"/share/doc/"$name"/config ./config/*
 
 install -pm644 -Dt "$dir"/share/licenses/"$name" ./LICENSE
 
-install -pm644 -DT ./completion/"$name".zsh "$dir"/share/zsh/site-functions/_"$name"
-install -pm644 -DT ./completion/"$name".bash "$dir"/share/bash-completion/completions/"$name"
+install -pm644 -Dt "$dir"/share/zsh/site-functions ./completion/zsh/*
+install -pm644 -Dt "$dir"/share/bash-completion/completions ./completion/bash/*

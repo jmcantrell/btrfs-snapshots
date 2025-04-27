@@ -1,0 +1,49 @@
+_btrfs_snapshots() {
+    local cmd_name=$1 cur=$2 prev=$3
+
+    local config_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
+
+    local flags=(-h --help -v --version)
+    local actions=(create prune)
+
+    case $cur in
+    -*)
+        if ((COMP_CWORD == 1)); then
+            readarray -t COMPREPLY < <(compgen -W "${flags[*]}" -- "$cur")
+        fi
+        ;;
+    *)
+        if ! printf "%s\n" "${COMP_WORDS[@]}" | grep -qxFf <(printf "%s\n" "${flags[@]}"); then
+            if ((COMP_CWORD >= 2)); then
+                local -A used_profiles=()
+
+                local name
+                for name in "${COMP_WORDS[@]:2}"; do
+                    if [[ -n $name ]]; then
+                        used_profiles[$name]=1
+                    fi
+                done
+
+                local profiles=()
+
+                local file
+                for file in "$config_dir"/profile.d/*.conf; do
+                    if [[ -f $file ]]; then
+                        name=${file##*/}
+                        name=${name%.conf}
+                        if [[ ! -v used_profiles[$name] ]]; then
+                            profiles+=("$name")
+                        fi
+                    fi
+                done
+
+                readarray -t COMPREPLY < <(compgen -W "${profiles[*]}" -- "$cur")
+            else
+                readarray -t COMPREPLY < <(compgen -W "${actions[*]}" -- "$cur")
+            fi
+        fi
+        ;;
+    esac
+}
+
+complete -F _btrfs_snapshots btrfs-snapshots

@@ -1,0 +1,43 @@
+#compdef btrfs-snapshots
+
+local curcontext=$curcontext context state state_descr line opt_args
+
+local config_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
+
+_arguments -C -s -S -A "-*" : \
+    "(- : *)"{-h,--help}"[show the help text]" \
+    "(- : *)"{-v,--version}"[show the version number]" \
+    ':action:((
+        "create\:create a new snapshot"
+        "prune\:delete old snapshots"
+    ))' \
+    "*:: :->profile" \
+    && return
+
+service=$line[1]
+curcontext=${curcontext%:*}-$service
+
+case $state in
+profile)
+    local profile
+
+    local -A used_profiles=()
+
+    for profile in "${line[@]:1}"; do
+        used_profiles[$profile]=1
+    done
+
+    local profiles=()
+
+    for profile in "$config_dir"/profile.d/*.conf(N:r:t); do
+        if ((!$+used_profiles[$profile])); then
+            profiles+=("$profile")
+        fi
+    done
+
+    local expl
+    _wanted values expl "profile" compadd -a profiles && return
+    ;;
+esac
+
+return 1
