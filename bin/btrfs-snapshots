@@ -27,7 +27,8 @@ Environment:
     ${self_name^^}_CONFIG_DIR[=${CONFIG_DIR@Q}]
 
 See also:
-    $self_name(5), $self_name(8)
+    $self_name(5)
+    $self_name(8)
 "
 
 version="0.9.2"
