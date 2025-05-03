@@ -30,11 +30,8 @@ do_prune() {
         limits+=("${!variable:-0}")
     done
 
-    local reply
-    reply=$(print_snapshots "$SNAPSHOTS") || return
-
     local snapshots
-    readarray -t snapshots < <(sort -r <<<"$reply")
+    readarray -t snapshots < <(print_snapshots "$SNAPSHOTS" | sort -r)
 
     local snapshot_index
     for ((snapshot_index = 0; snapshot_index < ${#snapshots[@]}; snapshot_index++)); do
