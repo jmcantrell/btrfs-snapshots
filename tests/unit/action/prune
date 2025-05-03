@@ -45,9 +45,9 @@ for event_name in "${EVENT_NAMES[@]}"; do
         "${fillers[@]}"
 
     assert_success assert_stdout "$stdout" \
-        action_prune
+        do_prune
 
-    readarray -t snapshots < <(get_snapshots "$SNAPSHOTS")
+    readarray -t snapshots < <(print_snapshots "$SNAPSHOTS")
 
     assert_equal "${#snapshots[@]}" "$limit"
 

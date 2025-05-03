@@ -1,9 +1,13 @@
 is_snapshot() {
-    [[ -d $1 ]] && is_timestamp "${1##*/}"
+    local directory=${1:?missing directory}
+    [[ -d $directory ]] && is_timestamp "${directory##*/}"
 }
 
-get_snapshots() {
-    for path in "$1"/*; do
+print_snapshots() {
+    local directory=${1:?missing directory}
+
+    local path
+    for path in "$directory"/*; do
         if is_snapshot "$path"; then
             printf "%s\n" "$path"
         fi

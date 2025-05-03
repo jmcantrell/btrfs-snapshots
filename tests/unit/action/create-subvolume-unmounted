@@ -14,8 +14,8 @@ export SNAPSHOTS=$TEMP_DIR/snapshots
 stderr="subvolume is not available: $SUBVOLUME"
 
 assert_success assert_stderr_match "$stderr" \
-    action_create
+    do_create
 
-readarray -t snapshots < <(get_snapshots "$SNAPSHOTS")
+readarray -t snapshots < <(print_snapshots "$SNAPSHOTS")
 
 assert_equal "${#snapshots[@]}" 0

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Show that `print_snapshots` will only return existing snapshots with a recognized
+# timestamp only at the top level directory and in chronological (natural) order.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+timestamp=2000-01-01T00:00:00Z
+
+# Add some invalid paths (that should not be returned):
+mkdir -p "$TEMP_DIR"/foo/bar/baz    # nested and incorrectly named directory
+mkdir -p "$TEMP_DIR/foo/$timestamp" # nested and correctly named directory
+touch "$TEMP_DIR/$timestamp"        # shallow and correctly named file
+
+# Add some valid snapshot paths:
+while read -r timestamp_step; do
+    snapshot=$TEMP_DIR/$timestamp_step
+    expected+=("$snapshot")
+    mkdir -p "$snapshot"
+done < <(timestamp_seq "$TIMESTAMP" hour 24)
+
+readarray -t actual < <(print_snapshots "$TEMP_DIR")
+
+# Ensure the correct number of snapshots are returned.
+assert_equal "${#actual[@]}" "${#expected[@]}"
+
+# Ensure the correct snapshot paths are returned.
+for ((i = 0; i < ${#actual[@]}; i++)); do
+    assert_equal "${actual[i]}" "${expected[i]}"
+done

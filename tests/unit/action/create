@@ -20,7 +20,7 @@ printf -v stdout \
     "$SUBVOLUME" "$snapshot"
 
 assert_success assert_stdout "$stdout" \
-    action_create
+    do_create
 
 assert_directory "$snapshot"
 assert_file "$snapshot"/marker

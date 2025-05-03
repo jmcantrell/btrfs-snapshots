@@ -8,7 +8,6 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 profile_name=foo
-profile_file=$PROFILES_DIR/$profile_name.conf
 subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots
 
@@ -21,7 +20,7 @@ mkdir -p "$snapshots_dir/$TIMESTAMP"
 printf "%s=%q\n" \
     SUBVOLUME "$subvolume_dir" \
     SNAPSHOTS "$snapshots_dir" \
-    >"$profile_file"
+    >"$PROFILES_DIR/$profile_name.conf"
 
 # Fake implementation of `btrfs` that always errors.
 btrfs() {
@@ -31,7 +30,7 @@ export -f btrfs
 
 for action in create prune; do
     stderr="the btrfs command exited with non-zero status code: 5.*"
-    stderr+="unable to perform action '$action' for profile: $profile_file"
+    stderr+="unable to perform action '$action' for profile: $profile_name"
 
     assert_failure assert_stderr_match "$stderr" \
         btrfs-snapshots "$action" "$profile_name"

@@ -1,28 +1,29 @@
 #!/usr/bin/env bash
 
-# Show that `snapshots` will only return existing snapshots with a recognized
-# timestamp only at the top level directory and in chronological (natural) order.
+# Show that `list` will print all snapshot paths.
 
 set -euo pipefail
 
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
+export SNAPSHOTS=$TEMP_DIR/snapshots
+
 timestamp=2000-01-01T00:00:00Z
 
 # Add some invalid paths (that should not be returned):
-mkdir -p "$TEMP_DIR"/foo/bar/baz    # nested and incorrectly named directory
-mkdir -p "$TEMP_DIR/foo/$timestamp" # nested and correctly named directory
-touch "$TEMP_DIR/$timestamp"        # shallow and correctly named file
+mkdir -p "$SNAPSHOTS"/foo/bar/baz    # nested and incorrectly named directory
+mkdir -p "$SNAPSHOTS/foo/$timestamp" # nested and correctly named directory
+touch "$SNAPSHOTS/$timestamp"        # shallow and correctly named file
 
 # Add some valid snapshot paths:
 while read -r timestamp_step; do
-    snapshot=$TEMP_DIR/$timestamp_step
+    snapshot=$SNAPSHOTS/$timestamp_step
     expected+=("$snapshot")
     mkdir -p "$snapshot"
 done < <(timestamp_seq "$TIMESTAMP" hour 24)
 
-readarray -t actual < <(get_snapshots "$TEMP_DIR")
+readarray -t actual < <(do_list)
 
 # Ensure the correct number of snapshots are returned.
 assert_equal "${#actual[@]}" "${#expected[@]}"

@@ -1,4 +1,19 @@
-action_create() {
+do_profiles() {
+    local file name
+    for file in "$PROFILES_DIR"/*.conf; do
+        if [[ -f $file ]]; then
+            name=${file##*/}
+            name=${name%.conf}
+            printf "%s\n" "$name"
+        fi
+    done
+}
+
+do_list() {
+    print_snapshots "$SNAPSHOTS"
+}
+
+do_create() {
     if ! mountpoint -q "$SUBVOLUME"; then
         printf "%s: subvolume is not available: %q\n" "$0" "$SUBVOLUME" >&2
         return 0
@@ -16,7 +31,7 @@ action_create() {
     }
 }
 
-action_prune() {
+do_prune() {
     local counts=() limits=()
 
     local event_name variable
@@ -27,17 +42,17 @@ action_prune() {
     done
 
     local reply
-    reply=$(get_snapshots "$SNAPSHOTS" | sort -r) || return
+    reply=$(print_snapshots "$SNAPSHOTS") || return
 
     local snapshots
-    readarray -t snapshots <<<"$reply"
+    readarray -t snapshots < <(sort -r <<<"$reply")
 
     local snapshot_index
     for ((snapshot_index = 0; snapshot_index < ${#snapshots[@]}; snapshot_index++)); do
         local snapshot=${snapshots[snapshot_index]}
         local timestamp=${snapshot##*/}
 
-        local keep=0
+        local delete=1
 
         local event_index
         for ((event_index = 0; event_index < ${#EVENT_NAMES[@]}; event_index++)); do
@@ -67,14 +82,14 @@ action_prune() {
                 fi
             done
 
-            keep=1
+            delete=0
         done
 
-        ((keep)) && continue
-
-        btrfs subvolume delete "$snapshot" || {
-            printf "%s: the btrfs command exited with non-zero status code: %s\n" "$0" "$?" >&2
-            return 1
-        }
+        if ((delete)); then
+            btrfs subvolume delete "$snapshot" || {
+                printf "%s: the btrfs command exited with non-zero status code: %s\n" "$0" "$?" >&2
+                return 1
+            }
+        fi
     done
 }

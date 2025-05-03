@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that `btrfs-snapshots` creates snapshots for all profiles by default.
+# Show that `btrfs-snapshots` lists snapshots for requested profiles.
 
 set -euo pipefail
 
@@ -11,7 +11,6 @@ mkdir -p "$PROFILES_DIR"
 
 profile_names=(a b c)
 snapshots=()
-stdout_lines=()
 
 for profile_name in "${profile_names[@]}"; do
     subvolume_dir=$TEMP_DIR/subvolume/$profile_name
@@ -19,24 +18,24 @@ for profile_name in "${profile_names[@]}"; do
     snapshot=$snapshots_dir/$TIMESTAMP
     snapshots+=("$snapshot")
 
-    mkdir -p "$subvolume_dir"
-    printf "%s" "$profile_name" >"$subvolume_dir"/marker
+    mkdir -p "$snapshot"
 
     printf "%s=%q\n" \
         SUBVOLUME "$subvolume_dir" \
         SNAPSHOTS "$snapshots_dir" \
         >"$PROFILES_DIR/$profile_name.conf"
+done
 
-    stdout_lines+=("fake btrfs subvolume snapshot $subvolume_dir $snapshot")
+selected=(1 2)
+selected_profile_names=()
+stdout_lines=()
+
+for i in "${selected[@]}"; do
+    selected_profile_names+=("${profile_names[i]}")
+    stdout_lines+=("${snapshots[i]}")
 done
 
 printf -v stdout "%s\n" "${stdout_lines[@]}"
 
 assert_success assert_stdout "$stdout" \
-    btrfs-snapshots create
-
-for i in "${!profile_names[@]}"; do
-    marker=${snapshots[i]}/marker
-    assert_file "$marker"
-    assert_file_content "$marker" "${profile_names[i]}"
-done
+    btrfs-snapshots list "${selected_profile_names[@]}"

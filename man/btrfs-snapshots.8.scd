@@ -8,7 +8,8 @@ btrfs-snapshots - Manage timestamped collections of btrfs snapshots
 
 btrfs-snapshots -h|--help++
 btrfs-snapshots -v|--version++
-btrfs-snapshots ACTION [NAME...]
+btrfs-snapshots profiles
+btrfs-snapshots list|create|prune [NAME...]
 
 # DESCRIPTION
 
@@ -22,15 +23,13 @@ debatably painless:
 - A snapshot's base name is the ISO-8601 formatted UTC timestamp when it was taken (i.e. %Y-%m-%dT%H:%M:%SZ).
 - The snapshots for each subvolume must be in their own directory.
 
-# ARGUMENTS
-
-ACTION
-	Action to perform on selected profiles.
-
-NAME
-	Profile name to perform action on (default: all profiles).
-
 # ACTIONS
+
+*profiles*
+	Print profile names to stdout.
+
+*list*
+	Print snapshot paths to stdout.
 
 *create*
 	Create a new snapshot in the configured directory for the selected profiles.
@@ -39,6 +38,11 @@ NAME
 *prune*
 	Delete all snapshots for the selected profiles that fall outside of the
 	configured limits.
+
+# ARGUMENTS
+
+NAME
+	Profile name to perform action on (default: all profiles).
 
 # SEE ALSO
 

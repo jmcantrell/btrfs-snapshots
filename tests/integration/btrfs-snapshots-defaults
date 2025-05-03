@@ -43,12 +43,12 @@ for event_name in "${EVENT_NAMES[@]}"; do
         mkdir -p "$snapshots_dir/$event_step"
     done < <(timestamp_seq_event "$TIMESTAMP" "$event_name" "$limit")
 
-    expected_count=$(get_snapshots "$snapshots_dir" | grep -zc .)
+    expected_count=$(print_snapshots "$snapshots_dir" | wc -l)
 
     # There should be no output, because nothing will be pruned.
     assert_success assert_no_output \
         btrfs-snapshots prune "$profile_name"
 
     # If the default limits were not seen, the snapshot count will be zero.
-    assert_equal "$(get_snapshots "$snapshots_dir" | grep -zc .)" "$expected_count"
+    assert_equal "$(print_snapshots "$snapshots_dir" | wc -l)" "$expected_count"
 done
