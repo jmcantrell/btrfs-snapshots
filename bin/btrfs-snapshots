@@ -14,7 +14,7 @@ Usage:
     $self_name -h|--help
     $self_name -v|--version
     $self_name profiles
-    $self_name list|create|prune [NAME...]
+    $self_name list|create|prune [PROFILE...]
 
 Actions:
     profiles    print profile names to stdout
@@ -23,7 +23,7 @@ Actions:
     prune       delete snapshots that fall outside of defined limits
 
 Arguments:
-    NAME        profile name to perform action on (default: all)
+    PROFILE     profile name to perform action on (default: all)
 
 Environment:
     ${self_name^^}_CONFIG_DIR[=${CONFIG_DIR@Q}]
