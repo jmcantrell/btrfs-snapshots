@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that `timestamp_neq` only returns success when timestamps are not equal.
+# Show that `timestamp_ne` only returns success when timestamps are not equal.
 
 set -euo pipefail
 
@@ -8,12 +8,12 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 assert_no_output assert_failure \
-    timestamp_neq "$TIMESTAMP" "$TIMESTAMP"
+    timestamp_ne "$TIMESTAMP" "$TIMESTAMP"
 
 other_timestamp=$(timestamp --date="$TIMESTAMP + 1 second")
 
 assert_success assert_no_output \
-    timestamp_neq "$TIMESTAMP" "$other_timestamp"
+    timestamp_ne "$TIMESTAMP" "$other_timestamp"
 
 assert_success assert_no_output \
-    timestamp_neq "$other_timestamp" "$TIMESTAMP"
+    timestamp_ne "$other_timestamp" "$TIMESTAMP"

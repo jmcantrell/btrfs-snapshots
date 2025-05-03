@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Show that `timestamp_gte` only returns success when the first timestamp occurs
+# Show that `timestamp_ge` only returns success when the first timestamp occurs
 # later than or at the same time as the second timestamp.
 
 set -euo pipefail
@@ -9,12 +9,12 @@ set -euo pipefail
 . "$TESTS_LIB_DIR"/init.bash
 
 assert_success assert_no_output \
-    timestamp_gte "$TIMESTAMP" "$TIMESTAMP"
+    timestamp_ge "$TIMESTAMP" "$TIMESTAMP"
 
 later=$(timestamp --date="$TIMESTAMP + 1 second")
 
 assert_success assert_no_output \
-    timestamp_gte "$later" "$TIMESTAMP"
+    timestamp_ge "$later" "$TIMESTAMP"
 
 assert_failure assert_no_output \
-    timestamp_gte "$TIMESTAMP" "$later"
+    timestamp_ge "$TIMESTAMP" "$later"

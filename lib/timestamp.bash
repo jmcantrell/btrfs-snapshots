@@ -42,7 +42,7 @@ timestamp_eq() {
     ((cmp == 0))
 }
 
-timestamp_neq() {
+timestamp_ne() {
     local cmp
     cmp=$(timestamp_cmp "$@") || return 1
     ((cmp != 0))
@@ -54,7 +54,7 @@ timestamp_lt() {
     ((cmp == -1))
 }
 
-timestamp_lte() {
+timestamp_le() {
     local cmp
     cmp=$(timestamp_cmp "$@") || return 1
     ((cmp == -1 || cmp == 0))
@@ -66,7 +66,7 @@ timestamp_gt() {
     ((cmp == 1))
 }
 
-timestamp_gte() {
+timestamp_ge() {
     local cmp
     cmp=$(timestamp_cmp "$@") || return 1
     ((cmp == 1 || cmp == 0))
