@@ -10,7 +10,7 @@ set -euo pipefail
 mkdir -p "$PROFILES_DIR"
 touch "$PROFILES_DIR"/{a,b,c}.conf
 
-stderr="profile does not exist: bogus"
+stderr="profiles do not exist: 'foo' 'bar'"
 
 assert_exit_status 2 assert_stderr_match "$stderr" \
-    print_profiles a b bogus c
+    print_profiles a b foo c bar

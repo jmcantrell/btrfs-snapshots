@@ -13,15 +13,20 @@ print_profiles() {
         fi
     done
 
+    local invalid=()
     local -A selected=()
 
     for name in "$@"; do
         if [[ ! -v files[$name] ]]; then
-            printf "%s: profile does not exist: %q\n" "$0" "$name" >&2
-            return 2
+            invalid+=("${name@Q}")
         fi
         selected[$name]=1
     done
+
+    if ((${#invalid[@]} > 0)); then
+        printf "%s: profiles do not exist: %s\n" "$0" "${invalid[*]}" >&2
+        return 2
+    fi
 
     if ((${#selected[@]} == 0)); then
         for name in "${names[@]}"; do

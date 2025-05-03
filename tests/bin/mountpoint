@@ -4,6 +4,7 @@
 
 set -euo pipefail
 
+# Skip any options.
 while [[ ${1:-} == -* ]]; do
     shift
 done

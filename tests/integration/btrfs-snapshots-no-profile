@@ -7,11 +7,9 @@ set -euo pipefail
 . "$LIB_DIR"/init.bash
 . "$TESTS_LIB_DIR"/init.bash
 
-profile_name=bogus
-
-stderr="profile does not exist: $profile_name"
+stderr="profiles do not exist: 'foo' 'bar'"
 
 for action in create prune; do
     assert_failure assert_stderr_match "$stderr" \
-        btrfs-snapshots "$action" "$profile_name" "$action"
+        btrfs-snapshots "$action" foo bar
 done

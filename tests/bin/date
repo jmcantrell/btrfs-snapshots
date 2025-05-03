@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# A mock implementation of the `date` command.
+
+set -euo pipefail
+
+args=()
+
+for arg in "$@"; do
+    if [[ $arg == --date=now ]]; then
+        args+=(--date="$TIMESTAMP")
+    else
+        args+=("$arg")
+    fi
+done
+
+/usr/bin/date "${args[@]}"

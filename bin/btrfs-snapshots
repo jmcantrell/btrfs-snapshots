@@ -56,7 +56,7 @@ fi
 export PROFILES_DIR=$CONFIG_DIR/profile.d
 export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
-profiles=$(print_profiles "$@") || exit
+profile_files=$(print_profiles "$@") || exit
 
 while IFS= read -r profile_file; do
     if ! load_profile "$profile_file"; then
@@ -68,4 +68,4 @@ while IFS= read -r profile_file; do
         printf "%s: unable to perform action '%s' for profile: %q\n" "$0" "$action_name" "$profile_file" >&2
         exit 1
     fi
-done <<<"$profiles"
+done <<<"$profile_files"

@@ -8,9 +8,8 @@ do_create() {
         return 0
     fi
 
-    # Allow ability to override the timestamp, simplifying testing.
     local timestamp
-    timestamp=${BTRFS_SNAPSHOTS_TIMESTAMP:-$(timestamp)} || return 1
+    timestamp=$(timestamp --date=now) || return 1
 
     mkdir -p "$SNAPSHOTS"
 
