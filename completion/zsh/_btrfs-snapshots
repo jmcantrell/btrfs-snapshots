@@ -22,7 +22,6 @@ profile)
     case $service in
         list|create|prune)
             local profile
-
             local -A used_profiles=()
 
             for profile in "${line[@]:1}"; do
