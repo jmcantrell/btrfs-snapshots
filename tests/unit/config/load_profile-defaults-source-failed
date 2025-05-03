@@ -16,9 +16,9 @@ printf "%s=%q\n" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$profile_file"
 
-printf "return 1\n" >"$DEFAULTS_FILE"
+printf "return 5\n" >"$DEFAULTS_FILE"
 
 stderr="unable to source file: $DEFAULTS_FILE"
 
-assert_failure assert_stderr_match "$stderr" \
+assert_exit_status 1 assert_stderr_match "$stderr" \
     load_profile "$profile_file"

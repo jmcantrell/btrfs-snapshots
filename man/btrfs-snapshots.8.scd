@@ -8,8 +8,7 @@ btrfs-snapshots - Manage timestamped collections of btrfs snapshots
 
 btrfs-snapshots -h|--help++
 btrfs-snapshots -v|--version++
-btrfs-snapshots profiles
-btrfs-snapshots list|create|prune [NAME...]
+btrfs-snapshots ACTION [PROFILE...]
 
 # DESCRIPTION
 
@@ -25,11 +24,8 @@ debatably painless:
 
 # ACTIONS
 
-*profiles*
-	Print profile names to stdout.
-
 *list*
-	Print snapshot paths to stdout.
+	Print snapshot paths of the selected profiles to stdout.
 
 *create*
 	Create a new snapshot in the configured directory for the selected profiles.
@@ -41,7 +37,7 @@ debatably painless:
 
 # ARGUMENTS
 
-NAME
+PROFILE
 	Profile name to perform action on (default: all profiles).
 
 # SEE ALSO

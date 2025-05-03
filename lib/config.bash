@@ -1,5 +1,43 @@
+print_profiles() {
+    local names=()
+    local -A files=()
+
+    local file name
+
+    for file in "$PROFILES_DIR"/*.conf; do
+        if [[ -f $file ]]; then
+            name=${file##*/}
+            name=${name%.conf}
+            names+=("$name")
+            files[$name]=$file
+        fi
+    done
+
+    local -A selected=()
+
+    for name in "$@"; do
+        if [[ ! -v files[$name] ]]; then
+            printf "%s: profile does not exist: %q\n" "$0" "$name" >&2
+            return 2
+        fi
+        selected[$name]=1
+    done
+
+    if ((${#selected[@]} == 0)); then
+        for name in "${names[@]}"; do
+            selected[$name]=1
+        done
+    fi
+
+    for name in "${names[@]}"; do
+        if [[ -v selected[$name] ]]; then
+            printf "%s\n" "${files[$name]}"
+        fi
+    done
+}
+
 load_profile() {
-    export PROFILE_FILE=$1
+    export PROFILE_FILE=${1:?missing profile file}
 
     PROFILE_NAME=${PROFILE_FILE##*/}
     PROFILE_NAME=${PROFILE_NAME%.conf}

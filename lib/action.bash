@@ -1,14 +1,3 @@
-do_profiles() {
-    local file name
-    for file in "$PROFILES_DIR"/*.conf; do
-        if [[ -f $file ]]; then
-            name=${file##*/}
-            name=${name%.conf}
-            printf "%s\n" "$name"
-        fi
-    done
-}
-
 do_list() {
     print_snapshots "$SNAPSHOTS"
 }

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Show that `print_profiles` prints all profiles by default.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+# Add some invalid paths (that should not be returned):
+mkdir -p "$PROFILES_DIR"/dir        # directory
+mkdir -p "$PROFILES_DIR"/bogus.conf # correctly named directory
+touch "$PROFILES_DIR"/dir/deep.conf # correctly named nested file
+
+assert_success assert_no_output \
+    print_profiles
+
+touch "$PROFILES_DIR"/{a,b,c}.conf
+
+printf -v stdout "$PROFILES_DIR/%s.conf\n" a b c
+
+assert_success assert_stdout "$stdout" \
+    print_profiles

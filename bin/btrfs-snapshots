@@ -13,17 +13,15 @@ usage="Manage timestamped collections of btrfs snapshots.
 Usage:
     $self_name -h|--help
     $self_name -v|--version
-    $self_name profiles
-    $self_name list|create|prune [PROFILE...]
+    $self_name ACTION [PROFILE...]
 
 Actions:
-    profiles    print profile names to stdout
-    list        print snapshot paths to stdout
-    create      create a new snapshot in the configured location
-    prune       delete snapshots that fall outside of defined limits
+    list       print snapshot paths to stdout
+    create     create a new snapshot in the configured location
+    prune      delete snapshots that fall outside of defined limits
 
 Arguments:
-    PROFILE     profile name to perform action on (default: all)
+    PROFILE    profile name to perform action on (default: all)
 
 Environment:
     ${self_name^^}_CONFIG_DIR[=${CONFIG_DIR@Q}]
@@ -50,56 +48,24 @@ fi
 action_name=${1:?missing action}
 shift
 
-if [[ ! $action_name =~ ^(profiles|list|create|prune)$ ]]; then
+if [[ ! $action_name =~ ^(list|create|prune)$ ]]; then
     printf "%s: invalid action: %s\n" "$0" "$action_name" >&2
-    exit 1
+    exit 2
 fi
 
 export PROFILES_DIR=$CONFIG_DIR/profile.d
 export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
-if [[ $action_name == profiles ]]; then
-    do_profiles
-    exit
-fi
+profiles=$(print_profiles "$@") || exit
 
-profile_names=()
-declare -A profile_files=()
-
-for profile_file in "$PROFILES_DIR"/*.conf; do
-    profile_name=${profile_file##*/}
-    profile_name=${profile_name%.conf}
-    profile_names+=("$profile_name")
-    profile_files[$profile_name]=$profile_file
-done
-
-declare -A profiles_selected=()
-
-for profile_name in "$@"; do
-    if [[ ! -v profile_files[$profile_name] ]]; then
-        printf "%s: profile does not exist: %q\n" "$0" "$profile_name" >&2
-        exit 2
-    fi
-
-    profiles_selected[$profile_name]=1
-done
-
-if ((${#profiles_selected[@]} == 0)); then
-    for profile_name in "${profile_names[@]}"; do
-        profiles_selected[$profile_name]=1
-    done
-fi
-
-for profile_name in "${profile_names[@]}"; do
-    [[ -v profiles_selected[$profile_name] ]] || continue
-
-    if ! load_profile "${profile_files[$profile_name]}"; then
-        printf "%s: unable to load profile: %q\n" "$0" "$profile_name" >&2
+while IFS= read -r profile_file; do
+    if ! load_profile "$profile_file"; then
+        printf "%s: unable to load profile: %q\n" "$0" "$profile_file" >&2
         exit 2
     fi
 
     if ! do_"$action_name"; then
-        printf "%s: unable to perform action '%s' for profile: %q\n" "$0" "$action_name" "$profile_name" >&2
+        printf "%s: unable to perform action '%s' for profile: %q\n" "$0" "$action_name" "$profile_file" >&2
         exit 1
     fi
-done
+done <<<"$profiles"

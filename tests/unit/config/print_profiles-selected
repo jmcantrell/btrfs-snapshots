@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# Show that `print_profiles` prints only the requested profiles.
+
+set -euo pipefail
+
+. "$LIB_DIR"/init.bash
+. "$TESTS_LIB_DIR"/init.bash
+
+mkdir -p "$PROFILES_DIR"
+touch "$PROFILES_DIR"/{a,b,c}.conf
+
+# Pick a random 2 of the 3 profiles.
+readarray -t selected < <(printf "%s\n" a b c | shuf -n2)
+
+# The output will be naturally sorted regardless of the order of requested profiles.
+readarray -t expected_files < <(printf "$PROFILES_DIR/%s.conf\n" "${selected[@]}" | sort)
+
+printf -v stdout "%s\n" "${expected_files[@]}"
+
+assert_success assert_stdout "$stdout" \
+    print_profiles "${selected[@]}"
+
+# The profile will appear only once regardless of it being requested more than once.
+assert_success assert_stdout "$stdout" \
+    print_profiles "${selected[@]}" "${selected[@]}"

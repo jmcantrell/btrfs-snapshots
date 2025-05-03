@@ -6,9 +6,8 @@ _arguments -C -s -S -A "-*" : \
     "(- : *)"{-h,--help}"[show the help text]" \
     "(- : *)"{-v,--version}"[show the version number]" \
     ':action:((
-        "profiles\:print profile names"
         "list\:print snapshot paths"
-        "create\:create a new snapshot"
+        "create\:create new snapshots"
         "prune\:delete old snapshots"
     ))' \
     "*:: :->profile" \
@@ -19,27 +18,25 @@ curcontext=${curcontext%:*}-$service
 
 case $state in
 profile)
-    case $service in
-        list|create|prune)
-            local profile
-            local -A used_profiles=()
+    local config_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
 
-            for profile in "${line[@]:1}"; do
-                used_profiles[$profile]=1
-            done
+    local profile
+    local -A used_profiles=()
 
-            local profiles=()
+    for profile in "${line[@]:1}"; do
+        used_profiles[$profile]=1
+    done
 
-            while IFS= read -r profile; do
-                if ((!$+used_profiles[$profile])); then
-                    profiles+=("$profile")
-                fi
-            done < <(btrfs-snapshots profiles)
+    local profiles=()
 
-            local expl
-            _wanted values expl "profile" compadd -a profiles && return
-            ;;
-    esac
+    for profile in "$config_dir"/profile.d/*.conf(.N:r:t); do
+        if ((!$+used_profiles[$profile])); then
+            profiles+=("$profile")
+        fi
+    done
+
+    local expl
+    _wanted values expl "profile" compadd -a profiles
     ;;
 esac
 

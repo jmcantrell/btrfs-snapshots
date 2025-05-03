@@ -11,5 +11,5 @@ action=bogus
 
 stderr="invalid action: $action"
 
-assert_failure assert_stderr_match "$stderr" \
+assert_exit_status 2 assert_stderr_match "$stderr" \
     btrfs-snapshots "$action"
