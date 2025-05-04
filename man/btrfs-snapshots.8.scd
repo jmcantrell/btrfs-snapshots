@@ -15,9 +15,8 @@ btrfs-snapshots ACTION [PROFILE...]
 The purpose of *btrfs-snapshots* is to make the process of taking subvolume
 snapshots automatic and predictable.
 
-It makes no assumptions about the subvolume layout.  It does not modify the
-system in any way.  It does have two strict requirements, however, which are
-debatably painless:
+It makes no assumptions about the subvolume layout. It does not modify the
+system in any way. It does have two strict requirements, however:
 
 - A snapshot's base name is the ISO-8601 formatted UTC timestamp when it was taken (i.e. %Y-%m-%dT%H:%M:%SZ).
 - The snapshots for each subvolume must be in their own directory.

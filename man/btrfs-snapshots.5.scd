@@ -2,7 +2,7 @@ btrfs-snapshots(5)
 
 # NAME
 
-btrfs-snapshots - btrfs-snapshots configuration
+btrfs-snapshots - Configure how btrfs snapshots are managed
 
 # SYNOPSIS
 
@@ -11,7 +11,7 @@ btrfs-snapshots - btrfs-snapshots configuration
 
 # DESCRIPTION
 
-Configuration of btrfs-snapshots involves placing a _profile.conf_ file for each
+Configuration of btrfs-snapshots involves placing a _<profile>.conf_ file for each
 subvolume required in the _profile.d_ directory. The file name does not matter,
 but it's recommended to name it after the subvolume it represents (e.g.
 _@home.conf_). The extension must be ".conf" for the file to be recognized.
@@ -47,7 +47,7 @@ Example: *SUBVOLUME*="/path/to/subvolume"
 ## SNAPSHOTS
 
 This option defines the location that will be used to store a subvolume's
-snapshots.  If snapshots will be kept in a central location, like _/.snapshots_,
+snapshots. If snapshots will be kept in a central location, like _/.snapshots_,
 it's recommended to set this in the defaults configuration file (inluding the %s
 placeholder). This setting could, of course, be set individually in each profile
 configuration or only overridden for certain profiles.
@@ -55,7 +55,7 @@ configuration or only overridden for certain profiles.
 For example, let's say it's defined in the defaults configuration file as
 "/.snapshots/%s". There are three profiles in _profile.d_ named _@.conf_,
 _@home.conf_, and _@var.conf_. The command to create snapshots is run at 12 noon
-(UTC) on December 31st 2021.  There will be three snapshots created and stored
+(UTC) on December 31st 2021. There will be three snapshots created and stored
 like so:
 
 ```
@@ -79,9 +79,8 @@ Example: *SNAPSHOTS*="/path/to/snapshots"
 Where <EVENT> can be one of the following: MINUTELY, HOURLY, DAILY, WEEKLY,
 MONTHLY, QUARTERLY, or YEARLY.
 
-This option defines a limit on the number of the snapshots taken during an EVENT
-recurrence. Only the earliest snapshot for each unique event is retained, for
-the NUMBER most recent events, up to the defined limit.
+This option defines the number of recent EVENT occurrences to keep a snapshot
+for. Only the earliest snapshot for each unique event is retained.
 
 There can be zero or more limits set. If the limit for an event type is not set
 in the profile configuration, the value set in the defaults configuration file
@@ -116,9 +115,8 @@ Running the prune action will delete snapshots, leaving the tree looking like th
 ```
 
 Because the hourly limit was set to "3", a total of only three snapshots could
-be kept. The algorithm found the most recent three unique events' snapshots up
-to the limit value, but only keeping the first snapshot (chronologically) for
-each distinct hour.
+be kept. The algorithm found the most recent three unique events' snapshots, and
+deleted all but the earliest snapshot for each distinct hour.
 
 Both snapshots occurring earlier than 10am were deleted because they were part
 of the fourth unique event, falling outside of the limit for that event type.

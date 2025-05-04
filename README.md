@@ -4,7 +4,7 @@ Manage timestamped collections of btrfs snapshots.
 
 This project is inspired by [Snapper][snapper]'s timeline and cleanup
 algorithms, but with the aim of being a simpler implementation,
-focused solely on btrfs.
+focused solely on [btrfs][btrfs].
 
 The goal is not to be a drop-in replacement, but an alternative for
 administrators that prefer a minimum of baked-in opinions.
@@ -78,6 +78,7 @@ For command line usage:
 ./scripts/test --help
 ```
 
+[btrfs]: https://btrfs.readthedocs.io/en/latest/index.html
 [snapper]: http://snapper.io/
 [aur]: https://aur.archlinux.org/packages/btrfs-snapshots/
 [aur-git]: https://aur.archlinux.org/packages/btrfs-snapshots-git/
