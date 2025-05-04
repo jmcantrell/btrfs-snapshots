@@ -17,10 +17,11 @@ print_profiles() {
     local -A selected=()
 
     for name in "$@"; do
-        if [[ ! -v files[$name] ]]; then
+        if [[ -v files[$name] ]]; then
+            selected[$name]=1
+        else
             invalid+=("${name@Q}")
         fi
-        selected[$name]=1
     done
 
     if ((${#invalid[@]} > 0)); then
