@@ -42,6 +42,10 @@ is_same_event() {
     daily) parts=(Y m d) ;;        # year month day
     hourly) parts=(Y m d H) ;;     # year month day hour
     minutely) parts=(Y m d H M) ;; # year month day hour minute
+    *)
+        printf "%s: invalid event: %q\n" "$0" "$event_name" >&2
+        return 2
+        ;;
     esac
 
     local format=${parts[*]/#/%}
