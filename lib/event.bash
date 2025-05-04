@@ -48,9 +48,9 @@ is_same_event() {
         ;;
     esac
 
-    local format=${parts[*]/#/%}
+    local events=()
 
-    local timestamp events=()
+    local timestamp format=${parts[*]/#/%}
     for timestamp in "${timestamps[@]}"; do
         events+=("$(date --utc --date="$timestamp" +"$format")") || return 1
     done
