@@ -5,8 +5,8 @@
 
 set -euo pipefail
 
-. "$LIB_DIR"/init.bash
-. "$TESTS_LIB_DIR"/init.bash
+source "$LIB_DIR"/init.bash
+source "$TESTS_LIB_DIR"/init.bash
 
 # Ensure a tiny step before the event window is considered a different event.
 assert_failure assert_no_output \

@@ -4,8 +4,8 @@
 
 set -euo pipefail
 
-. "$LIB_DIR"/init.bash
-. "$TESTS_LIB_DIR"/init.bash
+source "$LIB_DIR"/init.bash
+source "$TESTS_LIB_DIR"/init.bash
 
 # It should return a date in the correct format.
 assert_success is_timestamp "$(timestamp)"

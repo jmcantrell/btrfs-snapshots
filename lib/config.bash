@@ -56,7 +56,7 @@ load_profile() {
         export "LIMIT_${event_name^^}=0"
     done
 
-    if [[ -f $DEFAULTS_FILE ]] && ! . "$DEFAULTS_FILE"; then
+    if [[ -f $DEFAULTS_FILE ]] && ! source "$DEFAULTS_FILE"; then
         printf "%s: unable to source file: %q\n" "$0" "$DEFAULTS_FILE" >&2
         return 1
     fi
@@ -68,7 +68,7 @@ load_profile() {
         return 1
     fi
 
-    if ! . "$PROFILE_FILE"; then
+    if ! source "$PROFILE_FILE"; then
         printf "%s: unable to source file: %q\n" "$0" "$PROFILE_FILE" >&2
         return 1
     fi

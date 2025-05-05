@@ -5,8 +5,8 @@
 
 set -euo pipefail
 
-. "$LIB_DIR"/init.bash
-. "$TESTS_LIB_DIR"/init.bash
+source "$LIB_DIR"/init.bash
+source "$TESTS_LIB_DIR"/init.bash
 
 timestamp=2000-01-01T00:00:00Z
 

@@ -4,8 +4,8 @@
 
 set -euo pipefail
 
-. "$LIB_DIR"/init.bash
-. "$TESTS_LIB_DIR"/init.bash
+source "$LIB_DIR"/init.bash
+source "$TESTS_LIB_DIR"/init.bash
 
 assert_success assert_no_output \
     timestamp_eq "$TIMESTAMP" "$TIMESTAMP"

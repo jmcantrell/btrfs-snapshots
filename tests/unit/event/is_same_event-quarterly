@@ -5,8 +5,8 @@
 
 set -euo pipefail
 
-. "$LIB_DIR"/init.bash
-. "$TESTS_LIB_DIR"/init.bash
+source "$LIB_DIR"/init.bash
+source "$TESTS_LIB_DIR"/init.bash
 
 # Ensure every month of each quarter of the year is in the same event window.
 while read -r event_start; do

@@ -1,5 +1,5 @@
-. "$LIB_DIR"/action.bash
-. "$LIB_DIR"/config.bash
-. "$LIB_DIR"/event.bash
-. "$LIB_DIR"/snapshot.bash
-. "$LIB_DIR"/timestamp.bash
+source "$LIB_DIR"/action.bash
+source "$LIB_DIR"/config.bash
+source "$LIB_DIR"/event.bash
+source "$LIB_DIR"/snapshot.bash
+source "$LIB_DIR"/timestamp.bash

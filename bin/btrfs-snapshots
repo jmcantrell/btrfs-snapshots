@@ -43,7 +43,7 @@ if (($# > 0)); then
     fi
 fi
 
-. "$LIB_DIR"/init.bash
+source "$LIB_DIR"/init.bash
 
 action_name=${1:?missing action}
 shift

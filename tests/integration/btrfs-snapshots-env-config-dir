@@ -5,8 +5,8 @@
 
 set -euo pipefail
 
-. "$LIB_DIR"/init.bash
-. "$TESTS_LIB_DIR"/init.bash
+source "$LIB_DIR"/init.bash
+source "$TESTS_LIB_DIR"/init.bash
 
 config_dir=$TEMP_DIR/alt
 profiles_dir=$config_dir/profile.d

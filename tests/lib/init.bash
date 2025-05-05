@@ -7,5 +7,5 @@ export BTRFS_SNAPSHOTS_CONFIG_DIR=$CONFIG_DIR
 
 export TIMESTAMP=2001-01-01T00:00:00Z
 
-. "$TESTS_LIB_DIR"/assert.bash
-. "$TESTS_LIB_DIR"/timestamp.bash
+source "$TESTS_LIB_DIR"/assert.bash
+source "$TESTS_LIB_DIR"/timestamp.bash
