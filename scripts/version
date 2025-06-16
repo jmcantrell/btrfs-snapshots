@@ -2,11 +2,40 @@
 
 set -euo pipefail
 
-version=${1:?missing version}
-version=${version##v}
+unset bump
 
-sed -i "/^version=/s/=.*/=\"$version\"/" ./bin/*
-git add ./bin/*
+while getopts "Mmp" opt; do
+    case $opt in
+    M) bump=0 ;;
+    m) bump=1 ;;
+    p) bump=2 ;;
+    *) exit 2 ;;
+    esac
+done
+shift $((OPTIND - 1))
 
-git commit -m "Bump version"
-git tag "v$version"
+labels=(major minor patch)
+
+file=./lib/version
+
+if [[ -f $file ]]; then
+    IFS=. read -ra parts <"$file"
+else
+    parts=(0 0 0)
+fi
+
+if [[ -v bump ]]; then
+    parts[bump]=$((parts[bump] + 1))
+    for ((i = bump + 1; i < ${#parts[@]}; i++)); do
+        parts[i]=0
+    done
+fi
+
+IFS=. version=${parts[*]}
+printf "%s\n" "$version" | tee "$file"
+
+if [[ -v bump ]]; then
+    git add "$file"
+    git commit -m "Bump ${labels[$bump]} version"
+    git tag "v$version"
+fi

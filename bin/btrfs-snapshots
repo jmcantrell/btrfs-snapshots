@@ -31,14 +31,12 @@ See also:
     $self_name(8)
 "
 
-version="0.10.1"
-
 if (($# > 0)); then
     if [[ $1 == -h || $1 == --help ]]; then
         printf "%s\n" "$usage"
         exit
     elif [[ $1 == -v || $1 == --version ]]; then
-        printf "%s\n" "$version"
+        printf "%s\n" "$(<"$LIB_DIR"/version)"
         exit
     fi
 fi
