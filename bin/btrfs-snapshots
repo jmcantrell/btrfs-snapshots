@@ -61,7 +61,6 @@ while IFS= read -r profile_file; do
         printf "%s: unable to load profile: %q\n" "$0" "$profile_file" >&2
         exit 2
     fi
-
     if ! do_"$action_name"; then
         printf "%s: unable to perform action '%s' for profile: %q\n" "$0" "$action_name" "$profile_file" >&2
         exit 1
