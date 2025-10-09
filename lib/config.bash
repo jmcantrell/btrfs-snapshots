@@ -79,7 +79,6 @@ load_profile() {
             printf "%s: variable is not set: %s\n" "$0" "$variable" >&2
             return 1
         fi
-
         if [[ ${!variable} != /* ]]; then
             printf "%s: %s is not an absolute path: %q\n" "$0" "$variable" "${!variable}" >&2
             return 1
