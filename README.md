@@ -20,14 +20,14 @@ The goal is not to be a drop-in replacement, but an alternative for administrato
 
 To install in the default location (`/usr/local`):
 
-```sh
-sudo ./scripts/install
+```
+# ./scripts/install
 ```
 
 To install in a different location:
 
-```sh
-PREFIX=/usr sudo ./scripts/install
+```
+# PREFIX=/usr ./scripts/install
 ```
 
 ### Arch User Repository (AUR)
@@ -45,15 +45,15 @@ Unstable, based on the latest commit to the main branch:
 
 For command line usage:
 
-```sh
-btrfs-snapshots --help
+```
+$ btrfs-snapshots --help
 ```
 
 For detailed information:
 
-```sh
-man 8 btrfs-snapshots
-man 5 btrfs-snapshots
+```
+$ man 8 btrfs-snapshots
+$ man 5 btrfs-snapshots
 ```
 
 ## Testing
@@ -65,14 +65,14 @@ The following packages are required to run tests:
 
 To run the included tests:
 
-```sh
-./scripts/test
+```
+$ ./scripts/test
 ```
 
 For command line usage:
 
-```sh
-./scripts/test --help
+```
+$ ./scripts/test --help
 ```
 
 [btrfs]: https://btrfs.readthedocs.io/en/latest/index.html
