@@ -28,13 +28,10 @@ To install in a different location:
 
 ### Arch User Repository (AUR)
 
-There are two packages available for Arch Linux, available via the AUR.
+There are two packages available for Arch Linux, available via the AUR:
 
-Stable, based on the latest tagged release:
-[btrfs-snapshots][aur]
-
-Unstable, based on the latest commit to the main branch:
-[btrfs-snapshots-git][aur-git]
+- [btrfs-snapshots][pkg-aur] (stable, based on the latest tag)
+- [btrfs-snapshots-git][pkg-aur-git] (unstable, based on the latest commit)
 
 ## Help
 
@@ -64,5 +61,5 @@ For command line usage:
 
 [btrfs]: https://btrfs.readthedocs.io/en/latest/index.html
 [snapper]: http://snapper.io/
-[aur]: https://aur.archlinux.org/packages/btrfs-snapshots/
-[aur-git]: https://aur.archlinux.org/packages/btrfs-snapshots-git/
+[pkg-aur]: https://aur.archlinux.org/packages/btrfs-snapshots/
+[pkg-aur-git]: https://aur.archlinux.org/packages/btrfs-snapshots-git/
