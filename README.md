@@ -60,6 +60,6 @@ For command line usage:
     ./scripts/test --help
 
 [btrfs]: https://btrfs.readthedocs.io/en/latest/index.html
-[snapper]: http://snapper.io/
-[pkg-aur]: https://aur.archlinux.org/packages/btrfs-snapshots/
 [pkg-aur-git]: https://aur.archlinux.org/packages/btrfs-snapshots-git/
+[pkg-aur]: https://aur.archlinux.org/packages/btrfs-snapshots/
+[snapper]: http://snapper.io/
