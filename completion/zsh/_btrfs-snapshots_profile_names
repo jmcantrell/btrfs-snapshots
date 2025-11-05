@@ -1,0 +1,21 @@
+#autoload
+
+local config_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
+
+local profile
+local -A used_profiles=()
+
+for profile in "${line[@]:1}"; do
+    used_profiles[$profile]=1
+done
+
+local profiles=()
+
+for profile in "$config_dir"/profile.d/*.conf(.N:r:t); do
+    if ((!$+used_profiles[$profile])); then
+        profiles+=("$profile")
+    fi
+done
+
+local expl
+_wanted values expl "profile" compadd -a profiles
