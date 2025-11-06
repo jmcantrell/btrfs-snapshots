@@ -16,10 +16,10 @@ shift $((OPTIND - 1))
 
 labels=(major minor patch)
 
-file=./lib/version
+version_file=./lib/version
 
-if [[ -f $file ]]; then
-    IFS=. read -ra parts <"$file"
+if [[ -f $version_file ]]; then
+    IFS=. read -ra parts <"$version_file"
 else
     parts=(0 0 0)
 fi
@@ -32,10 +32,10 @@ if [[ -v bump ]]; then
 fi
 
 IFS=. version=${parts[*]}
-printf "%s\n" "$version" | tee "$file"
+printf "%s\n" "$version" | tee "$version_file"
 
 if [[ -v bump ]]; then
-    git add "$file"
+    git add "$version_file"
     git commit -m "Bump ${labels[$bump]} version"
     git tag "v$version"
 fi
