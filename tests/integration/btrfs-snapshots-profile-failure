@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Show that `btrfs-snapshots` exits with an error if the profile could not be loaded.
+
+set -euo pipefail
+
+source "$LIB_DIR"/init.bash
+source "$TESTS_LIB_DIR"/init.bash
+
+profile_name=foo
+profile_file=$PROFILES_DIR/$profile_name.conf
+
+mkdir -p "$PROFILES_DIR"
+
+# Ensure the profile fails to load.
+printf "return 1\n" >"$profile_file"
+
+assert_exit_status 2 assert_stderr_match "unable to load profile" \
+    btrfs-snapshots list "$profile_name"

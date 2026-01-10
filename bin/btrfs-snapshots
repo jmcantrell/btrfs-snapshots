@@ -56,6 +56,11 @@ export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
 profile_files=$(print_profiles "$@") || exit
 
+if [[ -z $profile_files ]]; then
+    printf "%s: no profiles configured\n" "$0" >&2
+    exit 2
+fi
+
 while IFS= read -r profile_file; do
     if ! load_profile "$profile_file"; then
         printf "%s: unable to load profile: %q\n" "$0" "$profile_file" >&2
