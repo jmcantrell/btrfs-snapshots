@@ -79,19 +79,26 @@ Example: *SNAPSHOTS*="/path/to/snapshots"
 Where <EVENT> can be one of the following: MINUTELY, HOURLY, DAILY, WEEKLY,
 MONTHLY, QUARTERLY, or YEARLY.
 
-This option defines the number of recent EVENT occurrences to keep a snapshot
-for. Only the earliest snapshot for each unique event is retained.
+This option defines the maximum number of most recent EVENT occurrences to keep
+a snapshot for. Only the earliest snapshot for each unique event is retained.
 
 There can be zero or more limits set. If the limit for an event type is not set
 in the profile configuration, the value set in the defaults configuration file
-is used. If it's not set anywhere, it's assumed to be "0" (disabled, or, in
-other words, keep a maximum of zero snapshots for that event type during
-pruning).
+is used. If it's not set anywhere, it's assumed to be "0" (disabled, i.e. keep a
+maximum of zero most recent snapshots for that event type during pruning).
 
 Example: *LIMIT_DAILY*=12
 
-For example, if _@home.conf_ contains the line "LIMIT_HOURLY=3" and the
-following snapshots exist:
+For example, consider the following situation.
+
+A profile is configured in _@home.conf_ containing the following:
+
+```
+LIMIT_HOURLY=3
+LIMIT_MINUTELY=5
+```
+
+The following snapshots already exist:
 
 ```
 /.snapshots/@home
@@ -102,24 +109,29 @@ following snapshots exist:
     ├── 2021-12-31T11:00:00Z
     ├── 2021-12-31T11:30:00Z
     ├── 2021-12-31T12:00:00Z
-    └── 2021-12-31T12:30:00Z
+    ├── 2021-12-31T12:30:00Z
+    ├── 2021-12-31T12:31:00Z
+    ├── 2021-12-31T12:32:00Z
+    ├── 2021-12-31T12:33:00Z
+    ├── 2021-12-31T12:34:00Z
+    ├── 2021-12-31T12:35:00Z
+    ├── 2021-12-31T12:36:00Z
+    └── 2021-12-31T12:37:00Z
 ```
 
 Running the prune action will delete snapshots, leaving the tree looking like this:
 
 ```
 /.snapshots/@home
-    ├── 2021-12-31T10:00:00Z
-    ├── 2021-12-31T11:00:00Z
-    └── 2021-12-31T12:00:00Z
+    ├── 2021-12-31T10:00:00Z    ──┐
+    ├── 2021-12-31T11:00:00Z      ├── count toward hourly limit
+    ├── 2021-12-31T12:00:00Z    ──┘
+    ├── 2021-12-31T12:33:00Z    ──┐
+    ├── 2021-12-31T12:34:00Z      │
+    ├── 2021-12-31T12:35:00Z      ├── count toward minutely limit
+    ├── 2021-12-31T12:36:00Z      │
+    └── 2021-12-31T12:37:00Z    ──┘
 ```
-
-Because the hourly limit was set to "3", a total of only three snapshots could
-be kept. The algorithm found the most recent three unique events' snapshots, and
-deleted all but the earliest snapshot for each distinct hour.
-
-Both snapshots occurring earlier than 10am were deleted because they were part
-of the fourth unique event, falling outside of the limit for that event type.
 
 # SEE ALSO
 
