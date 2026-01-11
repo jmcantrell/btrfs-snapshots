@@ -67,6 +67,7 @@ do_prune() {
             done
 
             delete=0
+            break
         done
 
         if ((delete)); then
