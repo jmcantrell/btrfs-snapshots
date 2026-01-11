@@ -30,10 +30,10 @@ do_prune() {
     done
 
     local snapshots
-    readarray -t snapshots < <(print_snapshots "$SNAPSHOTS" | sort -r)
+    readarray -t snapshots < <(print_snapshots "$SNAPSHOTS")
 
     local snapshot_index
-    for ((snapshot_index = 0; snapshot_index < ${#snapshots[@]}; snapshot_index++)); do
+    for ((snapshot_index = ${#snapshots[@]} - 1; snapshot_index >= 0; snapshot_index--)); do
         local snapshot=${snapshots[snapshot_index]}
         local timestamp=${snapshot##*/}
 
@@ -41,27 +41,26 @@ do_prune() {
 
         local event_index
         for ((event_index = 0; event_index < ${#EVENT_NAMES[@]}; event_index++)); do
-            # If this event type has already reached its limit, skip it.
+            local event_name=${EVENT_NAMES[event_index]}
+
+            # This event type has already reached its limit.
             if ((counts[event_index] >= limits[event_index])); then
                 continue
             fi
 
-            local event_name=${EVENT_NAMES[event_index]}
-
             local other_snapshot_index
-            for ((other_snapshot_index = snapshot_index + 1; other_snapshot_index < ${#snapshots[@]}; other_snapshot_index++)); do
+            for ((other_snapshot_index = snapshot_index - 1; other_snapshot_index >= 0; other_snapshot_index--)); do
                 local other_snapshot=${snapshots[other_snapshot_index]}
                 local other_timestamp=${other_snapshot##*/}
 
-                # If any earlier timestamp after the given one occurs in a different
-                # event, the given one must have occurred first.
+                # The current snapshot is the earliest one in this event, so keep it.
                 if ! is_same_event "$event_name" "$timestamp" "$other_timestamp"; then
                     counts[event_index]=$((counts[event_index] + 1))
                     break
                 fi
 
-                # If this pair of timestamps occurred during the same event, and the
-                # given one happened later than the other one, it didn't occur first.
+                # There is an earlier snapshot during the same event, so the
+                # current one can be pruned.
                 if timestamp_gt "$timestamp" "$other_timestamp"; then
                     continue 2
                 fi
