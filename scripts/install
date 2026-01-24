@@ -4,7 +4,7 @@ set -euo pipefail
 
 name=btrfs-snapshots
 
-dir=${DEST_DIR:-}${PREFIX:-/usr/local}
+dir=${DESTDIR:-}${PREFIX:-/usr/local}
 
 install -pm755 -Dt "$dir"/bin ./bin/*
 
