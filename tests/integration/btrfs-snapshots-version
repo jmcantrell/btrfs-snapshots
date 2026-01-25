@@ -7,10 +7,10 @@ set -euo pipefail
 source "$LIB_DIR"/init.bash
 source "$TESTS_LIB_DIR"/init.bash
 
-pattern="^[0-9]+\.[0-9]+\.[0-9]+$"
+version=$(<"$LIB_DIR"/version)$'\n'
 
-assert_success assert_stdout_match "$pattern" \
+assert_success assert_stdout "$version" \
     btrfs-snapshots -v
 
-assert_success assert_stdout_match "$pattern" \
+assert_success assert_stdout "$version" \
     btrfs-snapshots --version
