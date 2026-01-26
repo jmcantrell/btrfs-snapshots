@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Show that `btrfs-snapshots prune` complains when a profile does not exist.
+
+set -euo pipefail
+
+source "$LIB_DIR"/init.bash
+source "$TESTS_LIB_DIR"/init.bash
+
+stderr="profiles do not exist: 'foo' 'bar'"
+
+assert_failure assert_stderr_match "$stderr" \
+    btrfs-snapshots prune foo bar

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Show that `btrfs-snapshots prune` exits with an error if there are no profiles.
+
+set -euo pipefail
+
+source "$LIB_DIR"/init.bash
+source "$TESTS_LIB_DIR"/init.bash
+
+assert_failure assert_stderr_match "no profiles configured" \
+    btrfs-snapshots prune

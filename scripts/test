@@ -45,5 +45,5 @@ if (($# > 0)); then
     find_opts+=('(' "${pat_opts[@]:1}" ')')
 fi
 
-find ./tests/{unit,integration} -type f -executable "${find_opts[@]}" -print0 |
+find ./tests/suites -type f -executable "${find_opts[@]}" -print0 |
     parallel ${verbose:+-v} --shuf --jobs=0 --null ./scripts/test1
