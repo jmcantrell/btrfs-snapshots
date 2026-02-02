@@ -37,5 +37,5 @@ printf "%s\n" "$version" | tee "$version_file"
 if [[ -v bump ]]; then
     git add "$version_file"
     git commit -m "Bump ${labels[$bump]} version"
-    git tag "v$version"
+    git tag -a -m "Release version $version" v"$version"
 fi
