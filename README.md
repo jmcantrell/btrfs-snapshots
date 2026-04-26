@@ -26,6 +26,10 @@ To install in a different location:
 
     sudo PREFIX=/usr ./scripts/install
 
+To install in a staging location:
+
+    DESTDIR=./pkg ./scripts/install
+
 ### Arch User Repository (AUR)
 
 There are two packages available for Arch Linux, available via the AUR:

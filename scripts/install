@@ -2,23 +2,15 @@
 
 set -euo pipefail
 
-name=btrfs-snapshots
-
 dir=${DESTDIR:-}${PREFIX:-/usr/local}
 
 install -pm755 -Dt "$dir"/bin ./bin/*
-
-install -pm644 -Dt "$dir"/lib/"$name" ./lib/*
-
+install -pm644 -Dt "$dir"/lib/btrfs-snapshots ./lib/*
 install -pm644 -Dt "$dir"/share/man/man5 ./man/*.5
 install -pm644 -Dt "$dir"/share/man/man8 ./man/*.8
-
 install -pm644 -Dt "$dir"/lib/systemd/system ./systemd/*
-
-install -pm644 -Dt "$dir"/share/doc/"$name" ./README.md
-install -pm644 -Dt "$dir"/share/doc/"$name"/config ./config/*
-
-install -pm644 -Dt "$dir"/share/licenses/"$name" ./LICENSE
-
+install -pm644 -Dt "$dir"/share/doc/btrfs-snapshots ./README.md
+install -pm644 -Dt "$dir"/share/doc/btrfs-snapshots/config ./config/*
+install -pm644 -Dt "$dir"/share/licenses/btrfs-snapshots ./LICENSE
 install -pm644 -Dt "$dir"/share/zsh/site-functions ./completion/zsh/*
 install -pm644 -Dt "$dir"/share/bash-completion/completions ./completion/bash/*
