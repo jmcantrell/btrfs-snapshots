@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# A mock implementation of the `date` command.
+# A fake implementation of the `date` command.
 
 set -euo pipefail
 
