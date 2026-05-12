@@ -12,7 +12,7 @@ profile_file=$PROFILES_DIR/$profile_name.conf
 subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots
 
-mkdir -p "$PROFILES_DIR"
+mkdir -p -- "$PROFILES_DIR"
 
 printf "%s=%q\n" \
     SUBVOLUME "$subvolume_dir" \

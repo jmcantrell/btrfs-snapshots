@@ -11,7 +11,7 @@ profile_file=$PROFILES_DIR/foo.conf
 subvolume_dir=$TEMP_DIR/$RANDOM
 snapshots_dir=$TEMP_DIR/$RANDOM
 
-mkdir -p "$(dirname "$profile_file")"
+mkdir -p -- "$(dirname -- "$profile_file")"
 
 printf "%s=%q\n" \
     SUBVOLUME "$subvolume_dir" \

@@ -16,10 +16,10 @@ subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots/$profile_name
 
 for event_name in "${EVENT_NAMES[@]}"; do
-    rm -rf "$TEMP_DIR"
-    mkdir -p "$TEMP_DIR"
+    rm -rf -- "$TEMP_DIR"
+    mkdir -p -- "$TEMP_DIR"
 
-    mkdir -p "$subvolume_dir" "$PROFILES_DIR"
+    mkdir -p -- "$subvolume_dir" "$PROFILES_DIR"
 
     printf "%s=%q\n" \
         SUBVOLUME "$subvolume_dir" \

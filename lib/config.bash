@@ -85,7 +85,7 @@ load_profile() {
         fi
     done
 
-    printf -v SNAPSHOTS "$SNAPSHOTS" "$PROFILE_NAME"
+    printf -v SNAPSHOTS -- "$SNAPSHOTS" "$PROFILE_NAME"
 
     export SUBVOLUME SNAPSHOTS
 }

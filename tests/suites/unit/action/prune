@@ -13,8 +13,8 @@ export SNAPSHOTS=$TEMP_DIR/snapshots
 limit=3
 
 for event_name in "${EVENT_NAMES[@]}"; do
-    rm -rf "$TEMP_DIR"
-    mkdir -p "$TEMP_DIR"
+    rm -rf -- "$TEMP_DIR"
+    mkdir -p -- "$TEMP_DIR"
 
     export "LIMIT_${event_name^^}=$limit"
 
@@ -31,7 +31,7 @@ for event_name in "${EVENT_NAMES[@]}"; do
         # eventually be deleted.
         while read -r event_step; do
             snapshot=$SNAPSHOTS/$event_step
-            mkdir -p "$snapshot"
+            mkdir -p -- "$snapshot"
 
             # Only predict the message if it's not the keeper.
             if [[ $snapshot != "$keeper" ]]; then

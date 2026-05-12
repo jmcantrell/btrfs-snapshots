@@ -11,7 +11,7 @@ profile_file=$PROFILES_DIR/foo.conf
 variables=(SUBVOLUME SNAPSHOTS)
 profile_lines=()
 
-mkdir -p "$(dirname "$profile_file")"
+mkdir -p -- "$(dirname -- "$profile_file")"
 
 # For each required variable, ensure `load_profile` fails when the value is:
 # - not set or empty

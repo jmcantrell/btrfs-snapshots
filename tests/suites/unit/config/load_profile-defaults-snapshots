@@ -10,7 +10,7 @@ source "$TESTS_LIB_DIR"/init.bash
 profile_name=foo
 profile_file=$PROFILES_DIR/$profile_name.conf
 
-mkdir -p "$(dirname "$profile_file")"
+mkdir -p -- "$(dirname -- "$profile_file")"
 
 printf "%s=%q\n" \
     SUBVOLUME "$TEMP_DIR" \

@@ -32,6 +32,11 @@ do_subvolume_snapshot() {
 }
 
 do_subvolume_delete() {
+    # Skip any options.
+    while [[ ${1:-} == -* ]]; do
+        shift
+    done
+
     local snapshot=${1:?missing snapshot}
 
     printf "fake btrfs subvolume delete %s\n" "$snapshot"

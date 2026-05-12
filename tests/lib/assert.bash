@@ -379,7 +379,7 @@ assert_file_content() {
     local expected_file=$TEMP_DIR/expected-content
     printf "%s" "$expected_content" >"$expected_file"
 
-    if ! diff -u "$file" "$expected_file"; then
+    if ! diff -u -- "$file" "$expected_file"; then
         printf "file contents should have been equal\n" >&2
         stack_trace >&2
         return 1

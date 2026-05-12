@@ -12,8 +12,8 @@ export SNAPSHOTS=$TEMP_DIR/snapshots
 
 snapshot=$SNAPSHOTS/$TIMESTAMP
 
-mkdir -p "$SUBVOLUME"
-touch "$SUBVOLUME"/marker
+mkdir -p -- "$SUBVOLUME"
+touch -- "$SUBVOLUME"/marker
 
 printf -v stdout \
     "fake btrfs subvolume snapshot %s %s\n" \

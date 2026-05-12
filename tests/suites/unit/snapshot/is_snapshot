@@ -13,14 +13,14 @@ snapshot=$TEMP_DIR/$TIMESTAMP
 assert_failure assert_no_output \
     is_snapshot "$snapshot"
 
-touch "$snapshot"
+touch -- "$snapshot"
 
 # Ensure correctly named paths that aren't directories do not match.
 assert_failure assert_no_output \
     is_snapshot "$snapshot"
 
-rm "$snapshot"
-mkdir -p "$snapshot"
+rm -- "$snapshot"
+mkdir -p -- "$snapshot"
 
 # Ensure correctly named directories match.
 assert_success assert_no_output \

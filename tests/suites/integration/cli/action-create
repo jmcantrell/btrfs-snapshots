@@ -7,7 +7,7 @@ set -euo pipefail
 source "$LIB_DIR"/init.bash
 source "$TESTS_LIB_DIR"/init.bash
 
-mkdir -p "$PROFILES_DIR"
+mkdir -p -- "$PROFILES_DIR"
 
 profile_names=(a b c)
 snapshots=()
@@ -19,7 +19,7 @@ for profile_name in "${profile_names[@]}"; do
     snapshot=$snapshots_dir/$TIMESTAMP
     snapshots+=("$snapshot")
 
-    mkdir -p "$subvolume_dir"
+    mkdir -p -- "$subvolume_dir"
     printf "%s" "$profile_name" >"$subvolume_dir"/marker
 
     printf "%s=%q\n" \

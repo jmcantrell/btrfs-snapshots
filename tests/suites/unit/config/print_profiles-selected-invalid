@@ -7,8 +7,8 @@ set -euo pipefail
 source "$LIB_DIR"/init.bash
 source "$TESTS_LIB_DIR"/init.bash
 
-mkdir -p "$PROFILES_DIR"
-touch "$PROFILES_DIR"/{a,b,c}.conf
+mkdir -p -- "$PROFILES_DIR"
+touch -- "$PROFILES_DIR"/{a,b,c}.conf
 
 stderr="profiles do not exist: 'foo' 'bar'"
 

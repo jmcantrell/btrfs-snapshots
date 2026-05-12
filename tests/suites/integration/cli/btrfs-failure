@@ -12,10 +12,10 @@ profile_file=$PROFILES_DIR/$profile_name.conf
 subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots
 
-mkdir -p "$PROFILES_DIR" "$subvolume_dir"
+mkdir -p -- "$PROFILES_DIR" "$subvolume_dir"
 
 # Create a snapshot so there is a reason for calling btrfs during the prune.
-mkdir -p "$snapshots_dir/$TIMESTAMP"
+mkdir -p -- "$snapshots_dir/$TIMESTAMP"
 
 # Omit any limit settings, so everything will be pruned.
 printf "%s=%q\n" \

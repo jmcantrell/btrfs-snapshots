@@ -14,7 +14,7 @@ subvolume_dir=$TEMP_DIR/subvolume
 snapshots_dir=$TEMP_DIR/snapshots
 snapshot=$snapshots_dir/$TIMESTAMP
 
-mkdir -p "$profiles_dir" "$subvolume_dir"
+mkdir -p -- "$profiles_dir" "$subvolume_dir"
 
 printf "%s=%q\n" \
     SUBVOLUME "$subvolume_dir" \

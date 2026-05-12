@@ -12,15 +12,15 @@ export SNAPSHOTS=$TEMP_DIR/snapshots
 timestamp=2000-01-01T00:00:00Z
 
 # Add some invalid paths (that should not be returned):
-mkdir -p "$SNAPSHOTS"/foo/bar/baz    # nested and incorrectly named directory
-mkdir -p "$SNAPSHOTS/foo/$timestamp" # nested and correctly named directory
-touch "$SNAPSHOTS/$timestamp"        # shallow and correctly named file
+mkdir -p -- "$SNAPSHOTS"/foo/bar/baz    # nested and incorrectly named directory
+mkdir -p -- "$SNAPSHOTS/foo/$timestamp" # nested and correctly named directory
+touch -- "$SNAPSHOTS/$timestamp"        # shallow and correctly named file
 
 # Add some valid snapshot paths:
 while read -r timestamp_step; do
     snapshot=$SNAPSHOTS/$timestamp_step
     expected+=("$snapshot")
-    mkdir -p "$snapshot"
+    mkdir -p -- "$snapshot"
 done < <(timestamp_seq "$TIMESTAMP" hour 24)
 
 readarray -t actual < <(do_list)

@@ -9,7 +9,7 @@ source "$TESTS_LIB_DIR"/init.bash
 
 profile_file=$PROFILES_DIR/foo.conf
 
-mkdir -p "$(dirname "$profile_file")"
+mkdir -p -- "$(dirname -- "$profile_file")"
 
 # Create a profile that does not have the subvolume set.
 printf "%s=%q\n" \
