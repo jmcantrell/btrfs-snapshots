@@ -11,9 +11,11 @@ export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
 usage="Manage timestamped collections of btrfs snapshots.
 
 Usage:
-    $self_name -h|--help
-    $self_name -v|--version
-    $self_name ACTION [PROFILE...]
+    $self_name [OPTIONS] ACTION [PROFILE...]
+
+Options:
+    -h, --help       show this help message and exit
+    -v, --version    show the program's version number and exit
 
 Actions:
     list       print snapshot paths to stdout
@@ -31,15 +33,24 @@ See also:
     $self_name(8)
 "
 
-if (($# > 0)); then
-    if [[ $1 == -h || $1 == --help ]]; then
+while (($# > 0)); do
+    arg=$1
+    [[ $arg == -* ]] || break
+    shift
+
+    if [[ $arg == -- ]]; then
+        break
+    elif [[ $arg == -h || $arg == --help ]]; then
         printf "%s\n" "$usage"
         exit
-    elif [[ $1 == -v || $1 == --version ]]; then
+    elif [[ $arg == -v || $arg == --version ]]; then
         printf "%s\n" "$(<"$LIB_DIR"/version)"
         exit
+    else
+        printf "%s: invalid option: %s\n" "$0" "$arg" >&2
+        exit 64
     fi
-fi
+done
 
 source "$LIB_DIR"/init.bash
 
