@@ -35,17 +35,17 @@ is_same_event() {
 
     local parts
     case ${event_name,,} in
-    yearly) parts=(Y) ;;           # year
-    quarterly) parts=(Y q) ;;      # year quarter
-    monthly) parts=(Y m) ;;        # year month
-    weekly) parts=(G V) ;;         # year and week number (ISO)
-    daily) parts=(Y m d) ;;        # year month day
-    hourly) parts=(Y m d H) ;;     # year month day hour
-    minutely) parts=(Y m d H M) ;; # year month day hour minute
-    *)
-        printf "%s: invalid event: %q\n" "$0" "$event_name" >&2
-        return 2
-        ;;
+        yearly) parts=(Y) ;;           # year
+        quarterly) parts=(Y q) ;;      # year quarter
+        monthly) parts=(Y m) ;;        # year month
+        weekly) parts=(G V) ;;         # year and week number (ISO)
+        daily) parts=(Y m d) ;;        # year month day
+        hourly) parts=(Y m d H) ;;     # year month day hour
+        minutely) parts=(Y m d H M) ;; # year month day hour minute
+        *)
+            printf "%s: invalid event: %q\n" "$0" "$event_name" >&2
+            return 2
+            ;;
     esac
 
     local events=()
