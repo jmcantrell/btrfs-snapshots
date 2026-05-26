@@ -12,8 +12,12 @@ profile_file=$PROFILES_DIR/$profile_name.conf
 
 mkdir -p -- "$PROFILES_DIR"
 
-# Ensure the profile fails to load.
-printf "return 1\n" >"$profile_file"
+exit_status=$((RANDOM % 255 + 1))
 
-assert_exit_status 2 assert_stderr_match "unable to load profile" \
+# Ensure the profile fails to load.
+printf "return %d\n" "$exit_status" >"$profile_file"
+
+printf -v stderr "btrfs-snapshots: could not load profile: %q\n" "$profile_file"
+
+assert_exit_status "$exit_status" assert_stderr "$stderr" \
     btrfs-snapshots list "$profile_name"

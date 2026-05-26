@@ -22,13 +22,11 @@ for event_name in "${EVENT_NAMES[@]}"; do
     fillers=()
 
     while read -r event_start; do
-        # This snapshot is the earliest one of this event, so it should not be
-        # deleted.
+        # This snapshot is the earliest one of this event, so it should not be deleted.
         keeper=$SNAPSHOTS/$event_start
         keepers+=("$keeper")
 
-        # Generate a bunch of filler snapshots within the same event that will
-        # eventually be deleted.
+        # Generate filler snapshots within the same event that will eventually be deleted.
         while read -r event_step; do
             snapshot=$SNAPSHOTS/$event_step
             mkdir -p -- "$snapshot"

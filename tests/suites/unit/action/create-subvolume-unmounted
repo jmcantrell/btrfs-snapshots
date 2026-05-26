@@ -11,9 +11,9 @@ export PROFILE_FILE=unused
 export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
 
-stderr="subvolume is not available: $SUBVOLUME"
+printf -v stderr "test: subvolume is not available: %s\n" "$SUBVOLUME"
 
-assert_success assert_stderr_match "$stderr" \
+assert_success assert_stderr "$stderr" \
     do_create
 
 readarray -t snapshots < <(print_snapshots "$SNAPSHOTS")

@@ -7,30 +7,30 @@ self_name=${0##*/}
 usage="Run tests.
 
 Usage:
-    $self_name --help|-h
     $self_name [OPTIONS] [PATTERN...]
 
 Options:
-    -i    match PATTERN case-insensitively
+    -h    show this help message and exit
+
     -v    print every test that's run, regardless of failures
+    -i    ignore case when matching PATTERN
 
 Arguments:
     PATTERN    only test files matching PATTERN
 "
 
-if (($# > 0)) && [[ $1 == --help || $1 == -h ]]; then
-    printf "%s\n" "$usage"
-    exit
-fi
-
 unset verbose
 find_opt="path"
 
-while getopts "iv" opt; do
+while getopts "vih" opt; do
     case $opt in
         v) verbose=1 ;;
         i) find_opt="ipath" ;;
-        *) exit 2 ;;
+        h)
+            printf "%s\n" "$usage"
+            exit
+            ;;
+        *) exit 64 ;;
     esac
 done
 shift $((OPTIND - 1))

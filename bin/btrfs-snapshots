@@ -3,7 +3,7 @@
 set -euo pipefail
 shopt -s nullglob
 
-self_name=${0##*/}
+export SELF_NAME=${0##*/}
 
 export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$self_name}
 export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
@@ -11,7 +11,7 @@ export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
 usage="Manage timestamped collections of btrfs snapshots.
 
 Usage:
-    $self_name [OPTIONS] ACTION [PROFILE...]
+    $SELF_NAME [OPTIONS] ACTION [PROFILE...]
 
 Options:
     -h, --help       show this help message and exit
@@ -26,11 +26,11 @@ Arguments:
     PROFILE    profile name to perform action on (default: all)
 
 Environment:
-    ${self_name^^}_CONFIG_DIR[=${CONFIG_DIR@Q}]
+    ${SELF_NAME^^}_CONFIG_DIR[=${CONFIG_DIR@Q}]
 
 See also:
-    $self_name(5)
-    $self_name(8)
+    $SELF_NAME(5)
+    $SELF_NAME(8)
 "
 
 while (($# > 0)); do
@@ -47,38 +47,32 @@ while (($# > 0)); do
         printf "%s\n" "$(<"$LIB_DIR"/version)"
         exit
     else
-        printf "%s: invalid option: %s\n" "$0" "$arg" >&2
+        printf "%s: invalid option: %s\n" "$SELF_NAME" "$arg" >&2
         exit 64
     fi
 done
 
-source "$LIB_DIR"/init.bash
-
 action_name=${1:?missing action}
 shift
 
+source "$LIB_DIR"/init.bash
+
 if [[ ! $action_name =~ ^(list|create|prune)$ ]]; then
-    printf "%s: invalid action: %s\n" "$0" "$action_name" >&2
-    exit 2
+    printf "%s: invalid action: %s\n" "$SELF_NAME" "$action_name" >&2
+    exit 64
 fi
 
 export PROFILES_DIR=$CONFIG_DIR/profile.d
 export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
-profile_files=$(print_profiles "$@") || exit
+profile_files=$(print_profiles "$@")
 
 if [[ -z $profile_files ]]; then
-    printf "%s: no profiles configured\n" "$0" >&2
-    exit 2
+    printf "%s: no profiles configured\n" "$SELF_NAME" >&2
+    exit 66
 fi
 
 while IFS= read -r profile_file; do
-    if ! load_profile "$profile_file"; then
-        printf "%s: unable to load profile: %q\n" "$0" "$profile_file" >&2
-        exit 2
-    fi
-    if ! do_"$action_name"; then
-        printf "%s: unable to perform action '%s' for profile: %q\n" "$0" "$action_name" "$profile_file" >&2
-        exit 1
-    fi
+    load_profile "$profile_file"
+    do_"$action_name"
 done <<<"$profile_files"

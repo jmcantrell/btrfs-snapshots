@@ -16,9 +16,11 @@ printf "%s=%q\n" \
     SNAPSHOTS "$TEMP_DIR" \
     >"$profile_file"
 
-printf "return 5\n" >"$DEFAULTS_FILE"
+exit_status=$((RANDOM % 255 + 1))
 
-stderr="unable to source file: $DEFAULTS_FILE"
+printf "return %d\n" "$exit_status" >"$DEFAULTS_FILE"
 
-assert_exit_status 1 assert_stderr_match "$stderr" \
+printf -v stderr "test: could not load defaults: %q\n" "$DEFAULTS_FILE"
+
+assert_exit_status "$exit_status" assert_stderr "$stderr" \
     load_profile "$profile_file"

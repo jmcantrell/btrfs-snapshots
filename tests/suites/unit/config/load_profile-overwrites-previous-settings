@@ -19,10 +19,10 @@ for variable in SUBVOLUME SNAPSHOTS; do
     # Try to trick the function into accepting a previous value.
     export "$variable=$TEMP_DIR"
 
-    stderr="variable is not set: $variable"
+    printf -v stderr "test: variable $variable is not set for profile: foo\n"
 
     # If $variable was not overwritten, this would succeed with no output.
-    assert_failure assert_stderr_match "$stderr" \
+    assert_failure assert_stderr "$stderr" \
         load_profile "$profile_file"
 
     # If $variable was not overwritten, it would still be set.

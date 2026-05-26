@@ -23,16 +23,23 @@ printf "%s=%q\n" \
     SNAPSHOTS "$snapshots_dir" \
     >"$profile_file"
 
+printf -v stderr "something bad happened\n"
+
+bin_dir=$TEMP_DIR/bin
+export PATH=$bin_dir:$PATH
+
+exit_status=$((RANDOM % 255 + 1))
+
 # Fake implementation of `btrfs` that always errors.
-btrfs() {
-    return 5
-}
-export -f btrfs
+mkdir -p "$bin_dir"
+cat >"$bin_dir"/btrfs <<EOF
+#!/usr/bin/env bash
+printf "$stderr" >&2
+exit $exit_status
+EOF
+chmod 755 "$bin_dir"/btrfs
 
 for action in create prune; do
-    stderr="the btrfs command exited with non-zero status code: 5.*"
-    stderr+="unable to perform action '$action' for profile: $profile_file"
-
-    assert_failure assert_stderr_match "$stderr" \
+    assert_exit_status "$exit_status" assert_stderr "$stderr" \
         btrfs-snapshots "$action" "$profile_name"
 done

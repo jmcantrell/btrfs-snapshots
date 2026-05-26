@@ -9,7 +9,7 @@ source "$TESTS_LIB_DIR"/init.bash
 
 action=bogus
 
-stderr="invalid action: $action"
+printf -v stderr "btrfs-snapshots: invalid action: %s\n" "$action"
 
-assert_exit_status 2 assert_stderr_match "$stderr" \
+assert_exit_status 64 assert_stderr "$stderr" \
     btrfs-snapshots "$action"

@@ -13,9 +13,8 @@ profile_lines=()
 
 mkdir -p -- "$(dirname -- "$profile_file")"
 
-# For each required variable, ensure `load_profile` fails when the value is:
-# - not set or empty
-# - not an absolute path
+# For each required variable, ensure `load_profile` fails when the value is not
+# set, empty, or not an absolute path.
 
 for ((i = 0; i < ${#variables[@]}; i++)); do
     variable=${variables[i]}
@@ -23,10 +22,10 @@ for ((i = 0; i < ${#variables[@]}; i++)); do
     # Write the file without the variable.
     printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
-    stderr="variable is not set: $variable"
+    printf -v stderr "test: variable $variable is not set for profile: foo\n"
 
     # Ensure that a missing variable is reported as not set.
-    assert_failure assert_stderr_match "$stderr" \
+    assert_failure assert_stderr "$stderr" \
         load_profile "$profile_file"
 
     # Write the file with the variable's value empty.
@@ -34,7 +33,7 @@ for ((i = 0; i < ${#variables[@]}; i++)); do
     printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
     # Ensure that an empty value is also reported as not set.
-    assert_failure assert_stderr_match "$stderr" \
+    assert_failure assert_stderr "$stderr" \
         load_profile "$profile_file"
 
     path=./relative/path
@@ -43,10 +42,10 @@ for ((i = 0; i < ${#variables[@]}; i++)); do
     profile_lines[-1]=$variable=$path
     printf "%s\n" "${profile_lines[@]}" >"$profile_file"
 
-    stderr="$variable is not an absolute path: $path"
+    printf -v stderr "test: profile foo variable $variable is not an absolute path: $path\n"
 
     # Ensure that a relative path is reported as not absolute.
-    assert_failure assert_stderr_match "$stderr" \
+    assert_failure assert_stderr "$stderr" \
         load_profile "$profile_file"
 
     # Set the variable's value to something valid, so it will be written on the

@@ -7,7 +7,7 @@ set -euo pipefail
 source "$LIB_DIR"/init.bash
 source "$TESTS_LIB_DIR"/init.bash
 
-stderr="profiles do not exist: 'foo' 'bar'"
+printf -v stderr "btrfs-snapshots: profiles do not exist: 'foo' 'bar'\n"
 
-assert_failure assert_stderr_match "$stderr" \
+assert_failure assert_stderr "$stderr" \
     btrfs-snapshots prune foo bar

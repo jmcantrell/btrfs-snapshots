@@ -4,19 +4,16 @@ do_list() {
 
 do_create() {
     if ! mountpoint -q -- "$SUBVOLUME"; then
-        printf "%s: subvolume is not available: %q\n" "$0" "$SUBVOLUME" >&2
+        printf "%s: subvolume is not available: %q\n" "$SELF_NAME" "$SUBVOLUME" >&2
         return 0
     fi
 
     local timestamp
-    timestamp=$(timestamp --date=now) || return 1
+    timestamp=$(timestamp --date=now) || return $?
 
     mkdir -p "$SNAPSHOTS"
 
-    btrfs subvolume snapshot -r -- "$SUBVOLUME" "$SNAPSHOTS/$timestamp" || {
-        printf "%s: the btrfs command exited with non-zero status code: %s\n" "$0" "$?" >&2
-        return 1
-    }
+    btrfs subvolume snapshot -r -- "$SUBVOLUME" "$SNAPSHOTS/$timestamp" || return $?
 }
 
 do_prune() {
@@ -71,10 +68,7 @@ do_prune() {
         done
 
         if ((delete)); then
-            btrfs subvolume delete -- "$snapshot" || {
-                printf "%s: the btrfs command exited with non-zero status code: %s\n" "$0" "$?" >&2
-                return 1
-            }
+            btrfs subvolume delete -- "$snapshot" || return $?
         fi
     done
 }

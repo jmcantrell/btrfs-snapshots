@@ -25,8 +25,8 @@ print_profiles() {
     done
 
     if ((${#invalid[@]} > 0)); then
-        printf "%s: profiles do not exist: %s\n" "$0" "${invalid[*]}" >&2
-        return 2
+        printf "%s: profiles do not exist: %s\n" "$SELF_NAME" "${invalid[*]}" >&2
+        return 78
     fi
 
     if ((${#selected[@]} == 0)); then
@@ -56,32 +56,40 @@ load_profile() {
         export "LIMIT_${event_name^^}=0"
     done
 
-    if [[ -f $DEFAULTS_FILE ]] && ! source "$DEFAULTS_FILE"; then
-        printf "%s: unable to source file: %q\n" "$0" "$DEFAULTS_FILE" >&2
-        return 1
+    local return_status
+
+    if [[ -f $DEFAULTS_FILE ]]; then
+        return_status=0
+        source "$DEFAULTS_FILE" || return_status=$?
+        if ((return_status > 0)); then
+            printf "%s: could not load defaults: %q\n" "$SELF_NAME" "$DEFAULTS_FILE" >&2
+            return $return_status
+        fi
     fi
 
     unset SUBVOLUME
 
     if [[ -v SNAPSHOTS && $SNAPSHOTS != *%s* ]]; then
-        printf "%s: default SNAPSHOTS is missing the %%s placeholder: %q\n" "$0" "$SNAPSHOTS" >&2
-        return 1
+        printf "%s: configured default for SNAPSHOTS is missing the %%s placeholder: %q\n" "$SELF_NAME" "$SNAPSHOTS" >&2
+        return 78
     fi
 
-    if ! source "$PROFILE_FILE"; then
-        printf "%s: unable to source file: %q\n" "$0" "$PROFILE_FILE" >&2
-        return 1
+    return_status=0
+    source "$PROFILE_FILE" || return_status=$?
+    if ((return_status > 0)); then
+        printf "%s: could not load profile: %q\n" "$SELF_NAME" "$PROFILE_FILE" >&2
+        return $return_status
     fi
 
     local variable
     for variable in SUBVOLUME SNAPSHOTS; do
         if [[ ! -v $variable || -z ${!variable} ]]; then
-            printf "%s: variable is not set: %s\n" "$0" "$variable" >&2
-            return 1
+            printf "%s: variable %q is not set for profile: %s\n" "$SELF_NAME" "$variable" "$PROFILE_NAME" >&2
+            return 78
         fi
         if [[ ${!variable} != /* ]]; then
-            printf "%s: %s is not an absolute path: %q\n" "$0" "$variable" "${!variable}" >&2
-            return 1
+            printf "%s: profile %q variable %q is not an absolute path: %s\n" "$SELF_NAME" "$PROFILE_NAME" "$variable" "${!variable}" >&2
+            return 78
         fi
     done
 

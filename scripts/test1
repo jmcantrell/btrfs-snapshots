@@ -17,6 +17,6 @@ trap 'rm -rf -- "$TEMP_DIR"' EXIT
 export TEMP_DIR
 
 if ! "$test_file"; then
-    printf "test failed: %q\n" "$test_file" >&2
+    printf "%s: test failed: %q\n" "$self_name" "$test_file" >&2
     exit 1
 fi

@@ -7,5 +7,7 @@ set -euo pipefail
 source "$LIB_DIR"/init.bash
 source "$TESTS_LIB_DIR"/init.bash
 
-assert_failure assert_stderr_match "no profiles configured" \
+printf -v stderr "btrfs-snapshots: no profiles configured\n"
+
+assert_failure assert_stderr "$stderr" \
     btrfs-snapshots create
