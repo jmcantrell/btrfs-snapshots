@@ -39,5 +39,5 @@ assert_success assert_stdout "$stdout" \
     btrfs-snapshots prune
 
 for i in "${!profile_names[@]}"; do
-    assert_no_directory "${snapshots[i]}"
+    assert_file "${snapshots[i]}"/DELETED
 done

@@ -47,15 +47,16 @@ for event_name in "${EVENT_NAMES[@]}"; do
     assert_success assert_stdout "$stdout" \
         do_prune
 
-    readarray -t snapshots < <(print_snapshots "$SNAPSHOTS")
-
-    assert_equal "${#snapshots[@]}" "$limit"
+    num_kept=0
 
     for keeper in "${keepers[@]}"; do
-        assert_directory "$keeper"
+        assert_no_file "$keeper"/DELETED
+        num_kept=$((num_kept + 1))
     done
 
+    assert_equal "$num_kept" "$limit"
+
     for filler in "${fillers[@]}"; do
-        assert_no_directory "$filler"
+        assert_file "$filler"/DELETED
     done
 done
