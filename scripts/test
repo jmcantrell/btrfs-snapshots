@@ -51,4 +51,4 @@ readarray -t -d '' test_files < <(
 
 export TIMEFORMAT="Ran ${#test_files[@]} tests in %3Rs"
 
-time printf "%s\0" "${test_files[@]}" | parallel -0 -j0 ${verbose:+-v} --shuf ./scripts/test1
+time printf "%s\0" "${test_files[@]}" | parallel -r0 -j0 ${verbose:+-v} --shuf ./scripts/test1
