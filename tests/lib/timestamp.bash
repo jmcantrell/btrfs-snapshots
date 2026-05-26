@@ -28,3 +28,19 @@ timestamp_seq_event() {
 
     timestamp_seq "$timestamp" "$increment" "$count"
 }
+
+timestamp_range() {
+    local date_start=${1:?missing start date}
+    local date_stop=${2:?missing stop date}
+    local increment=${3:?missing increment}
+    shift 3
+
+    local ts_current ts_stop
+    ts_current=$(timestamp --date="$date_start")
+    ts_stop=$(timestamp --date="$date_stop")
+
+    while (($(timestamp_cmp "$ts_current" "$ts_stop") < 1)); do
+        timestamp --date="$ts_current"
+        ts_current=$(timestamp --date="$ts_current $increment")
+    done
+}

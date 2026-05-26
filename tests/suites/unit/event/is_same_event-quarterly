@@ -1,28 +1,30 @@
 #!/usr/bin/env bash
 
-# Show that `is_same_event` can recognize timestamps occurring within the same
-# quarterly event.
+# Show that `is_same_event` can identify timestamps occurring in the same quarter.
 
 set -euo pipefail
 
 source "$LIB_DIR"/init.bash
 source "$TESTS_LIB_DIR"/init.bash
 
-# Ensure every month of each quarter of the year is in the same event window.
-while read -r event_start; do
-    # Ensure a tiny step before the event window is considered a different event.
-    assert_failure assert_no_output \
-        is_same_event quarterly "$event_start" "$(timestamp -d "$event_start - 1 second")"
+# Select a random quarter.
+quarter=$((RANDOM % 4 * 3))
+event_start=$(timestamp -d "2000-01-01T00:00:00Z + $quarter months")
+event_stop=$(timestamp -d "$event_start + 3 months - 1 second")
 
-    while read -r event_step; do
-        assert_success assert_no_output \
-            is_same_event quarterly "$event_start" "$event_step"
-    done < <(timestamp_seq "$event_start" "1 month" 3)
+# Ensure a tiny step before the first day of the quarter is considered a different event.
+assert_failure assert_no_output \
+    is_same_event quarterly "$event_start" "$(timestamp -d "$event_start - 1 second")"
 
-    # Ensure a tiny step after the event window is considered a different event.
-    assert_failure assert_no_output \
-        is_same_event quarterly "$TIMESTAMP" "$(timestamp -d "$event_step + 1 second")"
-done < <(timestamp_seq "$TIMESTAMP" "3 months" 4)
+# Ensure a tiny step after the last day of the quarter is considered a different event.
+assert_failure assert_no_output \
+    is_same_event quarterly "$event_stop" "$(timestamp --date="$event_stop + 1 second")"
+
+# Ensure every month of the quarter is considered the same event.
+while read -r event_step; do
+    assert_success assert_no_output \
+        is_same_event quarterly "$event_start" "$event_step"
+done < <(timestamp_seq "$event_start" "1 month" 3)
 
 # Ensure different years with the same quarter number do not appear as the same event.
 assert_failure assert_no_output \

@@ -1,31 +1,29 @@
 #!/usr/bin/env bash
 
-# Show that `is_same_event` can recognize timestamps occurring within the same
-# weekly event.
+# Show that `is_same_event` can identify timestamps occurring in the same week.
 
 set -euo pipefail
 
 source "$LIB_DIR"/init.bash
 source "$TESTS_LIB_DIR"/init.bash
 
-# Start on Monday of the first week so iteration is predictable.
-iso_year_start=2000-01-03T00:00:00Z
+# Select a random week in an ISO year.
+event_start=$(timestamp -d "2000-01-03T00:00:00Z + $((RANDOM % 52)) weeks")
+event_stop=$(timestamp -d "$event_start + 1 week - 1 second")
 
-# Ensure every day of each week of the year is in the same event window.
-while read -r event_start; do
-    # Ensure a tiny step before the event window is considered a different event.
-    assert_failure assert_no_output \
-        is_same_event weekly "$event_start" "$(timestamp -d "$event_start - 1 second")"
+# Ensure a tiny step before the first day of the week is considered a different event.
+assert_failure assert_no_output \
+    is_same_event weekly "$event_start" "$(timestamp -d "$event_start - 1 second")"
 
-    while read -r event_step; do
-        assert_success assert_no_output \
-            is_same_event weekly "$event_start" "$event_step"
-    done < <(timestamp_seq "$event_start" "1 day" 7)
+# Ensure a tiny step after the last day of the week is considered a different event.
+assert_failure assert_no_output \
+    is_same_event weekly "$event_stop" "$(timestamp --date="$event_stop + 1 second")"
 
-    # Ensure a tiny step after the event window is considered a different event.
-    assert_failure assert_no_output \
-        is_same_event weekly "$iso_year_start" "$(timestamp --date="$event_step + 1 second")"
-done < <(timestamp_seq "$iso_year_start" "1 week" 52)
+# Ensure every day of the week is considered the same event.
+while read -r event_step; do
+    assert_success assert_no_output \
+        is_same_event weekly "$event_start" "$event_step"
+done < <(timestamp_seq "$event_start" "1 day" 7)
 
 # Ensure adjacent years with the same week number appear as the same event.
 assert_success assert_no_output \

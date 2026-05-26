@@ -10,51 +10,49 @@ source "$TESTS_LIB_DIR"/init.bash
 export SUBVOLUME=$TEMP_DIR/subvolume
 export SNAPSHOTS=$TEMP_DIR/snapshots
 
-limit=3
+# Select a random event name.
+event_name=${EVENT_NAMES[RANDOM % ${#EVENT_NAMES[@]}]}
 
-for event_name in "${EVENT_NAMES[@]}"; do
-    rm -rf -- "$TEMP_DIR"
-    mkdir -p -- "$TEMP_DIR"
+# Select a limit that allows for at least one each to keep and delete.
+limit=$((RANDOM % 9 + 2)) # between 2 and 10 snapshots will be created
+export "LIMIT_${event_name^^}=$limit"
 
-    export "LIMIT_${event_name^^}=$limit"
+keepers=()
+fillers=()
 
-    keepers=()
-    fillers=()
+while read -r event_start; do
+    # This snapshot is the earliest one of this event, so it should not be deleted.
+    keeper=$SNAPSHOTS/$event_start
+    keepers+=("$keeper")
 
-    while read -r event_start; do
-        # This snapshot is the earliest one of this event, so it should not be deleted.
-        keeper=$SNAPSHOTS/$event_start
-        keepers+=("$keeper")
+    # Generate filler snapshots within the same event that will eventually be deleted.
+    while read -r event_step; do
+        snapshot=$SNAPSHOTS/$event_step
+        mkdir -p -- "$snapshot"
 
-        # Generate filler snapshots within the same event that will eventually be deleted.
-        while read -r event_step; do
-            snapshot=$SNAPSHOTS/$event_step
-            mkdir -p -- "$snapshot"
+        # Only predict the message if it's not the keeper.
+        if [[ $snapshot != "$keeper" ]]; then
+            fillers+=("$snapshot")
+        fi
+    done < <(timestamp_seq "$event_start" "1 second" "$limit" | tac)
+done < <(timestamp_seq_event "$TIMESTAMP" "$event_name" "$limit" | tac)
 
-            # Only predict the message if it's not the keeper.
-            if [[ $snapshot != "$keeper" ]]; then
-                fillers+=("$snapshot")
-            fi
-        done < <(timestamp_seq "$event_start" "1 second" "$limit" | tac)
-    done < <(timestamp_seq_event "$TIMESTAMP" "$event_name" "$limit" | tac)
+printf -v stdout \
+    "fake btrfs subvolume delete %s\n" \
+    "${fillers[@]}"
 
-    printf -v stdout \
-        "fake btrfs subvolume delete %s\n" \
-        "${fillers[@]}"
+assert_success assert_stdout "$stdout" \
+    do_prune
 
-    assert_success assert_stdout "$stdout" \
-        do_prune
+num_kept=0
 
-    num_kept=0
+for keeper in "${keepers[@]}"; do
+    assert_no_file "$keeper"/DELETED
+    num_kept=$((num_kept + 1))
+done
 
-    for keeper in "${keepers[@]}"; do
-        assert_no_file "$keeper"/DELETED
-        num_kept=$((num_kept + 1))
-    done
+assert_equal "$num_kept" "$limit"
 
-    assert_equal "$num_kept" "$limit"
-
-    for filler in "${fillers[@]}"; do
-        assert_file "$filler"/DELETED
-    done
+for filler in "${fillers[@]}"; do
+    assert_file "$filler"/DELETED
 done

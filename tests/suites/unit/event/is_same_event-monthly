@@ -8,16 +8,19 @@ set -euo pipefail
 source "$LIB_DIR"/init.bash
 source "$TESTS_LIB_DIR"/init.bash
 
+event_start=2000-$((RANDOM % 12 + 1))-01T00:00:00Z
+event_stop=$(timestamp -d "$event_start + 1 month - 1 second")
+
 # Ensure a tiny step before the event window is considered a different event.
 assert_failure assert_no_output \
-    is_same_event monthly "$TIMESTAMP" "$(timestamp -d "$TIMESTAMP - 1 second")"
+    is_same_event monthly "$event_start" "$(timestamp -d "$event_start - 1 second")"
+
+# Ensure a tiny step after the event window is considered a different event.
+assert_failure assert_no_output \
+    is_same_event monthly "$event_stop" "$(timestamp -d "$event_stop + 1 second")"
 
 # Ensure every day of the month is in the same event window.
 while read -r event_step; do
     assert_success assert_no_output \
-        is_same_event monthly "$TIMESTAMP" "$event_step"
-done < <(timestamp_seq "$TIMESTAMP" "1 day" 31)
-
-# Ensure a tiny step after the event window is considered a different event.
-assert_failure assert_no_output \
-    is_same_event monthly "$TIMESTAMP" "$(timestamp -d "$event_step + 1 second")"
+        is_same_event monthly "$event_start" "$event_step"
+done < <(timestamp_range "$event_start" "$event_stop" "1 day")
