@@ -1,7 +1,7 @@
 timestamp_seq() {
-    local timestamp=$1
-    local increment=$2
-    local count=$3
+    local timestamp=${1:?missing timestamp}
+    local increment=${2:?missing increment}
+    local count=${3:?missing count}
 
     local i
     for ((i = 0; i < count; i++)); do
@@ -11,9 +11,9 @@ timestamp_seq() {
 }
 
 timestamp_seq_event() {
-    local timestamp=$1
-    local event_name=$2
-    local count=$3
+    local timestamp=${1:?missing timestamp}
+    local event_name=${2:?missing event name}
+    local count=${3:?missing count}
 
     local increment
     case ${event_name,,} in

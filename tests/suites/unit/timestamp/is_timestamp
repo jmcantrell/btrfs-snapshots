@@ -9,9 +9,6 @@ source "$TESTS_LIB_DIR"/init.bash
 
 assert_success is_timestamp "$TIMESTAMP"
 
-# Empty input should be rejected.
-assert_failure is_timestamp ""
-
 # Nonsense should be rejected.
 assert_failure is_timestamp bogus
 

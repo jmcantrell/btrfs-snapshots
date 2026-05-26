@@ -6,7 +6,7 @@ timestamp() {
 }
 
 is_timestamp() {
-    local input=$1
+    local input=${1:?missing timestamp}
 
     # Ensure input is formatted correctly.
     if [[ ! $input =~ $TIMESTAMP_PATTERN ]]; then
@@ -21,8 +21,8 @@ is_timestamp() {
 
 timestamp_cmp() {
     local s1 s2
-    s1=$(date --utc --date="$1" +%s) || return 1
-    s2=$(date --utc --date="$2" +%s) || return 1
+    s1=$(date --utc --date="${1:?missing left timestamp}" +%s) || return 1
+    s2=$(date --utc --date="${2:?missing right timestamp}" +%s) || return 1
 
     local result
     if ((s1 < s2)); then
