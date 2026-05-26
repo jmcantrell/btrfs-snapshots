@@ -56,8 +56,7 @@ do_prune() {
                     break
                 fi
 
-                # There is an earlier snapshot during the same event, so the
-                # current one can be pruned.
+                # There is an earlier snapshot during the same event, so prune this one.
                 if timestamp_gt "$timestamp" "$other_timestamp"; then
                     continue 2
                 fi

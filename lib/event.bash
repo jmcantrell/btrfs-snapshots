@@ -13,8 +13,8 @@
 # However, the same event would not contain the following timestamps, even
 # though they occur in close proximity:
 #
-#   2001-01-02T11:59:59Z (from the previous hourly event)
-#   2001-01-02T13:00:00Z (from the next hourly event)
+#   2001-01-02T11:59:59Z
+#   2001-01-02T13:00:00Z
 #
 # Weekly events have to be handled specially, though.
 #
