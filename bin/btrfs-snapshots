@@ -5,8 +5,8 @@ shopt -s nullglob
 
 export SELF_NAME=${0##*/}
 
-export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$self_name}
-export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$self_name}
+export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$SELF_NAME}
+export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$SELF_NAME}
 
 usage="Manage timestamped collections of btrfs snapshots.
 
