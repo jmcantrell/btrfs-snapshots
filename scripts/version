@@ -9,7 +9,7 @@ while getopts "Mmp" opt; do
         M) bump=0 ;;
         m) bump=1 ;;
         p) bump=2 ;;
-        *) exit 2 ;;
+        *) exit 64 ;;
     esac
 done
 shift $((OPTIND - 1))
@@ -36,6 +36,6 @@ printf "%s\n" "$version" | tee "$version_file"
 
 if [[ -v bump ]]; then
     git add "$version_file"
-    git commit -m "Bump ${labels[$bump]} version"
+    git commit -e -m "chore(release): bump version to $version" -m "This is a ${labels[$bump]} version change."
     git tag -a -m "Release version $version" v"$version"
 fi

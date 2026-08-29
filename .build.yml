@@ -3,9 +3,13 @@ image: archlinux
 packages:
   - parallel
   - diffutils
+  - python-pipx
 sources:
   - https://git.sr.ht/~jmcantrell/btrfs-snapshots
 tasks:
+  - lint-commits: |
+      cd btrfs-snapshots
+      pipx run --spec gitlint-core gitlint --ignore-stdin --commits "origin/main..HEAD"
   - test: |
       cd btrfs-snapshots
       ./scripts/test
