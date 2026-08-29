@@ -9,11 +9,11 @@ do_create() {
     fi
 
     local timestamp
-    timestamp=$(timestamp --date=now) || return $?
+    timestamp=$(timestamp --date=now)
 
     mkdir -p "$SNAPSHOTS"
 
-    btrfs subvolume snapshot -r -- "$SUBVOLUME" "$SNAPSHOTS/$timestamp" || return $?
+    btrfs subvolume snapshot -r -- "$SUBVOLUME" "$SNAPSHOTS/$timestamp"
 }
 
 do_prune() {
@@ -67,7 +67,7 @@ do_prune() {
         done
 
         if ((delete)); then
-            btrfs subvolume delete -- "$snapshot" || return $?
+            btrfs subvolume delete -- "$snapshot"
         fi
     done
 }

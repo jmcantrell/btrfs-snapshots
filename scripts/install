@@ -4,13 +4,13 @@ set -euo pipefail
 
 dir=${DESTDIR:-}${PREFIX:-/usr/local}
 
-install -pm755 -Dt "$dir"/bin ./bin/*
-install -pm644 -Dt "$dir"/lib/btrfs-snapshots ./lib/*
-install -pm644 -Dt "$dir"/share/man/man5 ./man/*.5
-install -pm644 -Dt "$dir"/share/man/man8 ./man/*.8
-install -pm644 -Dt "$dir"/lib/systemd/system ./systemd/*
-install -pm644 -Dt "$dir"/share/doc/btrfs-snapshots ./README.md
-install -pm644 -Dt "$dir"/share/doc/btrfs-snapshots/config ./config/*
-install -pm644 -Dt "$dir"/share/licenses/btrfs-snapshots ./LICENSE
-install -pm644 -Dt "$dir"/share/zsh/site-functions ./completion/zsh/*
-install -pm644 -Dt "$dir"/share/bash-completion/completions ./completion/bash/*
+install -p -m755 -D -t "$dir"/bin ./bin/*
+install -p -m644 -D -t "$dir"/lib/btrfs-snapshots ./lib/*
+install -p -m644 -D -t "$dir"/share/man/man5 ./man/*.5
+install -p -m644 -D -t "$dir"/share/man/man8 ./man/*.8
+install -p -m644 -D -t "$dir"/lib/systemd/system ./systemd/*
+install -p -m644 -D -t "$dir"/share/doc/btrfs-snapshots ./README.md
+install -p -m644 -D -t "$dir"/share/doc/btrfs-snapshots/config ./config/*
+install -p -m644 -D -t "$dir"/share/licenses/btrfs-snapshots ./LICENSE
+install -p -m644 -D -t "$dir"/share/zsh/site-functions ./completion/zsh/*
+install -p -m644 -D -t "$dir"/share/bash-completion/completions ./completion/bash/*

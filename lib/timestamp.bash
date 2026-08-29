@@ -9,20 +9,16 @@ is_timestamp() {
     local input=${1:?missing timestamp}
 
     # Ensure input is formatted correctly.
-    if [[ ! $input =~ $TIMESTAMP_PATTERN ]]; then
-        return 1
-    fi
+    [[ $input =~ $TIMESTAMP_PATTERN ]] || return
 
     # Ensure input is a valid date.
-    if ! date --utc --date="$input" &>/dev/null; then
-        return 1
-    fi
+    date --utc --date="$input" &>/dev/null
 }
 
 timestamp_cmp() {
     local s1 s2
-    s1=$(date --utc --date="${1:?missing left timestamp}" +%s) || return 1
-    s2=$(date --utc --date="${2:?missing right timestamp}" +%s) || return 1
+    s1=$(date --utc --date="${1:?missing left timestamp}" +%s)
+    s2=$(date --utc --date="${2:?missing right timestamp}" +%s)
 
     local result
     if ((s1 < s2)); then
@@ -38,36 +34,36 @@ timestamp_cmp() {
 
 timestamp_eq() {
     local cmp
-    cmp=$(timestamp_cmp "$@") || return 1
+    cmp=$(timestamp_cmp "$@")
     ((cmp == 0))
 }
 
 timestamp_ne() {
     local cmp
-    cmp=$(timestamp_cmp "$@") || return 1
+    cmp=$(timestamp_cmp "$@")
     ((cmp != 0))
 }
 
 timestamp_lt() {
     local cmp
-    cmp=$(timestamp_cmp "$@") || return 1
+    cmp=$(timestamp_cmp "$@")
     ((cmp == -1))
 }
 
 timestamp_le() {
     local cmp
-    cmp=$(timestamp_cmp "$@") || return 1
+    cmp=$(timestamp_cmp "$@")
     ((cmp == -1 || cmp == 0))
 }
 
 timestamp_gt() {
     local cmp
-    cmp=$(timestamp_cmp "$@") || return 1
+    cmp=$(timestamp_cmp "$@")
     ((cmp == 1))
 }
 
 timestamp_ge() {
     local cmp
-    cmp=$(timestamp_cmp "$@") || return 1
+    cmp=$(timestamp_cmp "$@")
     ((cmp == 1 || cmp == 0))
 }

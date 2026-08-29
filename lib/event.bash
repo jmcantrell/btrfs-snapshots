@@ -52,7 +52,7 @@ is_same_event() {
 
     local timestamp format=${parts[*]/#/%}
     for timestamp in "${timestamps[@]}"; do
-        events+=("$(date --utc --date="$timestamp" +"$format")") || return 1
+        events+=("$(date --utc --date="$timestamp" +"$format")")
     done
 
     [[ ${events[0]} == "${events[1]}" ]]

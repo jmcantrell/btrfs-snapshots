@@ -35,7 +35,9 @@ See also:
 
 while (($# > 0)); do
     arg=$1
-    [[ $arg == -* ]] || break
+    if [[ $arg != -* ]]; then
+        break
+    fi
     shift
     if [[ $arg == -- ]]; then
         break
