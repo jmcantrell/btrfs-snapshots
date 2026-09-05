@@ -10,7 +10,7 @@ install -p -m644 -D -t "$dir"/share/man/man5 ./man/*.5
 install -p -m644 -D -t "$dir"/share/man/man8 ./man/*.8
 install -p -m644 -D -t "$dir"/lib/systemd/system ./systemd/*
 install -p -m644 -D -t "$dir"/share/doc/btrfs-snapshots ./README.md
-install -p -m644 -D -t "$dir"/share/doc/btrfs-snapshots/config ./config/*
+install -p -m644 -D -t "$dir"/share/doc/btrfs-snapshots/config ./share/doc/config/*
 install -p -m644 -D -t "$dir"/share/licenses/btrfs-snapshots ./LICENSE
 install -p -m644 -D -t "$dir"/share/zsh/site-functions ./completion/zsh/*
 install -p -m644 -D -t "$dir"/share/bash-completion/completions ./completion/bash/*
