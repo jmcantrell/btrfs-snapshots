@@ -16,7 +16,7 @@ The goal is not to be a drop-in replacement, but an alternative for administrato
 
 ## Installation
 
-### Repository
+### Manual
 
 To install in the default location (`/usr/local`):
 
@@ -24,13 +24,18 @@ To install in the default location (`/usr/local`):
 
 To install in a different location:
 
+    PREFIX=/usr ./scripts/prepare
     sudo PREFIX=/usr ./scripts/install
 
-To install in a staging location:
+*NOTE*: `./scripts/prepare` mutates files in the working tree. Run it against a
+clean checkout. If you need to change `PREFIX`, discard local changes first
+(`git checkout .`) and re-run.
+
+To install in a staging location, set `DESTDIR` for the install script:
 
     DESTDIR=./pkg ./scripts/install
 
-### Arch User Repository (AUR)
+### Arch User Repository
 
 There are two packages available for Arch Linux, available via the AUR:
 
@@ -63,7 +68,7 @@ For command line usage:
 
     ./scripts/test --help
 
-[btrfs]: https://btrfs.readthedocs.io/en/latest/index.html
-[pkg-aur-git]: https://aur.archlinux.org/packages/btrfs-snapshots-git/
 [pkg-aur]: https://aur.archlinux.org/packages/btrfs-snapshots/
+[pkg-aur-git]: https://aur.archlinux.org/packages/btrfs-snapshots-git/
+[btrfs]: https://btrfs.readthedocs.io/en/latest/index.html
 [snapper]: http://snapper.io/
