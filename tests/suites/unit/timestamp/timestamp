@@ -4,7 +4,6 @@
 
 set -euo pipefail
 
-source ./lib/init.bash
 source ./tests/lib/init.bash
 
 # It should return a date in the correct format.

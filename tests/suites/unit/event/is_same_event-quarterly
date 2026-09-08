@@ -4,7 +4,6 @@
 
 set -euo pipefail
 
-source ./lib/init.bash
 source ./tests/lib/init.bash
 
 # Select a random quarter.

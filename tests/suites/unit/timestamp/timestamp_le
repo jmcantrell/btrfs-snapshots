@@ -5,7 +5,6 @@
 
 set -euo pipefail
 
-source ./lib/init.bash
 source ./tests/lib/init.bash
 
 assert_success assert_no_output \

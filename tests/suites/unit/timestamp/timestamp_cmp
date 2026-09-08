@@ -4,7 +4,6 @@
 
 set -euo pipefail
 
-source ./lib/init.bash
 source ./tests/lib/init.bash
 
 # There's only one second of difference.

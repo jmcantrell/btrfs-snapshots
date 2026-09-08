@@ -5,7 +5,6 @@
 
 set -euo pipefail
 
-source ./lib/init.bash
 source ./tests/lib/init.bash
 
 # Ensure a tiny step before the event window is considered a different event.

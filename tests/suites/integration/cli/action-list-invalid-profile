@@ -4,7 +4,6 @@
 
 set -euo pipefail
 
-source ./lib/init.bash
 source ./tests/lib/init.bash
 
 printf -v stderr "btrfs-snapshots: profiles do not exist: 'foo' 'bar'\n"
