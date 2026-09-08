@@ -4,8 +4,8 @@
 
 set -euo pipefail
 
-source "$LIB_DIR"/init.bash
-source "$TESTS_LIB_DIR"/init.bash
+source ./lib/init.bash
+source ./tests/lib/init.bash
 
 profile_file=$PROFILES_DIR/foo.conf
 subvolume_dir=$TEMP_DIR/$RANDOM

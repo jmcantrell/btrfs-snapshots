@@ -4,8 +4,8 @@
 
 set -euo pipefail
 
-source "$LIB_DIR"/init.bash
-source "$TESTS_LIB_DIR"/init.bash
+source ./lib/init.bash
+source ./tests/lib/init.bash
 
 # Select a random week in an ISO year.
 event_start=$(timestamp -d "2000-01-03T00:00:00Z + $((RANDOM % 52)) weeks")

@@ -16,7 +16,7 @@ _btrfs_snapshots() {
         if ((COMP_CWORD == 1)); then
             readarray -t COMPREPLY < <(compgen -W "${actions[*]}" -- "$cur")
         elif ((COMP_CWORD >= 2)) && [[ ${COMP_WORDS[1]} != -* ]]; then
-            local config_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
+            local config_dir=$PWD/etc
 
             local profile
             local -A used_profiles=()

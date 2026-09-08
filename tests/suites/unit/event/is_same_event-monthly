@@ -5,8 +5,8 @@
 
 set -euo pipefail
 
-source "$LIB_DIR"/init.bash
-source "$TESTS_LIB_DIR"/init.bash
+source ./lib/init.bash
+source ./tests/lib/init.bash
 
 event_start=2000-$((RANDOM % 12 + 1))-01T00:00:00Z
 event_stop=$(timestamp -d "$event_start + 1 month - 1 second")

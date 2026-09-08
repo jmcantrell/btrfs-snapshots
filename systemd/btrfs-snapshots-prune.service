@@ -5,4 +5,4 @@ Description=Prune timestamped btrfs snapshots
 Nice=19
 IOSchedulingClass=idle
 KillSignal=SIGINT
-ExecStart=/usr/local/bin/btrfs-snapshots prune
+ExecStart=./bin/btrfs-snapshots prune

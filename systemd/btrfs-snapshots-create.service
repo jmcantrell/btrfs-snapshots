@@ -5,4 +5,4 @@ Description=Create timestamped btrfs snapshots
 Nice=19
 IOSchedulingClass=idle
 KillSignal=SIGINT
-ExecStart=/usr/local/bin/btrfs-snapshots create
+ExecStart=./bin/btrfs-snapshots create

@@ -5,8 +5,8 @@
 
 set -euo pipefail
 
-source "$LIB_DIR"/init.bash
-source "$TESTS_LIB_DIR"/init.bash
+source ./lib/init.bash
+source ./tests/lib/init.bash
 
 assert_failure assert_no_output \
     timestamp_lt "$TIMESTAMP" "$TIMESTAMP"

@@ -5,8 +5,7 @@ shopt -s nullglob
 
 export SELF_NAME=${0##*/}
 
-export LIB_DIR=${BTRFS_SNAPSHOTS_LIB_DIR:-/usr/local/lib/$SELF_NAME}
-export CONFIG_DIR=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/$SELF_NAME}
+config_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-./etc}
 
 usage="Manage timestamped collections of btrfs snapshots.
 
@@ -26,7 +25,7 @@ Arguments:
     PROFILE    profile name to perform action on (default: all)
 
 Environment:
-    ${SELF_NAME^^}_CONFIG_DIR[=${CONFIG_DIR@Q}]
+    ${SELF_NAME^^}_CONFIG_DIR[=${config_dir@Q}]
 
 See also:
     $SELF_NAME(5)
@@ -45,7 +44,7 @@ while (($# > 0)); do
         printf "%s\n" "$usage"
         exit
     elif [[ $arg == -v || $arg == --version ]]; then
-        printf "%s\n" "$(<"$LIB_DIR"/version)"
+        printf "%s\n" "$(<./lib/version)"
         exit
     else
         printf "%s: invalid option: %s\n" "$SELF_NAME" "$arg" >&2
@@ -61,10 +60,10 @@ if [[ ! $action_name =~ ^(list|create|prune)$ ]]; then
     exit 64
 fi
 
-export PROFILES_DIR=$CONFIG_DIR/profile.d
-export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
+export PROFILES_DIR=$config_dir/profile.d
+export DEFAULTS_FILE=$config_dir/defaults.conf
 
-source "$LIB_DIR"/init.bash
+source ./lib/init.bash
 
 profile_files=$(print_profiles "$@")
 

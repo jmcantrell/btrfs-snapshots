@@ -1,6 +1,6 @@
 #autoload
 
-local config_dir=${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}
+local config_dir=$PWD/etc
 
 local profile
 local -A used_profiles=()

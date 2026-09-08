@@ -12,5 +12,9 @@ fi
 
 sed -i "1s:#\!.*/env \(.*\)$:#\!/usr/bin/\1:" ./bin/*
 
-sed -i -e "s:/usr/local/etc:$etc_dir:g" -e "s:/usr/local:$PREFIX:g" \
+sed -i \
+    -e "s:\./bin:$PREFIX/bin:g" \
+    -e "s:\./etc:$etc_dir/btrfs-snapshots:g" \
+    -e "s:\./lib:$PREFIX/lib/btrfs-snapshots:g" \
+    -e "s:\./share/doc:$PREFIX/share/doc/btrfs-snapshots:g" \
     ./bin/* ./lib/* ./man/* ./share/doc/config/* ./systemd/* ./completion/*/*

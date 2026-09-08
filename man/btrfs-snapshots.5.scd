@@ -6,8 +6,8 @@ btrfs-snapshots - Configure how btrfs snapshots are managed
 
 # SYNOPSIS
 
-- ${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}/defaults.conf
-- ${BTRFS_SNAPSHOTS_CONFIG_DIR:-/usr/local/etc/btrfs-snapshots}/profile.d/\*.conf
+- ${BTRFS_SNAPSHOTS_CONFIG_DIR:-./etc}/defaults.conf
+- ${BTRFS_SNAPSHOTS_CONFIG_DIR:-./etc}/profile.d/\*.conf
 
 # DESCRIPTION
 
@@ -22,8 +22,8 @@ caveats) that will apply to every profile.
 None of these files exist by default, and configuration is left to the
 administrator. Example files with the available settings are at:
 
-- /usr/local/share/doc/btrfs-snapshots/config/defaults.conf
-- /usr/local/share/doc/btrfs-snapshots/config/profile.conf
+- ./share/doc/config/defaults.conf
+- ./share/doc/config/profile.conf
 
 # OPTIONS
 
