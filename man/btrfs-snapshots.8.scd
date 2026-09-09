@@ -18,7 +18,9 @@ snapshots automatic and predictable.
 It makes no assumptions about the subvolume layout. It does not modify the
 system in any way. It does have two strict requirements, however:
 
-- A snapshot's base name is the ISO-8601 formatted UTC timestamp when it was taken (i.e. %Y-%m-%dT%H:%M:%SZ).
+- A snapshot's base name is the ISO-8601 formatted UTC timestamp when it was
+taken (i.e. %Y-%m-%dT%H:%M:%SZ).
+
 - The snapshots for each subvolume must be in their own directory.
 
 # ACTIONS
@@ -27,8 +29,9 @@ system in any way. It does have two strict requirements, however:
 	Print snapshot paths of the selected profiles to stdout.
 
 *create*
-	Create a new snapshot in the configured directory for the selected profiles.
-	Any subvolumes that are not mounted will be skipped with a warning message.
+	Create a new snapshot in the configured directory for the selected
+	profiles. Any subvolumes that are not mounted will be skipped with a
+	warning message.
 
 *prune*
 	Delete all snapshots for the selected profiles that fall outside of the
@@ -37,7 +40,8 @@ system in any way. It does have two strict requirements, however:
 # ARGUMENTS
 
 PROFILE
-	Profile name to perform action on (default: all profiles).
+	Profile name to perform action on. If none are given, all profiles will
+	be used.
 
 # SEE ALSO
 

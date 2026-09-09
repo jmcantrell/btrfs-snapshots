@@ -30,8 +30,11 @@ administrator. Example files with the available settings are at:
 The defaults configuration file and every profile configuration file can have
 the same settings, with a few enforced caveats.
 
-- The *SUBVOLUME* setting is only recognized in the profile configuration and it is required.
-- The *SNAPSHOTS* setting, if it appears in the defaults configuration file, must contain a %s placeholder so it can be differentiated for each subvolume.
+- The *SUBVOLUME* setting is only recognized in the profile configuration and it
+is required.
+
+- The *SNAPSHOTS* setting, if it appears in the defaults configuration file,
+must contain a %s placeholder so it can be differentiated for each subvolume.
 
 ## SUBVOLUME
 
