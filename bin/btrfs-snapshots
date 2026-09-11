@@ -45,7 +45,7 @@ while (($# > 0)); do
         printf "%s\n" "$usage"
         exit
     elif [[ $arg == -v || $arg == --version ]]; then
-        printf "%s\n" "$(<"$LIB_DIR"/version)"
+        cat -- "$LIB_DIR"/version
         exit
     else
         printf "%s: invalid option: %s\n" "$SELF_NAME" "$arg" >&2
