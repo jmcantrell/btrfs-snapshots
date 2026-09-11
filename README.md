@@ -55,16 +55,16 @@ For detailed information:
 
 The following packages are required to run tests:
 
-- diffutils
-- parallel
+- bats-assert
+- bats-file
 
 To run the included tests:
 
     ./scripts/test
 
-For command line usage:
+Arguments will be passed on to `bats`:
 
-    ./scripts/test -h
+    ./scripts/test --abort --timing
 
 [pkg-aur]: https://aur.archlinux.org/packages/btrfs-snapshots/
 [pkg-aur-git]: https://aur.archlinux.org/packages/btrfs-snapshots-git/

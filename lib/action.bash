@@ -8,64 +8,69 @@ do_create() {
         return 0
     fi
 
-    local timestamp
-    timestamp=$(timestamp --date=now)
+    local now
+    now=$(timestamp)
 
     mkdir -p "$SNAPSHOTS"
 
-    btrfs subvolume snapshot -r -- "$SUBVOLUME" "$SNAPSHOTS/$timestamp"
+    btrfs subvolume snapshot -r -- "$SUBVOLUME" "$SNAPSHOTS/$now"
 }
 
 do_prune() {
-    local counts=() limits=()
+    local counts=()
+    local limits=()
+    local event_names=()
 
-    local event_name variable
+    local event_name
+    local variable
+    local limit
     for event_name in "${EVENT_NAMES[@]}"; do
-        counts+=(0)
         variable=LIMIT_${event_name^^}
-        limits+=("${!variable:-0}")
+        limit=${!variable:-0}
+        if ((limit > 0)); then
+            counts+=(0)
+            limits+=("$limit")
+            event_names+=("$event_name")
+        fi
     done
 
     local snapshots
     readarray -t snapshots < <(print_snapshots "$SNAPSHOTS")
 
+    local snapshot
     local snapshot_index
+    local timestamp
+    local event_index
+    local delete
+
+    # Consider every snapshot, working backward chronologically from the most recent.
     for ((snapshot_index = ${#snapshots[@]} - 1; snapshot_index >= 0; snapshot_index--)); do
-        local snapshot=${snapshots[snapshot_index]}
-        local timestamp=${snapshot##*/}
+        snapshot=${snapshots[snapshot_index]}
+        timestamp=${snapshot##*/}
+        delete=1
 
-        local delete=1
-
-        local event_index
-        for ((event_index = 0; event_index < ${#EVENT_NAMES[@]}; event_index++)); do
-            local event_name=${EVENT_NAMES[event_index]}
+        # Look for an event period that this snapshot can count toward.
+        for ((event_index = 0; event_index < ${#event_names[@]}; event_index++)); do
 
             # This event type has already reached its limit.
             if ((counts[event_index] >= limits[event_index])); then
                 continue
             fi
 
-            local other_snapshot_index
-            for ((other_snapshot_index = snapshot_index - 1; other_snapshot_index >= 0; other_snapshot_index--)); do
-                local other_snapshot=${snapshots[other_snapshot_index]}
-                local other_timestamp=${other_snapshot##*/}
+            # There is an earlier snapshot in the same event period, so it cannot count toward this event type.
+            if ((snapshot_index > 0)) && is_same_event "${event_names[event_index]}" "$timestamp" "${snapshots[snapshot_index - 1]##*/}"; then
+                continue
+            fi
 
-                # The current snapshot is the earliest one in this event, so keep it.
-                if ! is_same_event "$event_name" "$timestamp" "$other_timestamp"; then
-                    counts[event_index]=$((counts[event_index] + 1))
-                    break
-                fi
-
-                # There is an earlier snapshot during the same event, so prune this one.
-                if timestamp_gt "$timestamp" "$other_timestamp"; then
-                    continue 2
-                fi
-            done
-
+            # This is the earliest snapshot in the event period under
+            # consideration and the event limit has not yet been reached, so
+            # count it, and mark it to be kept.
+            counts[event_index]=$((counts[event_index] + 1))
             delete=0
             break
         done
 
+        # No event period could be found that this snapshot could count toward.
         if ((delete)); then
             btrfs subvolume delete -- "$snapshot"
         fi

@@ -2,7 +2,8 @@ print_profiles() {
     local names=()
     local -A files=()
 
-    local file name
+    local file
+    local name
 
     for file in "$PROFILES_DIR"/*.conf; do
         if [[ -f $file ]]; then

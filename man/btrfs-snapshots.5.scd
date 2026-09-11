@@ -82,8 +82,9 @@ Example: *SNAPSHOTS*="/path/to/snapshots"
 Where <EVENT> can be one of the following: MINUTELY, HOURLY, DAILY, WEEKLY,
 MONTHLY, QUARTERLY, or YEARLY.
 
-This option defines the maximum number of most recent EVENT occurrences to keep
-a snapshot for. Only the earliest snapshot for each unique event is retained.
+This option defines how many of the most recent EVENT periods to keep a snapshot
+for. Snapshots are grouped by EVENT period (e.g. calendar hour for HOURLY), and
+only the earliest snapshot in each period is retained.
 
 There can be zero or more limits set. If the limit for an event type is not set
 in the profile configuration, the value set in the defaults configuration file

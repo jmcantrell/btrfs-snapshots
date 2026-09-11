@@ -23,15 +23,15 @@
 # that occur within the same logical week, regardless of whether or not the
 # dates occur in different actual years.
 
+# Event names are ordered so that, when pruning, finer granularity event period
+# buckets are filled before coarser ones.
 export EVENT_NAMES=(minutely hourly daily weekly monthly quarterly yearly)
 
 is_same_event() {
     local event_name=${1:?missing event name}
 
-    local timestamps=(
-        "${2:?missing first timestamp}"
-        "${3:?missing second timestamp}"
-    )
+    local timestamp1=${2:?missing first timestamp}
+    local timestamp2=${3:?missing second timestamp}
 
     local parts
     case ${event_name,,} in
@@ -48,12 +48,11 @@ is_same_event() {
             ;;
     esac
 
-    local events=()
+    local format=${parts[*]/#/%}
 
-    local timestamp format=${parts[*]/#/%}
-    for timestamp in "${timestamps[@]}"; do
-        events+=("$(date --utc --date="$timestamp" +"$format")")
-    done
+    local event1 event2
+    event1=$(date --utc --date="$timestamp1" +"$format")
+    event2=$(date --utc --date="$timestamp2" +"$format")
 
-    [[ ${events[0]} == "${events[1]}" ]]
+    [[ $event1 == "$event2" ]]
 }

@@ -1,3 +1,7 @@
+# Choose a perfect timestamp to make reasoning and arithmetic easier.
+# This is the start of a year, quarter, month, week, day, hour, and second.
+export TIMESTAMP=2001-01-01T00:00:00Z
+
 timestamp_seq() {
     local timestamp=${1:?missing timestamp}
     local increment=${2:?missing increment}
@@ -10,37 +14,17 @@ timestamp_seq() {
     done
 }
 
-timestamp_seq_event() {
-    local timestamp=${1:?missing timestamp}
-    local event_name=${2:?missing event name}
-    local count=${3:?missing count}
-
-    local increment
-    case ${event_name,,} in
-        minutely) increment="1 minute" ;;
-        hourly) increment="1 hour" ;;
-        daily) increment="1 day" ;;
-        weekly) increment="7 days" ;;
-        monthly) increment="1 month" ;;
-        quarterly) increment="3 months" ;;
-        yearly) increment="1 year" ;;
-    esac
-
-    timestamp_seq "$timestamp" "$increment" "$count"
-}
-
 timestamp_range() {
     local date_start=${1:?missing start date}
     local date_stop=${2:?missing stop date}
     local increment=${3:?missing increment}
-    shift 3
 
-    local ts_current ts_stop
-    ts_current=$(timestamp --date="$date_start")
-    ts_stop=$(timestamp --date="$date_stop")
+    local timestamp_curr timestamp_stop
+    timestamp_curr=$(timestamp --date="$date_start")
+    timestamp_stop=$(timestamp --date="$date_stop")
 
-    while (($(timestamp_cmp "$ts_current" "$ts_stop") < 1)); do
-        timestamp --date="$ts_current"
-        ts_current=$(timestamp --date="$ts_current $increment")
+    while (($(timestamp_cmp "$timestamp_curr" "$timestamp_stop") < 1)); do
+        timestamp --date="$timestamp_curr"
+        timestamp_curr=$(timestamp --date="$timestamp_curr $increment")
     done
 }

@@ -53,7 +53,12 @@ while (($# > 0)); do
     fi
 done
 
-action_name=${1:?missing action}
+if [[ ! -v 1 ]]; then
+    printf "%s: missing action\n" "$SELF_NAME" >&2
+    exit 64
+fi
+
+action_name=$1
 shift
 
 if [[ ! $action_name =~ ^(list|create|prune)$ ]]; then
