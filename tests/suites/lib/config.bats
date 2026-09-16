@@ -1,7 +1,8 @@
 source ./tests/lib/init.bash
-source ./lib/init.bash
 
-export BATS_TEST_NAME_PREFIX='load_profile '
+source ./lib/config.bash
+
+export BATS_TEST_NAME_PREFIX='lib/config::'
 
 setup() {
     CONFIG_DIR=$BATS_TEST_TMPDIR/etc
@@ -31,7 +32,7 @@ assert_not_loaded() {
     refute_output
 }
 
-@test "limits are zero by default" {
+@test "load_profile limits are zero by default" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -50,7 +51,7 @@ assert_not_loaded() {
     done
 }
 
-@test "recognizes default limits" {
+@test "load_profile recognizes default limits" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -82,7 +83,7 @@ assert_not_loaded() {
     done
 }
 
-@test "recognizes a default snapshots directory" {
+@test "load_profile recognizes a default snapshots directory" {
     local profile_name=profile$RANDOM
     local profile_file=$PROFILES_DIR/$profile_name.conf
 
@@ -99,7 +100,7 @@ assert_not_loaded() {
     assert_equal "$SNAPSHOTS" "$BATS_TEST_TMPDIR/$profile_name"
 }
 
-@test "fails if the default snapshots directory is missing a placeholder" {
+@test "load_profile fails if the default snapshots directory is missing a placeholder" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -114,7 +115,7 @@ assert_not_loaded() {
         "test: configured default for SNAPSHOTS is missing the %s placeholder: $BATS_TEST_TMPDIR"
 }
 
-@test "reports errors when reading defaults" {
+@test "load_profile reports errors when reading defaults" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -130,7 +131,7 @@ assert_not_loaded() {
         "test: could not load defaults: $DEFAULTS_FILE"
 }
 
-@test "ensures a subvolume setting is ignored in the defaults" {
+@test "load_profile ensures a subvolume setting is ignored in the defaults" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     # Create a profile that does not have the subvolume set.
@@ -147,7 +148,7 @@ assert_not_loaded() {
         "test: variable SUBVOLUME is not set for profile: foo"
 }
 
-@test "recognizes all settings in profile" {
+@test "load_profile recognizes all settings in profile" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     local subvolume_dir=$BATS_TEST_TMPDIR/$RANDOM
@@ -191,7 +192,7 @@ assert_not_loaded() {
     done
 }
 
-@test "overwrites a previous subvolume setting" {
+@test "load_profile overwrites a previous subvolume setting" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     # Try to trick the function into accepting a previous value.
@@ -205,7 +206,7 @@ assert_not_loaded() {
         "test: variable SUBVOLUME is not set for profile: foo"
 }
 
-@test "overwrites a previous snapshots setting" {
+@test "load_profile overwrites a previous snapshots setting" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     # Try to trick the function into accepting a previous value.
@@ -221,7 +222,7 @@ assert_not_loaded() {
         "test: variable SNAPSHOTS is not set for profile: foo"
 }
 
-@test "overwrites any previous limit settings" {
+@test "load_profile overwrites any previous limit settings" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     # Try to trick the function into accepting previous values.
@@ -245,7 +246,7 @@ assert_not_loaded() {
     done
 }
 
-@test "fails if the subvolume directory is not set" {
+@test "load_profile fails if the subvolume directory is not set" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -256,7 +257,7 @@ assert_not_loaded() {
         "test: variable SUBVOLUME is not set for profile: foo"
 }
 
-@test "fails if the subvolume directory is empty" {
+@test "load_profile fails if the subvolume directory is empty" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -268,7 +269,7 @@ assert_not_loaded() {
         "test: variable SUBVOLUME is not set for profile: foo"
 }
 
-@test "fails if the subvolume directory is not absolute" {
+@test "load_profile fails if the subvolume directory is not absolute" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -280,7 +281,7 @@ assert_not_loaded() {
         "test: profile foo variable SUBVOLUME is not an absolute path: ./relative"
 }
 
-@test "fails if the snapshots directory is not set" {
+@test "load_profile fails if the snapshots directory is not set" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -291,7 +292,7 @@ assert_not_loaded() {
         "test: variable SNAPSHOTS is not set for profile: foo"
 }
 
-@test "fails if the snapshots directory is empty" {
+@test "load_profile fails if the snapshots directory is empty" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -303,7 +304,7 @@ assert_not_loaded() {
         "test: variable SNAPSHOTS is not set for profile: foo"
 }
 
-@test "fails if the snapshots directory is not absolute" {
+@test "load_profile fails if the snapshots directory is not absolute" {
     local profile_file=$PROFILES_DIR/foo.conf
 
     printf "%s=%q\n" \
@@ -313,4 +314,59 @@ assert_not_loaded() {
 
     assert_not_loaded "$profile_file" 78 \
         "test: profile foo variable SNAPSHOTS is not an absolute path: ./relative"
+}
+
+@test "print_profiles prints nothing if there are no profiles" {
+    run -0 print_profiles
+    refute_output
+}
+
+@test "print_profiles only considers *.conf files at the top level" {
+    # Add some invalid paths (that should not be returned):
+    mkdir -p -- "$PROFILES_DIR"/dir        # directory
+    mkdir -p -- "$PROFILES_DIR"/bogus.conf # correctly named directory
+    touch -- "$PROFILES_DIR"/dir/deep.conf # correctly named nested file
+
+    run -0 print_profiles
+    refute_output
+}
+
+@test "print_profiles prints all profiles by default" {
+    touch -- "$PROFILES_DIR"/{a,b,c}.conf
+
+    run -0 print_profiles
+    printf "$PROFILES_DIR/%s.conf\n" a b c | assert_output -
+}
+
+@test "print_profiles output is sorted" {
+    touch -- "$PROFILES_DIR"/{a..z}.conf
+
+    readarray -t shuffled < <(printf "%s\n" {a..z} | shuf)
+
+    run -0 print_profiles "${shuffled[@]}"
+    printf "$PROFILES_DIR/%s.conf\n" {a..z} | assert_output -
+}
+
+@test "print_profiles output is deduplicated" {
+    touch -- "$PROFILES_DIR"/{a,b,c}.conf
+
+    run -0 print_profiles c a c b c a b b a
+    printf "$PROFILES_DIR/%s.conf\n" a b c | assert_output -
+}
+
+@test "print_profiles prints only the selected profiles" {
+    touch -- "$PROFILES_DIR"/{a..z}.conf
+
+    readarray -t selected < <(printf "%s\n" {a..z} | shuf -n$((RANDOM % 12 + 2)))
+
+    run -0 print_profiles "${selected[@]}"
+    printf -- "$PROFILES_DIR/%s.conf\n" "${selected[@]}" | sort | assert_output -
+}
+
+@test "print_profiles fails when non-existent profiles are selected" {
+    touch -- "$PROFILES_DIR"/{a,b,c}.conf
+
+    run -78 --separate-stderr print_profiles a b foo c bar
+    assert_stderr "test: profiles do not exist: 'foo' 'bar'"
+    refute_output
 }

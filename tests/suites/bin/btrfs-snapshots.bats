@@ -1,6 +1,6 @@
 source ./tests/lib/init.bash
 
-export BATS_TEST_NAME_PREFIX='btrfs-snapshots '
+export BATS_TEST_NAME_PREFIX='bin/btrfs-snapshots '
 
 setup() {
     bin_dir=$BATS_TEST_TMPDIR/bin
@@ -12,7 +12,11 @@ setup() {
     mkdir -p -- "$PROFILES_DIR"
 
     lib_dir=$BATS_TEST_TMPDIR/lib
-    install -D /dev/null "$lib_dir"/init.bash
+
+    local file
+    for file in ./lib/{*.bash,actions/*.bash}; do
+        install -D /dev/null "$lib_dir/${file#./lib/}"
+    done
 
     export BTRFS_SNAPSHOTS_LIB_DIR=$lib_dir
     export BTRFS_SNAPSHOTS_CONFIG_DIR=$CONFIG_DIR
@@ -58,7 +62,7 @@ test_init() {
     # Quiet these functions to isolate the test.
     install -D ./tests/fakes/base.bash "$bin_dir"/print_profiles
     install -D ./tests/fakes/base.bash "$bin_dir"/load_profile
-    install -D ./tests/fakes/base.bash "$bin_dir"/do_"$action"
+    install -D ./tests/fakes/base.bash "$bin_dir"/do_action
 
     # Have the command print something to suppress the error.
     printf 'printf "does not matter\n"' >>"$bin_dir"/print_profiles
@@ -67,7 +71,7 @@ test_init() {
     # Log the key variables as the initializer sees them.
     for variable in PROFILES_DIR DEFAULTS_FILE; do
         printf 'printf "%s=%%s\\n" "$%s"\n' "$variable" "$variable"
-    done >"$lib_dir"/init.bash
+    done >"$lib_dir"/config.bash
 
     run -0 btrfs-snapshots "$action"
     # Ensure the intializer was sourced and it saw the proper settings.
@@ -97,7 +101,7 @@ test_pass_args() {
 
     # Quiet these functions to isolate the test.
     install -D ./tests/fakes/base.bash "$bin_dir"/load_profile
-    install -D ./tests/fakes/base.bash "$bin_dir"/do_"$action"
+    install -D ./tests/fakes/base.bash "$bin_dir"/do_action
 
     run -0 btrfs-snapshots "$action"
     assert_output "fake print_profiles"
@@ -113,16 +117,16 @@ test_pass_control() {
     printf 'printf "%%s\n" /path/to/profile/{a,b,c}.conf\n' >>"$bin_dir"/print_profiles
 
     install -D ./tests/fakes/logger.bash "$bin_dir"/load_profile
-    install -D ./tests/fakes/logger.bash "$bin_dir"/do_"$action"
+    install -D ./tests/fakes/logger.bash "$bin_dir"/do_action
 
     run -0 btrfs-snapshots "$action"
     {
         printf "fake load_profile /path/to/profile/a.conf\n"
-        printf "fake do_%s\n" "$action"
+        printf "fake do_action\n"
         printf "fake load_profile /path/to/profile/b.conf\n"
-        printf "fake do_%s\n" "$action"
+        printf "fake do_action\n"
         printf "fake load_profile /path/to/profile/c.conf\n"
-        printf "fake do_%s\n" "$action"
+        printf "fake do_action\n"
     } | assert_output -
 }
 

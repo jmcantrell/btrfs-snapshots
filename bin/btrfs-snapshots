@@ -69,7 +69,8 @@ fi
 export PROFILES_DIR=$CONFIG_DIR/profile.d
 export DEFAULTS_FILE=$CONFIG_DIR/defaults.conf
 
-source "$LIB_DIR"/init.bash
+source "$LIB_DIR"/config.bash
+source "$LIB_DIR"/actions/"$action_name".bash
 
 profile_files=$(print_profiles "$@")
 
@@ -79,6 +80,5 @@ if [[ -z $profile_files ]]; then
 fi
 
 while IFS= read -r profile_file; do
-    load_profile "$profile_file"
-    do_"$action_name"
+    load_profile "$profile_file" && do_action
 done <<<"$profile_files"

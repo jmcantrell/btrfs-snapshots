@@ -1,7 +1,8 @@
 source ./tests/lib/init.bash
-source ./lib/init.bash
 
-export BATS_TEST_NAME_PREFIX='do_create '
+source ./lib/actions/create.bash
+
+export BATS_TEST_NAME_PREFIX='lib/actions/create '
 
 setup() {
     bin_dir=$BATS_TEST_TMPDIR/bin
@@ -33,12 +34,12 @@ setup() {
         printf "%s\n" "$TIMESTAMP"
     }
 
-    run -0 do_create
+    run -0 do_action
     assert_output "fake btrfs subvolume snapshot -r -- $SUBVOLUME $SNAPSHOTS/$TIMESTAMP"
 }
 
 @test "reports a missing subvolume and does nothing" {
-    run -0 --separate-stderr do_create
+    run -0 --separate-stderr do_action
     assert_stderr "test: subvolume is not available: $SUBVOLUME"
     refute_output
 }
@@ -54,7 +55,7 @@ setup() {
 
     export TEST_FAKE_EXIT_STATUS=$exit_status
     export TEST_FAKE_ERROR_MESSAGE=$error_message
-    run -"$exit_status" --separate-stderr do_create
+    run -"$exit_status" --separate-stderr do_action
     assert_stderr "$error_message"
     refute_output
 }

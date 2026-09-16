@@ -1,7 +1,9 @@
 source ./tests/lib/init.bash
-source ./lib/init.bash
 
-export BATS_TEST_NAME_PREFIX='is_same_event '
+source ./lib/event.bash
+source ./lib/timestamp.bash
+
+export BATS_TEST_NAME_PREFIX='lib/event::'
 
 assert_result() {
     local return_status=${1:?missing return status}
@@ -10,6 +12,7 @@ assert_result() {
     run -"$return_status" is_same_event "$@"
     refute_output
 }
+
 assert_same() {
     assert_result 0 "$@"
 }
@@ -42,7 +45,7 @@ assert_range() {
     done < <(timestamp_range "$event_start" "$event_stop" "$increment")
 }
 
-@test "recognizes a timestamp from the same yearly event" {
+@test "is_same_event recognizes a timestamp from the same yearly event" {
     local event_start event_stop
     event_start=$(timestamp -d "$TIMESTAMP + $((RANDOM % 15)) year")
     event_stop=$(timestamp -d "$event_start + 1 year - 1 second")
@@ -54,7 +57,7 @@ assert_range() {
     assert_range yearly "$event_start" "$event_stop" '1 month'
 }
 
-@test "recognizes a timestamp from the same quarterly event" {
+@test "is_same_event recognizes a timestamp from the same quarterly event" {
     local event_start event_stop
     event_start=$(timestamp -d "$TIMESTAMP + $((RANDOM % 4 * 3)) month")
     event_stop=$(timestamp -d "$event_start + 3 months - 1 second")
@@ -69,7 +72,7 @@ assert_range() {
     assert_different quarterly 2000-01-01T00:00:00Z 2001-01-01T00:00:00Z
 }
 
-@test "recognizes a timestamp from the same monthly event" {
+@test "is_same_event recognizes a timestamp from the same monthly event" {
     local event_start event_stop
     event_start=$(timestamp -d "$TIMESTAMP + $((RANDOM % 12)) month")
     event_stop=$(timestamp -d "$event_start + 1 month - 1 second")
@@ -81,7 +84,7 @@ assert_range() {
     assert_range monthly "$event_start" "$event_stop" '1 day'
 }
 
-@test "recognizes a timestamp from the same weekly event" {
+@test "is_same_event recognizes a timestamp from the same weekly event" {
     # Need to pick a start date that is the first monday of a year.
     local timestamp='2000-01-03T00:00:00Z'
 
@@ -102,7 +105,7 @@ assert_range() {
     assert_different weekly 2000-01-03T00:00:00Z 2002-01-01T00:00:00Z
 }
 
-@test "recognizes a timestamp from the same daily event" {
+@test "is_same_event recognizes a timestamp from the same daily event" {
     local event_start event_stop
     event_start=$(timestamp -d "$TIMESTAMP + $((RANDOM % 31)) days")
     event_stop=$(timestamp -d "$event_start + 24 hours - 1 second")
@@ -114,7 +117,7 @@ assert_range() {
     assert_range daily "$event_start" "$event_stop" '1 hour'
 }
 
-@test "recognizes a timestamp from the same hourly event" {
+@test "is_same_event recognizes a timestamp from the same hourly event" {
     local event_start event_stop
     event_start=$(timestamp -d "$TIMESTAMP + $((RANDOM % 24)) hours")
     event_stop=$(timestamp -d "$event_start + 1 hour - 1 second")
@@ -126,7 +129,7 @@ assert_range() {
     assert_range hourly "$event_start" "$event_stop" '1 minute'
 }
 
-@test "recognizes a timestamp from the same minutely event" {
+@test "is_same_event recognizes a timestamp from the same minutely event" {
     local event_start event_stop
     event_start=$(timestamp -d "$TIMESTAMP + $((RANDOM % 60)) minutes")
     event_stop=$(timestamp -d "$event_start + 1 minute - 1 second")

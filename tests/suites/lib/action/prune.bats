@@ -1,7 +1,8 @@
 source ./tests/lib/init.bash
-source ./lib/init.bash
 
-export BATS_TEST_NAME_PREFIX='do_prune '
+source ./lib/actions/prune.bash
+
+export BATS_TEST_NAME_PREFIX='lib/actions/prune '
 
 setup() {
     bin_dir=$BATS_TEST_TMPDIR/bin
@@ -14,14 +15,14 @@ setup() {
 }
 
 @test "does nothing if there are no snapshots" {
-    run -0 do_prune
+    run -0 do_action
     refute_output
 }
 
 @test "removes timestamped directories" {
     mkdir -p -- "$SNAPSHOTS/$TIMESTAMP"
 
-    run -0 do_prune
+    run -0 do_action
     assert_output "fake btrfs subvolume delete -- $SNAPSHOTS/$TIMESTAMP"
 }
 
@@ -32,7 +33,7 @@ setup() {
     # Ignore a shallow correctly named file.
     touch -- "$SNAPSHOTS/$TIMESTAMP"
 
-    run -0 do_prune
+    run -0 do_action
     refute_output
 }
 
@@ -43,7 +44,7 @@ setup() {
         printf "fake btrfs subvolume delete -- %s\n" "$SNAPSHOTS/$timestamp"
     done < <(timestamp_seq "$TIMESTAMP" hour $((RANDOM % 15 + 5)) | tac) >"$BATS_TEST_TMPDIR"/output
 
-    run -0 do_prune
+    run -0 do_action
     assert_output - <"$BATS_TEST_TMPDIR"/output
 }
 
@@ -54,7 +55,7 @@ setup() {
         printf "fake btrfs subvolume delete -- %s\n" "$SNAPSHOTS/$timestamp"
     done < <(timestamp_seq "$TIMESTAMP" hour $((RANDOM % 15 + 5))) >"$BATS_TEST_TMPDIR"/output
 
-    run -0 do_prune
+    run -0 do_action
     sort -r "$BATS_TEST_TMPDIR"/output | assert_output -
 }
 
@@ -80,7 +81,7 @@ test_limit_unset() {
         printf "fake btrfs subvolume delete -- %s\n" "$_"
     done < <(timestamp_seq "$TIMESTAMP" "${event_increment[$event_name]}" "$total" | tac) >"$BATS_TEST_TMPDIR"/output
 
-    run -0 do_prune
+    run -0 do_action
     assert_output - <"$BATS_TEST_TMPDIR"/output
 }
 
@@ -100,7 +101,7 @@ test_limit_zero() {
         printf "fake btrfs subvolume delete -- %s\n" "$_"
     done < <(timestamp_seq "$TIMESTAMP" "${event_increment[$event_name]}" "$total" | tac) >"$BATS_TEST_TMPDIR"/output
 
-    run -0 do_prune
+    run -0 do_action
     assert_output - <"$BATS_TEST_TMPDIR"/output
 }
 
@@ -126,7 +127,7 @@ test_limit_latest() {
         fi
     done < <(timestamp_seq "$TIMESTAMP" "${event_increment[$event_name]}" "$total" | tac) >"$BATS_TEST_TMPDIR"/output
 
-    run -0 do_prune
+    run -0 do_action
     assert_output - <"$BATS_TEST_TMPDIR"/output
 }
 
@@ -149,7 +150,7 @@ test_limit_earliest() {
         fi
     done < <(timestamp_seq "$TIMESTAMP" "1 second" "$total" | tac) >"$BATS_TEST_TMPDIR"/output
 
-    run -0 do_prune
+    run -0 do_action
     assert_output - <"$BATS_TEST_TMPDIR"/output
 }
 
@@ -219,7 +220,7 @@ test_event_claim_order() {
 
     mkdir -p -- "$snapshot1" "$snapshot2" "$snapshot3"
 
-    run -0 do_prune
+    run -0 do_action
     assert_output "fake btrfs subvolume delete -- $snapshot2"
 
     # If, instead, daily spots are filled before hourly, pruning would happen as follows:
