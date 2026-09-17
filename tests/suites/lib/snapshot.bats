@@ -56,15 +56,13 @@ assert_is_not() {
 
 @test "print_snapshots prints timestamped directories at the top level" {
     local timestamp
-    local snapshot
     while read -r timestamp; do
-        snapshot=$BATS_TEST_TMPDIR/$timestamp
-        expected+=("$snapshot")
-        mkdir -p -- "$snapshot"
-    done < <(timestamp_seq "$TIMESTAMP" hour 24)
+        mkdir -p -- "$BATS_TEST_TMPDIR/$timestamp"
+        printf "%s\n" "$BATS_TEST_TMPDIR/$timestamp"
+    done < <(timestamp_seq "$TIMESTAMP" hour $((RANDOM % 10 + 2))) >"$BATS_TEST_TMPDIR"/output
 
     run -0 print_snapshots "$BATS_TEST_TMPDIR"
-    printf "%s\n" "${expected[@]}" | assert_output -
+    assert_output - <"$BATS_TEST_TMPDIR"/output
 }
 
 @test "print_snapshots ignores anything that does not look like a snapshot" {

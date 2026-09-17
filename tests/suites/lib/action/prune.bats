@@ -155,16 +155,20 @@ test_limit_earliest() {
 }
 
 for event_name in "${EVENT_NAMES[@]}"; do
-    bats_test_function --description "keeps no $event_name snapshots if limit is not set" -- \
+    bats_test_function \
+        --description "keeps no $event_name snapshots if limit is not set" -- \
         test_limit_unset "$event_name"
 
-    bats_test_function --description "keeps no $event_name snapshots if limit is zero" -- \
+    bats_test_function \
+        --description "keeps no $event_name snapshots if limit is zero" -- \
         test_limit_zero "$event_name"
 
-    bats_test_function --description "keeps only the latest $event_name snapshots" -- \
+    bats_test_function \
+        --description "keeps only the latest $event_name snapshots" -- \
         test_limit_latest "$event_name"
 
-    bats_test_function --description "keeps only the earliest snapshot in $event_name periods" -- \
+    bats_test_function \
+        --description "keeps only the earliest snapshot in $event_name periods" -- \
         test_limit_earliest "$event_name"
 done
 
@@ -235,6 +239,7 @@ test_event_claim_order() {
 event_claim_order=(minutely hourly daily weekly monthly quarterly yearly)
 
 for ((i = 0; i < ${#event_claim_order[@]} - 1; i++)); do
-    bats_test_function --description "${event_claim_order[i]} spots are claimed before ${event_claim_order[i + 1]}" -- \
+    bats_test_function \
+        --description "claims ${event_claim_order[i]} spots before ${event_claim_order[i + 1]}" -- \
         test_event_claim_order "${event_claim_order[i]}" "${event_claim_order[i + 1]}"
 done

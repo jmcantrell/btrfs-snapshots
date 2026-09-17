@@ -28,7 +28,8 @@ assert_help() {
 }
 
 for flag in -h --help; do
-    bats_test_function --description "prints help with $flag" -- \
+    bats_test_function \
+        --description "prints help with $flag" -- \
         assert_help "$flag"
 done
 
@@ -40,7 +41,8 @@ assert_version() {
 }
 
 for flag in -v --version; do
-    bats_test_function --description "prints version with $flag" -- \
+    bats_test_function \
+        --description "prints version with $flag" -- \
         assert_version "$flag"
 done
 
@@ -131,15 +133,19 @@ test_pass_control() {
 }
 
 for action in list create prune; do
-    bats_test_function --description "$action properly initializes the core" -- \
+    bats_test_function \
+        --description "$action properly initializes the core" -- \
         test_init "$action"
 
-    bats_test_function --description "$action complains if no profiles are configured" -- \
+    bats_test_function \
+        --description "$action complains if no profiles are configured" -- \
         test_no_config "$action"
 
-    bats_test_function --description "$action passes arguments to print_profiles" -- \
+    bats_test_function \
+        --description "$action passes arguments to print_profiles" -- \
         test_pass_args "$action"
 
-    bats_test_function --description "$action passes control to the core action" -- \
+    bats_test_function \
+        --description "$action passes control to the core action" -- \
         test_pass_control "$action"
 done

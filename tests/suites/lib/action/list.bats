@@ -20,7 +20,7 @@ setup() {
         snapshot=$SNAPSHOTS/$timestamp
         mkdir -p -- "$snapshot"
         printf "%s\n" "$snapshot"
-    done < <(timestamp_seq "$TIMESTAMP" hour 24) >"$BATS_TEST_TMPDIR"/expected
+    done < <(timestamp_seq "$TIMESTAMP" hour $((RANDOM % 10 + 3))) >"$BATS_TEST_TMPDIR"/expected
 
     run -0 do_action
     assert_output - <"$BATS_TEST_TMPDIR"/expected
