@@ -1,4 +1,5 @@
 source ./tests/lib/init.bash
+source ./tests/lib/timestamp.bash
 
 source ./lib/timestamp.bash
 

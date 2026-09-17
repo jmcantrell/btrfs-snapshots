@@ -24,7 +24,7 @@ timestamp_range() {
     timestamp_stop=$(timestamp --date="$date_stop")
 
     while (($(timestamp_cmp "$timestamp_curr" "$timestamp_stop") < 1)); do
-        timestamp --date="$timestamp_curr"
+        printf "%s\n" "$timestamp_curr"
         timestamp_curr=$(timestamp --date="$timestamp_curr $increment")
     done
 }

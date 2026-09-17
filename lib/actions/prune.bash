@@ -28,7 +28,6 @@ do_action() {
     local timestamp
     local event_index
     local delete
-
     # Consider every snapshot, working backward chronologically from the most recent.
     for ((snapshot_index = ${#snapshots[@]} - 1; snapshot_index >= 0; snapshot_index--)); do
         snapshot=${snapshots[snapshot_index]}
